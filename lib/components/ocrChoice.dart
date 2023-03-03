@@ -1,39 +1,81 @@
-import 'package:eendigodemo/components/ocrChoice.dart';
+import 'package:eendigodemo/components/OCR/KKOCR.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
-import 'package:eendigodemo/liveness.dart';
+import 'package:eendigodemo/model/KKOCRModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class OCRchoice extends StatefulWidget {
 
-  final List<Map> OCRs = [
+  const OCRchoice({key});
+
+  @override
+
+  State<OCRchoice> createState() => _OCRchoiceState();
+}
+
+
+class _OCRchoiceState extends State<OCRchoice> {
+
+  @override
+  final List<Map> OCRCHOI = [
     {
-      'label': 'Liveness',
-      'icon': CupertinoIcons.person,
-      'screen': const Liveness(),
+      'label': 'OCR KTP',
+      'icon': 'Assets/icons/ktp.png',
+      'screens' : KtpOCR(),
       'color': Color.fromARGB(255,176,162,191),
+      'icon-width' : 100.0,
+      'icon-height' : 100.0
     }, 
     {
-      'label': 'FaceCompare',
-      'icon': CupertinoIcons.person_2,
-      'screen': const Liveness(),
+      'label': 'OCR REK BCA',
+      'icon': 'Assets/icons/RK.png',
+      'screens' : KtpOCR(),
       'color': Color.fromARGB(255,176,162,191),
+      'icon-width' : 100.0,
+      'icon-height' : 100.0
     },
     {
-      'label': 'OCR',
-      'icon': CupertinoIcons.camera_viewfinder,
-      'screen': const OCRchoice(),
+      'label': 'OCR RK MANDIRI',
+      'icon': 'Assets/icons/RK.png',
+      'screens' : KtpOCR(),
       'color': Color.fromARGB(255,176,162,191),
+      'icon-width' : 100.0,
+      'icon-height' : 100.0
     },
     {
-      'label': 'More To Come',
-      'icon': Icons.more_horiz,
-      'screen': const OCRchoice(),
+      'label': 'OCR KK',
+      'icon': 'Assets/icons/kk.png',
+      'screens' : KKOCR(),
       'color': Color.fromARGB(255,176,162,191),
-    }
+      'icon-width' : 100.0,
+      'icon-height' : 100.0
+    },
+    {
+      'label': 'OCR STNK',
+      'icon': 'Assets/icons/stnk.png',
+      'screens' : KtpOCR(),
+      'color': Color.fromARGB(255,176,162,191),
+      'icon-width' : 40.0,
+      'icon-height' : 40.0
+    },
+    {
+      'label': 'OCR BPKB',
+      'icon': 'Assets/icons/bpkb.png',
+      'screens' : KtpOCR(),
+      'color': Color.fromARGB(255,176,162,191),
+      'icon-width' : 100.0,
+      'icon-height' : 100.0
+    },
+    {
+      'label': 'OCR NPWP',
+      'icon': 'Assets/icons/npwp.png',
+      'screens' : KtpOCR(),
+      'color': Color.fromARGB(255,176,162,191),
+      'icon-width' : 100.0,
+      'icon-height' : 100.0
+    },
   ];
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,7 +149,7 @@ class HomeScreen extends StatelessWidget {
                     runSpacing: 8,
                     alignment: WrapAlignment.spaceBetween,
                     children: [
-                      for (final OCR in OCRs) Material(
+                      for (final OCR in OCRCHOI) Material (
                           color: Color.fromARGB(113, 255, 255, 255),
                           borderRadius: BorderRadius.circular(16),
                           clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -118,7 +160,8 @@ class HomeScreen extends StatelessWidget {
                               splashColor: OCR['color'].withOpacity(0.5),
                               highlightColor: OCR['color'].withOpacity(0.2),
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => OCR['screen']));},
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => OCR['screens']));
+                                },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -140,9 +183,7 @@ class HomeScreen extends StatelessWidget {
                                             ),
                                           ),
                                           Align(
-                                            child: Icon(OCR['icon'],
-                                              size: 50
-                                            ),
+                                            child: Image(image: AssetImage(OCR['icon']), width: OCR['icon-width'], height: OCR['icon-height'],),
                                           ),
                                         ],
                                       ),
