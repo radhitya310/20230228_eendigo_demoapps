@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:eendigodemo/components/OCRResult/OCRKKResult.dart';
 import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
 import 'package:eendigodemo/liveness.dart';
 import 'package:eendigodemo/model/KKOCRModel.dart';
@@ -20,9 +19,11 @@ class KKOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<KKOCR> {
+  CameraController? cameraController;
   File? _image;
   bool isLoading = false;
   bool isCamera = false;
+  int direction = 0;
   
   _OcrHomepageState();
 
@@ -45,7 +46,7 @@ class _OcrHomepageState extends State<KKOCR> {
     });
   }
 
-  Future<List<Kkocr>> KKOcrApi(File _KtpImage) async {
+  Future<List<Kkocr>> KtpOcrApi(File _KtpImage) async {
     List<Kkocr> data = [];
 
     final Url = 'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/kk/';
@@ -95,7 +96,7 @@ class _OcrHomepageState extends State<KKOCR> {
     return data;
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -165,28 +166,42 @@ class _OcrHomepageState extends State<KKOCR> {
             ),
           ),
         ),
-         floatingActionButton: FloatingActionButton(
+        floatingActionButton: (isCamera == false) ? FloatingActionButton(
           onPressed: () {
             setState(() {
               isLoading = true;
             });
             if (_image != null) {
-              KKOcrApi(_image!).then((value) {
+              KtpOcrApi(_image!).then((value) {
                 if (value.isNotEmpty){
                   setState(() {
                     isLoading = false;
                   });
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OcrKKResults(data: value)));
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => OcrResults(data: value)));
                 }
               });
             } else { print('no images');}
           },
           backgroundColor: Colors.green,
           child: const Icon(Icons.navigation),
-        ),
+        ) : null,
         body: Center(child: ImageCatcher(context)),
       ),
     );
+  }
+
+  @override
+  Future<void> initializeCamera(int direction) async {
+    var cameras = await availableCameras();
+    cameraController = CameraController(cameras[direction], ResolutionPreset.high);
+    await cameraController!.initialize();
+  } 
+
+  @override
+  void initState() {
+    initializeCamera(direction);
+    // TODO: implement initState
+    super.initState();
   }
 
   void imageChooser(BuildContext context) {
@@ -235,10 +250,10 @@ class _OcrHomepageState extends State<KKOCR> {
                     Container(
                       child: InkWell(
                         onTap: () {
+                          setState(() {
+                            isCamera = true;
+                          });
                           Navigator.pop(context);
-                          getImagecamera();
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
-                          
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -266,7 +281,7 @@ class _OcrHomepageState extends State<KKOCR> {
   @override
   Widget ImageCatcher(BuildContext context) {
     return Center(
-      child: (isLoading == false) ? Container(
+      child: (isCamera == false) ? (isLoading == false) ? Container(
         width: MediaQuery.of(context).size.width - 50,
         height: MediaQuery.of(context).size.height / 3.5,
         child:  (_image == null) ? InkWell(
@@ -301,8 +316,121 @@ class _OcrHomepageState extends State<KKOCR> {
                           height: 100,
                           width: 100,
                           child: CircularProgressIndicator()
+                        ) : 
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                     Stack(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 3 / 4,
+                          child: CameraPreview(cameraController!),
+                        ),
+                        Positioned(
+                          top: (MediaQuery.of(context).size.height - MediaQuery.of(context).size.height / 4 ) / 4,
+                          left: 0,
+                          right: 0,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Padding(padding: EdgeInsets.symmetric(horizontal: 25), 
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.white),
+                                  borderRadius: BorderRadius.circular(10)
+                                ), 
+                                width: 400,
+                                height: 209,
+                              ),),
+                          ) 
+                        ),
+                      ],
+                     ),
+                     Container(
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: InkWell(
+                                  onTap: () async {
+                                    try {
+                                      // Ensure that the camera is initialized.
+                                      await initializeCamera(direction);
+
+                                      // Attempt to take a picture and get the file `image`
+                                      // where it was saved.
+                                      final image = await cameraController!.takePicture();
+                                    
+                                      if (!mounted) return;
+
+                                      // If the picture was taken, display it on a new screen.
+                                      _image = File(image.path);
+                                      if (_image != null) {
+                                        setState(() {
+                                        isCamera = false;
+                                        print('asad');
+                                      });
+                                      }
+                                    } catch (e) {
+                                      // If an error occurs, log the error to the console.
+                                      print(e);
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255,92,64,115),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.grey.shade300,
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: (MediaQuery.of(context).size.height / 4) / 8,
+                              left: 20,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: InkWell(
+                                  onTap: () async {
+                                    setState(() {
+                                      direction = direction == 0 ? 1 : 0;
+                                      initializeCamera(direction);
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255,92,64,115),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.flip_camera_android,
+                                      color: Colors.grey.shade300,
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         )
-    );
+                        ),
+                     )
+                  
+                ],
+              )
+        );
   }
   
 }
+

@@ -1,119 +1,127 @@
+import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import '';
 
-class CameraCompoent extends StatefulWidget {
-  const CameraCompoent({key});
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+
+// A screen that allows users to take a picture using a given camera.
+class CameraConts extends StatefulWidget {
+  
+  // // Obtain a list of the available cameras on the device.
+  // late cameras;
+
+  // // Get a specific camera from the list of available cameras.
+  // late firstCamera;
 
   @override
-  State<CameraCompoent> createState() => _CameraCompoentState();
+  TakePictureScreenState createState() => TakePictureScreenState();
 }
 
-class _CameraCompoentState extends State<CameraCompoent> {
-  CameraController? cameraController;
+class TakePictureScreenState extends State<CameraConts> {
+  CameraController? _controller;
+  Future<void>? _initializeControllerFuture;
 
-  @override
-  Future<void> initializeCamera() async {
-    var cameras = await availableCameras();
-    cameraController = CameraController(cameras[0], ResolutionPreset.high);
-    await cameraController!.initialize();
-  } 
-  
-  @override
-  void dispose() { 
-    super.dispose();
+   void getcameraready() async {
+    final cameras = await availableCameras();
+    final firstCamera = cameras.first;
+     _controller = CameraController(
+      // Get a specifcamera from the list of available cameras.
+      firstCamera,
+      // Define the resoluti`on to use.
+      ResolutionPreset.medium,
+    );
+    _initializeControllerFuture = _controller!.initialize();
   }
-  
+
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    getcameraready();
+    // To display the current output from the Camera,
+    // create a CameraController.
+   
+
+    // Next, initialize the controller. This returns a Future.
   }
 
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height -  MediaQuery.of(context).size.height / 4 ;
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is disposed.
+    _controller!.dispose();
+    super.dispose();
+  }
 
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("Assets/img/background-eendigo_(1).png"),
-            fit: BoxFit.cover,)),
-            child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: FutureBuilder(
-          future: initializeCamera(),
-          builder: ((context, snapshot) =>
-            (snapshot.connectionState == ConnectionState.done) ? 
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                     Stack(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: 3 / 4,
-                          child: CameraPreview(cameraController!),
-                        ),
-                        Positioned(
-                          top: (MediaQuery.of(context).size.height - MediaQuery.of(context).size.height / 4 ) / 4,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Padding(padding: EdgeInsets.symmetric(horizontal: 25), 
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.white),
-                                  borderRadius: BorderRadius.circular(10)
-                                ), 
-                                width: 400,
-                                height: 209,
-                              ),),
-                          ) 
-                        )
-                      ],
-                     ),
-                     Container(
-                      child: Center(
-                        child: InkWell(
-                        onTap: () async {
-                          XFile image = await cameraController!.takePicture();
-                          File picture = File(image.path);
-                          
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                      )),
-                     )
-                  
-                ],
-              ) : 
-              Center(child: Text('no data'),)
-          ),
-        )
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Take a picture')),
+      // You must wait until the controller is initialized before displaying the
+      // camera preview. Use a FutureBuilder to display a loading spinner until the
+      // controller has finished initializing.
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // If the Future is complete, display the preview.
+            print('bbbb');
+            return CameraPreview(_controller!);
+          } else {
+            // Otherwise, display a loading indicator.
+            print('aaaa');
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        // Provide an onPressed callback.
+        onPressed: () async {
+          // Take the Picture in a try / catch block. If anything goes wrong,
+          // catch the error.
+          try {
+            // Ensure that the camera is initialized.
+            await _initializeControllerFuture;
+
+            // Attempt to take a picture and get the file `image`
+            // where it was saved.
+            final image = await _controller!.takePicture();
+          
+            if (!mounted) return;
+
+            // If the picture was taken, display it on a new screen.
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => DisplayPictureScreen(
+                  // Pass the automatically generated path to
+                  // the DisplayPictureScreen widget.
+                  imagePath: image.path,
+                ),
+              ),
+            );
+          } catch (e) {
+            // If an error occurs, log the error to the console.
+            print(e);
+          }
+        },
+        child: const Icon(Icons.camera_alt),
       ),
     );
   }
+}
 
-  Widget CameraPriview() {
-    if (cameraController == null || cameraController!.value.isInitialized == false) {
-      return CircularProgressIndicator();
-    } return AspectRatio(
-      aspectRatio: cameraController!.value.aspectRatio,
-      child: CameraPreview(cameraController!),
-      );
+// A widget that displays the picture taken by the user.
+class DisplayPictureScreen extends StatelessWidget {
+  final String imagePath;
+
+  const DisplayPictureScreen({key, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Display the Picture')),
+      // The image is stored as a file on the device. Use the `Image.file`
+      // constructor with the given path to display the image.
+      body: Image.file(File(imagePath)),
+    );
   }
 }

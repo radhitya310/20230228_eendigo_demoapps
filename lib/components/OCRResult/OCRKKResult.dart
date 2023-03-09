@@ -1,10 +1,10 @@
 import 'package:eendigodemo/components/CopyDataComponent/CopyDataKTP.dart';
-import 'package:eendigodemo/model/KtpOCRModel.dart';
+import 'package:eendigodemo/model/KKOCRModel.dart' as KK;
 import 'package:flutter/material.dart';
 
 class OcrKKResults
  extends StatelessWidget {
-  final List<Ktpocr> data;
+  final List<KK.Kkocr> data;
   const OcrKKResults
   ({required this.data});
 
@@ -62,32 +62,100 @@ class OcrKKResults
           ),
         ),
       ),
-      body: Center(
-        
-      child: Column(
-        children: [
-              Text('date : '+ data[0].date),
-              Text('message : ' + data[0].message),
-              Text('status : ' + data[0].status),
-              Text('Nama : ' + data[0].read.nama),
-              Text('NIK : ' + data[0].read.nik),
-              Text('Tanggal lahir : ' +  data[0].read.tanggalLahir),
-              Text('Kewarnegaraan : ' +  data[0].read.kewarganegaraan),
-              Text('Tempat Lahir : ' + data[0].read.tempatLahir),
-              Text('Agama : ' + data[0].read.agama),
-              Text('Alamat : ' + data[0].read.alamat),
-              Text('Provinsi : ' + data[0].read.provinsi),
-              Text('Kecamatan : ' +  data[0].read.kecamatan),
-              Text('Kelurahan Desa : ' + data[0].read.kelurahanDesa),
-              Text('Kota Kabupaten : ' + data[0].read.kotaKabupaten),
-              Text('Rt/Rw : ' + data[0].read.rtRw),
-              Text('Golongan Darah : ' + data[0].read.golonganDarah),
-              Text('Jenis Kelamin : ' + data[0].read.jenisKelamin),
-              Text('Pekerjaan : ' + data[0].read.pekerjaan),
-              Text('Status Kawin : ' + data[0].read.statusPerkawinan),
-              CopyColumnDataButton(data: data[0].read),
-        ],
-      )),
+      body: SingleChildScrollView(
+        child: Center(
+        child: Column(
+          children: [
+                Text('alamat : '+ data[0].read.alamat),
+                Text('desa kelurahan : ' + data[0].read.desaKelurahan),
+                Text('kabupaten kota : ' + data[0].read.kabupatenKota),
+                Text('kecamatan : ' + data[0].read.kecamatan),
+                Text('Kode Pos : ' + data[0].read.kodePos),
+                Text('Nama Kepala Keluarga : ' +  data[0].read.namaKepalaKeluarga),
+                Text('Nomor Blanko : ' +  data[0].read.nomorBlanko),
+                Text('Nomor KK : ' + data[0].read.nomorKk),
+                Text('Provinsi : ' + data[0].read.provinsi),
+                Text('Rt/Rw : ' + data[0].read.rtRw),
+                Text('Data Keluarga'),
+                for (int i = 0; i < data[0].read.table.length; i++ )... {
+                Padding(padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text('Data  ${i + 1}'),
+                      Table(
+                      border: TableBorder.all(width: 1.0, color: Colors.grey),
+                      children: [
+                        if (data[0].read.table.isNotEmpty)...{
+                          TableRow(children: [
+                          TableCell(child: Text('Nama Lengkap')),
+                          TableCell(child: Text(data[0].read.table[i].namaLengkap)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Nama Ayah')),
+                          TableCell(child: Text(data[0].read.table[i].namaAyah)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Nama Ibu')),
+                          TableCell(child: Text(data[0].read.table[i].namaIbu)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Kewarnegaraan')),
+                          TableCell(child: Text(data[0].read.table[i].kewarganegaraan)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Pekerjaan')),
+                          TableCell(child: Text(data[0].read.table[i].jenisPekerjaan)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Hubungan status')),
+                          TableCell(child: Text(data[0].read.table[i].statusHubunganDalamKeluarga)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Agama')),
+                          TableCell(child: Text(data[0].read.table[i].agama)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('NIK')),
+                          TableCell(child: Text(data[0].read.table[i].nik)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Tanggal Lahir')),
+                          TableCell(child: Text(data[0].read.table[i].tanggalLahir)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Tempat Lahir')),
+                          TableCell(child: Text(data[0].read.table[i].tempatLahir)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Status Perkawinan')),
+                          TableCell(child: Text(data[0].read.table[i].statusPerkawinan)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Tanggal Perkawinan')),
+                          TableCell(child: Text(data[0].read.table[i].tanggalPerkawinan)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('Pendidikan')),
+                          TableCell(child: Text(data[0].read.table[i].pendidikan)),
+                        ]),
+                        TableRow(children: [
+                          TableCell(child: Text('No Paspor')),
+                          TableCell(child: Text(data[0].read.table[i].noPaspor)),
+                        ]),
+                         TableRow(children: [
+                          TableCell(child: Text('No Kitas Kitab')),
+                          TableCell(child: Text(data[0].read.table[i].noKitasKitap)),
+                        ]),
+                        }
+                      ],
+                      ),
+                    ],
+                  ),
+                )
+            }
+          ],
+        )),
+      ),
     );
   }
 }

@@ -121,10 +121,10 @@ class Table {
         required this.tempatLahir,
     });
 
-    Agama agama;
-    JenisKelamin jenisKelamin;
+    String agama;
+    String jenisKelamin;
     String jenisPekerjaan;
-    Kewarganegaraan kewarganegaraan;
+    String kewarganegaraan;
     String namaAyah;
     String namaIbu;
     String namaLengkap;
@@ -132,18 +132,18 @@ class Table {
     int no;
     String noKitasKitap;
     String noPaspor;
-    Pendidikan pendidikan;
+    String pendidikan;
     String statusHubunganDalamKeluarga;
-    StatusPerkawinan statusPerkawinan;
+    String statusPerkawinan;
     String tanggalLahir;
-    TanggalPerkawinan tanggalPerkawinan;
-    TempatLahir tempatLahir;
+    String tanggalPerkawinan;
+    String tempatLahir;
 
     factory Table.fromJson(Map<String, dynamic> json) => Table(
-        agama: agamaValues.map[json["agama"]]!,
-        jenisKelamin: jenisKelaminValues.map[json["jenis_kelamin"]]!,
+        agama: json["agama"]!,
+        jenisKelamin: json["jenis_kelamin"]!,
         jenisPekerjaan: json["jenis_pekerjaan"],
-        kewarganegaraan: kewarganegaraanValues.map[json["kewarganegaraan"]]!,
+        kewarganegaraan: json["kewarganegaraan"]!,
         namaAyah: json["nama_ayah"],
         namaIbu: json["nama_ibu"],
         namaLengkap: json["nama_lengkap"],
@@ -151,12 +151,12 @@ class Table {
         no: json["no"],
         noKitasKitap: json["no_kitas_kitap"],
         noPaspor: json["no_paspor"],
-        pendidikan: pendidikanValues.map[json["pendidikan"]]!,
+        pendidikan: json["pendidikan"]!,
         statusHubunganDalamKeluarga: json["status_hubungan_dalam_keluarga"],
-        statusPerkawinan: statusPerkawinanValues.map[json["status_perkawinan"]]!,
+        statusPerkawinan: json["status_perkawinan"]!,
         tanggalLahir: json["tanggal_lahir"],
-        tanggalPerkawinan: tanggalPerkawinanValues.map[json["tanggal_perkawinan"]]!,
-        tempatLahir: tempatLahirValues.map[json["tempat_lahir"]]!,
+        tanggalPerkawinan: json["tanggal_perkawinan"]!,
+        tempatLahir: json["tempat_lahir"]!,
     );
 
     Map<String, dynamic> toJson() => {

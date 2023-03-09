@@ -235,7 +235,8 @@ class _OcrHomepageState extends State<KtpOCR> {
                         onTap: () {
                           Navigator.pop(context);
                           // getImagecamera();
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => CameraCompoent()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
+                          
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
