@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
-import 'package:eendigodemo/components/OCRResult/OCRSTNKResults.dart';
-import 'package:eendigodemo/model/STNKOCRModel.dart';
+import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
+import 'package:eendigodemo/components/OCRResult/REKMANDIRIOCRReslts.dart';
+import 'package:eendigodemo/model/MANDIRIOCR.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -11,67 +13,55 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-class STNKOCR extends StatefulWidget {
-  final List<Stnkocr> data = [];
+class REKMANDIRIOCR extends StatefulWidget {
+  final List<Rekmandiriocr> data = [];
   final String title;
 
-  STNKOCR(this.title);
+  REKMANDIRIOCR(this.title);
 
   @override
-  State<STNKOCR> createState() => _OcrHomepageState(title);
+  State<REKMANDIRIOCR> createState() => _OcrHomepageState(title);
 }
 
-class _OcrHomepageState extends State<STNKOCR> {
-  File? _image;
+class _OcrHomepageState extends State<REKMANDIRIOCR> {
+  File? _file;
   bool isLoading = false;
   final String title;
 
   _OcrHomepageState(this.title);
 
-  Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      final pickedImageFile = File(image.path);
+  Future getFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
       setState(() {
-        _image = pickedImageFile;
-        print('Image Path $_image');
+        _file = File(result.files.single.path!);
       });
     }
   }
 
-  @override
-  Future getImagecamera() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (image != null) {
-      final pickedImageFile = File(image.path);
-      setState(() {
-        _image = pickedImageFile;
-        print('Image Path $_image');
-      });
-    }
-  }
-
-  Future<List<Stnkocr>> KtpOcrApi(File _KtpImage) async {
-    List<Stnkocr> data = [];
+  Future<List<Rekmandiriocr>> REKBCAOcrApi(File _fileRek) async {
+    List<Rekmandiriocr> data = [];
 
     final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/stnk/';
+        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/rkmandiripdfib/';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    // final file = File(_KtpImage.path);
-    final file = File(_KtpImage.path);
-    final pic = await http.MultipartFile.fromPath('img', file.path);
-    request.files.add(pic);
+    final files = await http.MultipartFile.fromPath('file', _fileRek.path);
+    request.files.add(files);
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 1);
+    final timeout = Duration(seconds: 60);
     final client = http.Client();
     final response =
         await client.send(request).timeout(timeout, onTimeout: () async {
       client.close();
       print('request timeout');
       throw Exception('request timeout');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Request Timeout')),
+      );
     });
 
     if (response.statusCode == 200) {
@@ -81,6 +71,7 @@ class _OcrHomepageState extends State<STNKOCR> {
       var message = responses['message'];
       var date = responses['ocr_date'];
       var status = responses['status'];
+      var num_of_pages = responses['num_of_pages'];
       if (status == 'FAILED') {
         setState(() {
           isLoading = false;
@@ -90,11 +81,16 @@ class _OcrHomepageState extends State<STNKOCR> {
           SnackBar(content: Text(message)),
         );
       } else if (status == 'SUCCESS') {
+        print(responses['read']);
         Map<String, dynamic> read = responses['read'];
         Read reads = Read.fromJson(read);
 
-        data.add(Stnkocr(
-            ocrDate: date, message: message, read: reads, status: status));
+        data.add(Rekmandiriocr(
+            ocrDate: date,
+            message: message,
+            read: reads,
+            status: status,
+            numOfPages: num_of_pages));
       }
     } else {
       setState(() {
@@ -189,17 +185,19 @@ class _OcrHomepageState extends State<STNKOCR> {
                     setState(() {
                       isLoading = true;
                     });
-                    if (_image != null) {
-                      KtpOcrApi(_image!).then((value) {
+                    if (_file != null) {
+                      REKBCAOcrApi(_file!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
                           });
+                          print(value);
+                          print(value.toList());
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      STNKRESULTS(data: value)));
+                                      OCRREKMANDIRIResults(data: value)));
                         }
                       });
                     } else {
@@ -241,136 +239,35 @@ class _OcrHomepageState extends State<STNKOCR> {
     );
   }
 
-  void imageChooser(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Select image from",
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          getImage();
-                        },
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                CupertinoIcons.archivebox,
-                                size: 50,
-                              ),
-                              Text("From gallery")
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          getImagecamera();
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              CupertinoIcons.camera,
-                              size: 50,
-                            ),
-                            Text("From camera")
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget ImageCatcher(BuildContext context) {
     return Center(
         child: Container(
-            width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height / 3.5,
-            child: (_image == null)
-                ? InkWell(
-                    splashColor: Colors.transparent,
-                    onTap: () {
-                      imageChooser(context);
-                    },
-                    child: Container(
-                        height: MediaQuery.of(context).size.height / 3.5,
-                        width: MediaQuery.of(context).size.width - 50,
-                        child: DottedBorder(
-                          color: const Color.fromARGB(255, 78, 199, 30),
-                          strokeWidth: 1,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(CupertinoIcons.plus),
-                              ],
-                            ),
-                          ),
-                        )),
-                  )
-                : Stack(
-                    children: [
-                      Container(
-                          height: MediaQuery.of(context).size.height / 3.5,
-                          width: MediaQuery.of(context).size.width - 50,
-                          child: Image.file(
-                            File(_image!.path),
-                          )),
-                      Positioned(
-                        right: 20,
-                        top: 0,
-                        child: Container(
-                          color: Color.fromARGB(255, 219, 218, 218),
-                          width: 40,
-                          height: 40,
-                          child: Center(
-                              child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _image = null;
-                                    });
-                                  },
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                  ))),
-                        ),
-                      )
-                    ],
-                  )));
+      width: MediaQuery.of(context).size.width - 50,
+      height: MediaQuery.of(context).size.height / 3.5,
+      child: (_file == null)
+          ? InkWell(
+              splashColor: Colors.transparent,
+              onTap: () {
+                getFile();
+              },
+              child: Container(
+                  height: MediaQuery.of(context).size.height / 3.5,
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: DottedBorder(
+                    color: const Color.fromARGB(255, 78, 199, 30),
+                    strokeWidth: 1,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(CupertinoIcons.plus),
+                        ],
+                      ),
+                    ),
+                  )),
+            )
+          : Center(child: Text(_file.toString())),
+    ));
   }
 }

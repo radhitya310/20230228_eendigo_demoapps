@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:eendigodemo/CameraController/CameraContorller.dart';
 import 'package:eendigodemo/components/OCRResult/BPKBResults.dart';
 import 'package:eendigodemo/model/BPKBModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';

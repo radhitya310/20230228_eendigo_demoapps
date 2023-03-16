@@ -6,7 +6,6 @@ import 'package:eendigodemo/components/OCRResult/OCRNPWPResults.dart';
 import 'package:eendigodemo/model/NPWPModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +31,7 @@ class _OcrHomepageState extends State<NPWPOCR> {
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final pickedImageFile = File(image!.path);
+      final pickedImageFile = File(image.path);
       setState(() {
         _image = pickedImageFile;
         print('Image Path $_image');
@@ -44,7 +43,7 @@ class _OcrHomepageState extends State<NPWPOCR> {
   Future getImagecamera() async {
     var image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      final pickedImageFile = File(image!.path);
+      final pickedImageFile = File(image.path);
       setState(() {
         _image = pickedImageFile;
         print('Image Path $_image');
