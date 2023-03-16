@@ -1,3 +1,4 @@
+import 'package:eendigodemo/components/OCR/BCAOCR.dart';
 import 'package:eendigodemo/components/OCR/BPKBOCR.dart';
 import 'package:eendigodemo/components/OCR/KKOCR.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
@@ -28,7 +29,7 @@ class _OCRchoiceState extends State<OCRchoice> {
     {
       'label': 'OCR REK BCA',
       'icon': 'Assets/icons/RK.png',
-      'screens': KtpOCR('RK BCA \nOCR'),
+      'screens': REKBCAOCR('RK BCA \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0

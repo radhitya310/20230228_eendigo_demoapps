@@ -1,9 +1,9 @@
-import 'package:eendigodemo/model/MANDIRIOCR.dart';
+import 'package:eendigodemo/model/REKBCAModel.dart';
 import 'package:flutter/material.dart';
 
-class OCRREKMANDIRIResults extends StatelessWidget {
-  final List<Rekmandiriocr> data;
-  const OCRREKMANDIRIResults({required this.data});
+class OCRBCAResults extends StatelessWidget {
+  final List<Rekbcaocr> data;
+  const OCRBCAResults({required this.data});
 
   // final List<Widget> data1;
   @override
@@ -152,8 +152,11 @@ class OCRREKMANDIRIResults extends StatelessWidget {
                           TableRow(children: [
                             TableCell(child: Text('Type')),
                             TableCell(
-                                child: Text(
-                                    data[0].read.transactionHistory[i].type)),
+                                child: Text(data[0]
+                                    .read
+                                    .transactionHistory[i]
+                                    .type
+                                    .toString())),
                           ]),
                         }
                       ],
@@ -162,33 +165,33 @@ class OCRREKMANDIRIResults extends StatelessWidget {
                 ),
               )
             },
-            for (int j = 0;
-                j < data[0].read.transactionSummary.length;
-                j++) ...{
+            for (int i = 0;
+                i < data[0].read.transactionHistory.length - 1;
+                i++) ...{
               Text('Beggining Balance : ' +
                   data[0]
                       .read
-                      .transactionSummary[j]
+                      .transactionSummary[i]
                       .beginningBalance
                       .toString()),
               Text('Credit : ' +
-                  data[0].read.transactionSummary[j].credit.toString()),
+                  data[0].read.transactionSummary[i].credit.toString()),
               Text('Credit Freq : ' +
-                  data[0].read.transactionSummary[j].creditFreq.toString()),
+                  data[0].read.transactionSummary[i].creditFreq.toString()),
               Text('Debit : ' +
-                  data[0].read.transactionSummary[j].debit.toString()),
+                  data[0].read.transactionSummary[i].debit.toString()),
               Text('Debit Freq: ' +
-                  data[0].read.transactionSummary[j].debitFreq.toString()),
+                  data[0].read.transactionSummary[i].debitFreq.toString()),
               Text('Ending Balance : ' +
-                  data[0].read.transactionSummary[j].endingBalance.toString()),
+                  data[0].read.transactionSummary[i].endingBalance.toString()),
               Text('Period : ' +
-                  data[0].read.transactionSummary[j].period.toString()),
+                  data[0].read.transactionSummary[i].period.toString()),
               Text('warning Mutasi 2 : ' +
-                  data[0].read.transactionSummary[j].warningMutasi2.toString()),
+                  data[0].read.transactionSummary[i].warningMutasi2.toString()),
               Text('Warning Mutasi 2 Description : ' +
                   data[0]
                       .read
-                      .transactionSummary[j]
+                      .transactionSummary[i]
                       .warningMutasi2Description
                       .toString()),
             },
