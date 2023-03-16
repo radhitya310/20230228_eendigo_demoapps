@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
-import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
-import 'package:eendigodemo/model/KtpOCRModel.dart';
+import 'package:eendigodemo/components/OCRResult/BPKBResults.dart';
+import 'package:eendigodemo/model/BPKBModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -11,18 +11,19 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-class KtpOCR extends StatefulWidget {
-  final List<Ktpocr> data = [];
+class BPKBOCR extends StatefulWidget {
+  final List<Bpkbocr> data = [];
   final String title;
 
-  KtpOCR(this.title);
+  BPKBOCR(this.title);
 
   @override
-  State<KtpOCR> createState() => _OcrHomepageState(title);
+  State<BPKBOCR> createState() => _OcrHomepageState(title);
 }
 
-class _OcrHomepageState extends State<KtpOCR> {
+class _OcrHomepageState extends State<BPKBOCR> {
   File? _image;
+  File? _image2;
   bool isLoading = false;
   final String title;
 
@@ -51,25 +52,66 @@ class _OcrHomepageState extends State<KtpOCR> {
     }
   }
 
-  Future<List<Ktpocr>> KtpOcrApi(File _KtpImage) async {
-    List<Ktpocr> data = [];
+  Future getImage2() async {
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final pickedImageFile = File(image.path);
+      setState(() {
+        _image2 = pickedImageFile;
+        print('Image Path $_image');
+      });
+    }
+  }
+
+  @override
+  Future getImagecamera2() async {
+    var image = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (image != null) {
+      final pickedImageFile = File(image.path);
+      setState(() {
+        _image2 = pickedImageFile;
+        print('Image Path $_image');
+      });
+    }
+  }
+
+  Future<List<Bpkbocr>> KtpOcrApi(File? _BPKBImage, File? _BPKBImage2) async {
+    List<Bpkbocr> data = [];
 
     final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/ktp/';
+        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/bpkb/';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    // final file = File(_KtpImage.path);
-    final file = File(_KtpImage.path);
-    final pic = await http.MultipartFile.fromPath('img', file.path);
-    request.files.add(pic);
+
+    final file = File('');
+    final file2 = File('');
+
+    if (_BPKBImage != null && _BPKBImage2 != null) {
+      final file = File(_BPKBImage.path);
+      final file2 = File(_BPKBImage2.path);
+      final pic = await http.MultipartFile.fromPath('halaman2', file.path);
+      request.files.add(pic);
+      final pic2 = await http.MultipartFile.fromPath('halaman3', file2.path);
+      request.files.add(pic2);
+    } else if (_BPKBImage != null && _BPKBImage2 == null) {
+      final file = File(_BPKBImage.path);
+      final pic = await http.MultipartFile.fromPath('halaman2', file.path);
+      // final pic2 = await http.MultipartFile.fromPath('halaman3', '');
+      request.files.add(pic);
+      // request.files.add(pic2);
+    } else {
+      final file2 = File(_BPKBImage2!.path);
+      final pic2 = await http.MultipartFile.fromPath('halaman3', file2.path);
+      request.files.add(pic2);
+    }
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 20);
+    final timeout = Duration(seconds: 30);
     final client = http.Client();
     final response =
         await client.send(request).timeout(timeout, onTimeout: () async {
-      client.close();
+      // client.close();
       print('request timeout');
       throw Exception('request timeout');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,6 +126,7 @@ class _OcrHomepageState extends State<KtpOCR> {
       var message = responses['message'];
       var date = responses['ocr_date'];
       var status = responses['status'];
+      var num_of_pages = responses['num_of_pages'];
       if (status == 'FAILED') {
         setState(() {
           isLoading = false;
@@ -96,14 +139,21 @@ class _OcrHomepageState extends State<KtpOCR> {
         Map<String, dynamic> read = responses['read'];
         Read reads = Read.fromJson(read);
 
-        data.add(
-            Ktpocr(date: date, message: message, read: reads, status: status));
+        data.add(Bpkbocr(
+            ocrDate: date,
+            message: message,
+            read: reads,
+            status: status,
+            numOfPages: num_of_pages));
       }
     } else {
       setState(() {
         isLoading = false;
       });
       print('failed');
+      print(response.statusCode);
+      print(response.request);
+      // print(await utf8.decodeStream(response.stream));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Request Failed')),
       );
@@ -192,8 +242,8 @@ class _OcrHomepageState extends State<KtpOCR> {
                     setState(() {
                       isLoading = true;
                     });
-                    if (_image != null) {
-                      KtpOcrApi(_image!).then((value) {
+                    if (_image != null || _image2 != null) {
+                      KtpOcrApi(_image, _image2).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -202,7 +252,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      OcrResults(data: value)));
+                                      BPKBRESULTS(data: value)));
                         }
                       });
                     } else {
@@ -216,10 +266,9 @@ class _OcrHomepageState extends State<KtpOCR> {
           body: (isLoading == false)
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(0.0),
                         child: GradientText(title,
                             style: (TextStyle(
                                 fontSize: 60, fontWeight: FontWeight.bold)),
@@ -228,11 +277,12 @@ class _OcrHomepageState extends State<KtpOCR> {
                               Color.fromARGB(255, 28, 115, 185),
                               Color.fromARGB(255, 59, 67, 127),
                             ])),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 70.0),
-                      child: Center(child: ImageCatcher(context)),
-                    ),
-                    Spacer()
+                    Column(
+                      children: [
+                        Center(child: ImageCatcher(context)),
+                        Center(child: ImageCatcher2(context)),
+                      ],
+                    )
                   ],
                 )
               : Center(
@@ -244,7 +294,7 @@ class _OcrHomepageState extends State<KtpOCR> {
     );
   }
 
-  void imageChooser(BuildContext context) {
+  void imageChooser(BuildContext context, int flag) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -270,7 +320,11 @@ class _OcrHomepageState extends State<KtpOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          getImage();
+                          if (flag == 0) {
+                            getImage();
+                          } else {
+                            getImage2();
+                          }
                         },
                         child: Container(
                           child: Column(
@@ -291,7 +345,11 @@ class _OcrHomepageState extends State<KtpOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          getImagecamera();
+                          if (flag == 0) {
+                            getImagecamera();
+                          } else {
+                            getImagecamera2();
+                          }
                           // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
                         },
                         child: Column(
@@ -318,7 +376,7 @@ class _OcrHomepageState extends State<KtpOCR> {
   }
 
   @override
-  Widget ImageCatcher(BuildContext context) {
+  Widget ImageCatcher(BuildContext contex) {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
@@ -327,7 +385,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context);
+                      imageChooser(context, 0);
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 3.5,
@@ -365,6 +423,66 @@ class _OcrHomepageState extends State<KtpOCR> {
                                   onPressed: () {
                                     setState(() {
                                       _image = null;
+                                    });
+                                  },
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                  ))),
+                        ),
+                      )
+                    ],
+                  )));
+  }
+
+  @override
+  Widget ImageCatcher2(BuildContext contex) {
+    return Center(
+        child: Container(
+            width: MediaQuery.of(context).size.width - 50,
+            height: MediaQuery.of(context).size.height / 3.5,
+            child: (_image2 == null)
+                ? InkWell(
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      imageChooser(context, 1);
+                    },
+                    child: Container(
+                        height: MediaQuery.of(context).size.height / 3.5,
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: DottedBorder(
+                          color: const Color.fromARGB(255, 78, 199, 30),
+                          strokeWidth: 1,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(CupertinoIcons.plus),
+                              ],
+                            ),
+                          ),
+                        )),
+                  )
+                : Stack(
+                    children: [
+                      Container(
+                          height: MediaQuery.of(context).size.height / 3.5,
+                          width: MediaQuery.of(context).size.width - 50,
+                          child: Image.file(
+                            File(_image2!.path),
+                          )),
+                      Positioned(
+                        right: 20,
+                        top: 0,
+                        child: Container(
+                          color: Color.fromARGB(255, 219, 218, 218),
+                          width: 40,
+                          height: 40,
+                          child: Center(
+                              child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _image2 = null;
                                     });
                                   },
                                   child: Icon(

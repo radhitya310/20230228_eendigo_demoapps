@@ -13,7 +13,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 class KKOCR extends StatefulWidget {
-
   @override
   State<KKOCR> createState() => _OcrHomepageState();
 }
@@ -24,7 +23,7 @@ class _OcrHomepageState extends State<KKOCR> {
   bool isLoading = false;
   bool isCamera = false;
   int direction = 0;
-  
+
   _OcrHomepageState();
 
   Future getImage() async {
@@ -36,7 +35,7 @@ class _OcrHomepageState extends State<KKOCR> {
     });
   }
 
-    @override
+  @override
   Future getImagecamera() async {
     var image = await ImagePicker().pickImage(source: ImageSource.camera);
     final pickedImageFile = File(image!.path);
@@ -49,8 +48,8 @@ class _OcrHomepageState extends State<KKOCR> {
   Future<List<Kkocr>> KtpOcrApi(File _KtpImage) async {
     List<Kkocr> data = [];
 
-    final Url = 'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/kk/';
-
+    final Url =
+        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/kk/';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     // final file = File(_KtpImage.path);
@@ -59,7 +58,6 @@ class _OcrHomepageState extends State<KKOCR> {
     request.files.add(pic);
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
-
 
     final response = await request.send();
 
@@ -82,7 +80,8 @@ class _OcrHomepageState extends State<KKOCR> {
         Map<String, dynamic> read = responses['read'];
         Read reads = Read.fromJson(read);
 
-        data.add(Kkocr(message: message, ocrDate: date, read: reads, status: status));
+        data.add(Kkocr(
+            message: message, ocrDate: date, read: reads, status: status));
       }
     } else {
       setState(() {
@@ -90,7 +89,7 @@ class _OcrHomepageState extends State<KKOCR> {
       });
       print('failed');
       ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Request Failed')),
+        SnackBar(content: Text('Request Failed')),
       );
     }
     return data;
@@ -101,8 +100,9 @@ class _OcrHomepageState extends State<KKOCR> {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("Assets/img/background-eendigo_(1).png"),
-            fit: BoxFit.cover,)),
+        image: AssetImage("Assets/img/background-eendigo_(1).png"),
+        fit: BoxFit.cover,
+      )),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: PreferredSize(
@@ -116,48 +116,51 @@ class _OcrHomepageState extends State<KKOCR> {
                 children: [
                   Expanded(
                     child: TextField(
-                        onChanged: (value) {
-                          setState(() {
-                          });
-                        },
-                        style: const TextStyle(
-                          color: Colors.black,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        filled: true,
+                        // ignore: prefer_const_constructors
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Color.fromARGB(255, 89, 83, 108),
                         ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          // ignore: prefer_const_constructors
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Color.fromARGB(255,89,83,108),
-                          ),
-                          fillColor: Colors.grey.shade300,
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255,92,64,115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255,92,64,115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          contentPadding: const EdgeInsets.only(top: 14.0, left: 20.0),
-                          hintText: 'Email Address',
-                        ),
+                        fillColor: Colors.grey.shade300,
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 92, 64, 115),
+                            ),
+                            borderRadius: BorderRadius.circular(50.0)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 92, 64, 115),
+                            ),
+                            borderRadius: BorderRadius.circular(50.0)),
+                        contentPadding:
+                            const EdgeInsets.only(top: 14.0, left: 20.0),
+                        hintText: 'Email Address',
                       ),
                     ),
-                  const SizedBox(width: 16,),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
                   Material(
                     shape: const CircleBorder(),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: InkWell(
-                      onTap: () { },
+                      onTap: () {},
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Icon(Icons.person,
+                        child: Icon(
+                          Icons.person,
                           color: Theme.of(context).primaryColor,
                           size: 28,
-                        ),  
+                        ),
                       ),
                     ),
                   ),
@@ -166,25 +169,29 @@ class _OcrHomepageState extends State<KKOCR> {
             ),
           ),
         ),
-        floatingActionButton: (isCamera == false) ? FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              isLoading = true;
-            });
-            if (_image != null) {
-              KtpOcrApi(_image!).then((value) {
-                if (value.isNotEmpty){
+        floatingActionButton: (isCamera == false)
+            ? FloatingActionButton(
+                onPressed: () {
                   setState(() {
-                    isLoading = false;
+                    isLoading = true;
                   });
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => OcrResults(data: value)));
-                }
-              });
-            } else { print('no images');}
-          },
-          backgroundColor: Colors.green,
-          child: const Icon(Icons.navigation),
-        ) : null,
+                  if (_image != null) {
+                    KtpOcrApi(_image!).then((value) {
+                      if (value.isNotEmpty) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => OcrResults(data: value)));
+                      }
+                    });
+                  } else {
+                    print('no images');
+                  }
+                },
+                backgroundColor: Colors.green,
+                child: const Icon(Icons.navigation),
+              )
+            : null,
         body: Center(child: ImageCatcher(context)),
       ),
     );
@@ -193,9 +200,10 @@ class _OcrHomepageState extends State<KKOCR> {
   @override
   Future<void> initializeCamera(int direction) async {
     var cameras = await availableCameras();
-    cameraController = CameraController(cameras[direction], ResolutionPreset.high);
+    cameraController =
+        CameraController(cameras[direction], ResolutionPreset.high);
     await cameraController!.initialize();
-  } 
+  }
 
   @override
   void initState() {
@@ -281,156 +289,154 @@ class _OcrHomepageState extends State<KKOCR> {
   @override
   Widget ImageCatcher(BuildContext context) {
     return Center(
-      child: (isCamera == false) ? (isLoading == false) ? Container(
-        width: MediaQuery.of(context).size.width - 50,
-        height: MediaQuery.of(context).size.height / 3.5,
-        child:  (_image == null) ? InkWell(
-                          splashColor: Colors.transparent,
-                          onTap: () {
-                            imageChooser(context);
-                          },
-                         
-        child: Container(
-                              height: MediaQuery.of(context).size.height / 3.5,
-                              width: MediaQuery.of(context).size.width - 50,
-                              child: DottedBorder(
-                                color: const Color.fromARGB(255, 78, 199, 30),
-                                strokeWidth: 1,
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(CupertinoIcons.plus),
-                                    ],
+        child: (isCamera == false)
+            ? (isLoading == false)
+                ? Container(
+                    width: MediaQuery.of(context).size.width - 50,
+                    height: MediaQuery.of(context).size.height / 3.5,
+                    child: (_image == null)
+                        ? InkWell(
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              imageChooser(context);
+                            },
+                            child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height / 3.5,
+                                width: MediaQuery.of(context).size.width - 50,
+                                child: DottedBorder(
+                                  color: const Color.fromARGB(255, 78, 199, 30),
+                                  strokeWidth: 1,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(CupertinoIcons.plus),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )),
-                        ) : Container(
-                              height: MediaQuery.of(context).size.height / 3.5,
-                              width: MediaQuery.of(context).size.width - 50,
-                              child: Image.file(
-                                File(_image!.path),
-                              )
-                        ) 
-      ) : SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: CircularProgressIndicator()
-                        ) : 
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                )),
+                          )
+                        : Container(
+                            height: MediaQuery.of(context).size.height / 3.5,
+                            width: MediaQuery.of(context).size.width - 50,
+                            child: Image.file(
+                              File(_image!.path),
+                            )))
+                : SizedBox(
+                    height: 100, width: 100, child: CircularProgressIndicator())
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Stack(
                     children: [
-                     Stack(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: 3 / 4,
-                          child: CameraPreview(cameraController!),
-                        ),
-                        Positioned(
-                          top: (MediaQuery.of(context).size.height - MediaQuery.of(context).size.height / 4 ) / 4,
+                      AspectRatio(
+                        aspectRatio: 3 / 4,
+                        child: CameraPreview(cameraController!),
+                      ),
+                      Positioned(
+                          top: (MediaQuery.of(context).size.height -
+                                  MediaQuery.of(context).size.height / 4) /
+                              4,
                           left: 0,
                           right: 0,
                           child: Align(
                             alignment: Alignment.center,
-                            child: Padding(padding: EdgeInsets.symmetric(horizontal: 25), 
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 25),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.white),
-                                  borderRadius: BorderRadius.circular(10)
-                                ), 
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(10)),
                                 width: 400,
                                 height: 209,
-                              ),),
-                          ) 
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                  Container(
+                    child: Center(
+                        child: Stack(
+                      children: [
+                        Positioned(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: InkWell(
+                              onTap: () async {
+                                try {
+                                  // Ensure that the camera is initialized.
+                                  await initializeCamera(direction);
+
+                                  // Attempt to take a picture and get the file `image`
+                                  // where it was saved.
+                                  final image =
+                                      await cameraController!.takePicture();
+
+                                  if (!mounted) return;
+
+                                  // If the picture was taken, display it on a new screen.
+                                  _image = File(image.path);
+                                  if (_image != null) {
+                                    setState(() {
+                                      isCamera = false;
+                                      print('asad');
+                                    });
+                                  }
+                                } catch (e) {
+                                  // If an error occurs, log the error to the console.
+                                  print(e);
+                                }
+                              },
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 92, 64, 115),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.grey.shade300,
+                                  size: 30,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: (MediaQuery.of(context).size.height / 4) / 8,
+                          left: 20,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              onTap: () async {
+                                setState(() {
+                                  direction = direction == 0 ? 1 : 0;
+                                  initializeCamera(direction);
+                                });
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 92, 64, 115),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.flip_camera_android,
+                                  color: Colors.grey.shade300,
+                                  size: 30,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
-                     ),
-                     Container(
-                      child: Center(
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: InkWell(
-                                  onTap: () async {
-                                    try {
-                                      // Ensure that the camera is initialized.
-                                      await initializeCamera(direction);
-
-                                      // Attempt to take a picture and get the file `image`
-                                      // where it was saved.
-                                      final image = await cameraController!.takePicture();
-                                    
-                                      if (!mounted) return;
-
-                                      // If the picture was taken, display it on a new screen.
-                                      _image = File(image.path);
-                                      if (_image != null) {
-                                        setState(() {
-                                        isCamera = false;
-                                        print('asad');
-                                      });
-                                      }
-                                    } catch (e) {
-                                      // If an error occurs, log the error to the console.
-                                      print(e);
-                                    }
-                                  },
-                                  child: Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255,92,64,115),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.grey.shade300,
-                                      size: 30,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              top: (MediaQuery.of(context).size.height / 4) / 8,
-                              left: 20,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: InkWell(
-                                  onTap: () async {
-                                    setState(() {
-                                      direction = direction == 0 ? 1 : 0;
-                                      initializeCamera(direction);
-                                    });
-                                  },
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255,92,64,115),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.flip_camera_android,
-                                      color: Colors.grey.shade300,
-                                      size: 30,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                        ),
-                     )
-                  
+                    )),
+                  )
                 ],
-              )
-        );
+              ));
   }
-  
 }
-

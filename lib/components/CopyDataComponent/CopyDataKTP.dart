@@ -21,24 +21,60 @@ class CopyColumnDataButton extends StatelessWidget {
   }
 
   String _getChildrenText() {
-    String dataAsString = 'Nama: ' + data.nama + '\n' +
-                          'NIK: ' + data.nik + '\n' +
-                          'Pekerjaan: ' + data.pekerjaan + '\n' +
-                          'Provinsi: ' + data.provinsi + '\n' +
-                          'RT/RW: ' + data.rtRw + '\n' +
-                          'Agama: ' + data.agama + '\n' +
-                          'Alamat: ' + data.alamat + '\n' +
-                          'Berlaku Hingga: ' + data.berlakuHingga + '\n' +
-                          'Golongan Darah: ' + data.golonganDarah + '\n' +
-                          'e-KTP: ' + data.isEktp.toString() + '\n' +
-                          'Jenis Kelamin: ' + data.jenisKelamin + '\n' +
-                          'Kecamatan: ' + data.kecamatan + '\n' +
-                          'Kelurahan/Desa: ' + data.kelurahanDesa + '\n' +
-                          'Kewarganegaraan: ' + data.kewarganegaraan + '\n' +
-                          'Kota/Kabupaten: ' + data.kotaKabupaten + '\n' +
-                          'Status Perkawinan: ' + data.statusPerkawinan + '\n' +
-                          'Tanggal Lahir: ' + data.tanggalLahir + '\n' +
-                          'Tempat Lahir: ' + data.tempatLahir + '\n';
+    String dataAsString = 'Nama: ' +
+        data.nama +
+        '\n' +
+        'NIK: ' +
+        data.nik +
+        '\n' +
+        'Pekerjaan: ' +
+        data.pekerjaan +
+        '\n' +
+        'Provinsi: ' +
+        data.provinsi +
+        '\n' +
+        'RT/RW: ' +
+        data.rtRw +
+        '\n' +
+        'Agama: ' +
+        data.agama +
+        '\n' +
+        'Alamat: ' +
+        data.alamat +
+        '\n' +
+        'Berlaku Hingga: ' +
+        data.berlakuHingga +
+        '\n' +
+        'Golongan Darah: ' +
+        data.golonganDarah +
+        '\n' +
+        'e-KTP: ' +
+        data.isEktp.toString() +
+        '\n' +
+        'Jenis Kelamin: ' +
+        data.jenisKelamin +
+        '\n' +
+        'Kecamatan: ' +
+        data.kecamatan +
+        '\n' +
+        'Kelurahan/Desa: ' +
+        data.kelurahanDesa +
+        '\n' +
+        'Kewarganegaraan: ' +
+        data.kewarganegaraan +
+        '\n' +
+        'Kota/Kabupaten: ' +
+        data.kotaKabupaten +
+        '\n' +
+        'Status Perkawinan: ' +
+        data.statusPerkawinan +
+        '\n' +
+        'Tanggal Lahir: ' +
+        data.tanggalLahir +
+        '\n' +
+        'Tempat Lahir: ' +
+        data.tempatLahir +
+        '\n';
     return dataAsString;
   }
 }

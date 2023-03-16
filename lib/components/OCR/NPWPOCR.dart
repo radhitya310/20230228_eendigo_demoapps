@@ -2,36 +2,37 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
-import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
-import 'package:eendigodemo/model/KtpOCRModel.dart';
+import 'package:eendigodemo/components/OCRResult/OCRNPWPResults.dart';
+import 'package:eendigodemo/model/NPWPModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-class KtpOCR extends StatefulWidget {
-  final List<Ktpocr> data = [];
+class NPWPOCR extends StatefulWidget {
+  final List<Npwpocr> data = [];
   final String title;
 
-  KtpOCR(this.title);
+  NPWPOCR(this.title);
 
   @override
-  State<KtpOCR> createState() => _OcrHomepageState(title);
+  State<NPWPOCR> createState() => _OcrHomepageState(title);
 }
 
-class _OcrHomepageState extends State<KtpOCR> {
+class _OcrHomepageState extends State<NPWPOCR> {
   File? _image;
   bool isLoading = false;
-  final String title;
 
+  final String title;
   _OcrHomepageState(this.title);
 
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final pickedImageFile = File(image.path);
+      final pickedImageFile = File(image!.path);
       setState(() {
         _image = pickedImageFile;
         print('Image Path $_image');
@@ -43,7 +44,7 @@ class _OcrHomepageState extends State<KtpOCR> {
   Future getImagecamera() async {
     var image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      final pickedImageFile = File(image.path);
+      final pickedImageFile = File(image!.path);
       setState(() {
         _image = pickedImageFile;
         print('Image Path $_image');
@@ -51,11 +52,11 @@ class _OcrHomepageState extends State<KtpOCR> {
     }
   }
 
-  Future<List<Ktpocr>> KtpOcrApi(File _KtpImage) async {
-    List<Ktpocr> data = [];
+  Future<List<Npwpocr>> NPWPOcrApi(File _KtpImage) async {
+    List<Npwpocr> data = [];
 
     final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/ktp/';
+        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/npwp/';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     // final file = File(_KtpImage.path);
@@ -96,8 +97,8 @@ class _OcrHomepageState extends State<KtpOCR> {
         Map<String, dynamic> read = responses['read'];
         Read reads = Read.fromJson(read);
 
-        data.add(
-            Ktpocr(date: date, message: message, read: reads, status: status));
+        data.add(Npwpocr(
+            ocrDate: date, message: message, read: reads, status: status));
       }
     } else {
       setState(() {
@@ -193,7 +194,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                       isLoading = true;
                     });
                     if (_image != null) {
-                      KtpOcrApi(_image!).then((value) {
+                      NPWPOcrApi(_image!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -202,7 +203,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      OcrResults(data: value)));
+                                      NPWPResults(data: value)));
                         }
                       });
                     } else {
@@ -291,8 +292,11 @@ class _OcrHomepageState extends State<KtpOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          getImagecamera();
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
+                          // getImagecamera();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraConts()));
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,

@@ -12,25 +12,25 @@ class HomeScreen extends StatelessWidget {
       'label': 'Liveness',
       'icon': CupertinoIcons.person,
       'screen': const Liveness(),
-      'color': Color.fromARGB(255,176,162,191),
-    }, 
+      'color': Color.fromARGB(255, 176, 162, 191),
+    },
     {
       'label': 'FaceCompare',
       'icon': CupertinoIcons.person_2,
       'screen': const Liveness(),
-      'color': Color.fromARGB(255,176,162,191),
+      'color': Color.fromARGB(255, 176, 162, 191),
     },
     {
       'label': 'OCR',
       'icon': CupertinoIcons.camera_viewfinder,
       'screen': const OCRchoice(),
-      'color': Color.fromARGB(255,176,162,191),
+      'color': Color.fromARGB(255, 176, 162, 191),
     },
     {
       'label': 'More To Come',
       'icon': Icons.more_horiz,
       'screen': const OCRchoice(),
-      'color': Color.fromARGB(255,176,162,191),
+      'color': Color.fromARGB(255, 176, 162, 191),
     }
   ];
 
@@ -38,11 +38,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("Assets/img/background-eendigo_(1).png"),
-            fit: BoxFit.cover,
-          ),
+        image: DecorationImage(
+          image: AssetImage("Assets/img/background-eendigo_(1).png"),
+          fit: BoxFit.cover,
         ),
+      ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: PreferredSize(
@@ -64,8 +64,11 @@ class HomeScreen extends StatelessWidget {
                           child: Row(
                             children: const [
                               Icon(Icons.search),
-                              SizedBox(width: 16,),
-                              Text('Find services, food, or place',
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Text(
+                                'Find services, food, or place',
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ],
@@ -74,15 +77,18 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16,),
+                  const SizedBox(
+                    width: 16,
+                  ),
                   Material(
                     shape: const CircleBorder(),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: InkWell(
-                      onTap: () { },
+                      onTap: () {},
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Icon(Icons.person,
+                        child: Icon(
+                          Icons.person,
                           color: Theme.of(context).primaryColor,
                           size: 28,
                         ),
@@ -95,9 +101,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         body: Container(
-          decoration: BoxDecoration(
-            color: Colors.transparent
-          ),
+          decoration: BoxDecoration(color: Colors.transparent),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -107,55 +111,61 @@ class HomeScreen extends StatelessWidget {
                     runSpacing: 8,
                     alignment: WrapAlignment.spaceBetween,
                     children: [
-                      for (final OCR in OCRs) Material(
-                          color: Color.fromARGB(113, 255, 255, 255),
-                          borderRadius: BorderRadius.circular(16),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: Container(
-                            width: 105,
-                            height: 110,
-                            child: InkWell(
-                              splashColor: OCR['color'].withOpacity(0.5),
-                              highlightColor: OCR['color'].withOpacity(0.2),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => OCR['screen']));},
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 60,
-                                      width: 60,
-                                      child: Stack(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              height: 50,
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                color: OCR['color'].withOpacity(0.5),
-                                                borderRadius: BorderRadius.circular(16),
+                      for (final OCR in OCRs)
+                        Material(
+                            color: Color.fromARGB(113, 255, 255, 255),
+                            borderRadius: BorderRadius.circular(16),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: Container(
+                              width: 105,
+                              height: 110,
+                              child: InkWell(
+                                splashColor: OCR['color'].withOpacity(0.5),
+                                highlightColor: OCR['color'].withOpacity(0.2),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => OCR['screen']));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 60,
+                                        width: 60,
+                                        child: Stack(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Container(
+                                                height: 50,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                  color: OCR['color']
+                                                      .withOpacity(0.5),
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Align(
-                                            child: Icon(OCR['icon'],
-                                              size: 50
+                                            Align(
+                                              child:
+                                                  Icon(OCR['icon'], size: 50),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Text(OCR['label'], textAlign: TextAlign.center, softWrap: true,)
-                                  ],
+                                      Text(
+                                        OCR['label'],
+                                        textAlign: TextAlign.center,
+                                        softWrap: true,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                      ),
-                    ]
-                ),
+                            )),
+                    ]),
               ],
             ),
           ),

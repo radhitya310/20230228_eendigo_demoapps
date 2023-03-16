@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
-import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
-import 'package:eendigodemo/model/KtpOCRModel.dart';
+import 'package:eendigodemo/components/OCRResult/OCRSTNKResults.dart';
+import 'package:eendigodemo/model/STNKOCRModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -11,17 +11,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-class KtpOCR extends StatefulWidget {
-  final List<Ktpocr> data = [];
+class STNKOCR extends StatefulWidget {
+  final List<Stnkocr> data = [];
   final String title;
 
-  KtpOCR(this.title);
+  STNKOCR(this.title);
 
   @override
-  State<KtpOCR> createState() => _OcrHomepageState(title);
+  State<STNKOCR> createState() => _OcrHomepageState(title);
 }
 
-class _OcrHomepageState extends State<KtpOCR> {
+class _OcrHomepageState extends State<STNKOCR> {
   File? _image;
   bool isLoading = false;
   final String title;
@@ -31,7 +31,7 @@ class _OcrHomepageState extends State<KtpOCR> {
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final pickedImageFile = File(image.path);
+      final pickedImageFile = File(image!.path);
       setState(() {
         _image = pickedImageFile;
         print('Image Path $_image');
@@ -43,7 +43,7 @@ class _OcrHomepageState extends State<KtpOCR> {
   Future getImagecamera() async {
     var image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      final pickedImageFile = File(image.path);
+      final pickedImageFile = File(image!.path);
       setState(() {
         _image = pickedImageFile;
         print('Image Path $_image');
@@ -51,11 +51,11 @@ class _OcrHomepageState extends State<KtpOCR> {
     }
   }
 
-  Future<List<Ktpocr>> KtpOcrApi(File _KtpImage) async {
-    List<Ktpocr> data = [];
+  Future<List<Stnkocr>> KtpOcrApi(File _KtpImage) async {
+    List<Stnkocr> data = [];
 
     final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/ktp/';
+        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/stnk/';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     // final file = File(_KtpImage.path);
@@ -65,16 +65,13 @@ class _OcrHomepageState extends State<KtpOCR> {
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 20);
+    final timeout = Duration(seconds: 1);
     final client = http.Client();
     final response =
         await client.send(request).timeout(timeout, onTimeout: () async {
       client.close();
       print('request timeout');
       throw Exception('request timeout');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Timeout')),
-      );
     });
 
     if (response.statusCode == 200) {
@@ -96,8 +93,8 @@ class _OcrHomepageState extends State<KtpOCR> {
         Map<String, dynamic> read = responses['read'];
         Read reads = Read.fromJson(read);
 
-        data.add(
-            Ktpocr(date: date, message: message, read: reads, status: status));
+        data.add(Stnkocr(
+            ocrDate: date, message: message, read: reads, status: status));
       }
     } else {
       setState(() {
@@ -202,7 +199,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      OcrResults(data: value)));
+                                      STNKRESULTS(data: value)));
                         }
                       });
                     } else {

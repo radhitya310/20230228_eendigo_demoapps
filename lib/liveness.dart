@@ -20,12 +20,13 @@ class _LivenessState extends State<Liveness> {
   Widget build(BuildContext context) {
     final _introKey = GlobalKey<IntroductionScreenState>();
     const pageDecoration = PageDecoration(
-      titleTextStyle: TextStyle(fontSize: 28,fontWeight: FontWeight.bold),
-      bodyTextStyle: TextStyle(fontSize: 19),
-      bodyPadding: EdgeInsets.all(16)
-    );
+        titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        bodyTextStyle: TextStyle(fontSize: 19),
+        bodyPadding: EdgeInsets.all(16));
     return Scaffold(
-      appBar: AppBar(title: const Text('Liveness'),),
+      appBar: AppBar(
+        title: const Text('Liveness'),
+      ),
       body: IntroductionScreen(
         key: _introKey,
         globalBackgroundColor: Colors.white,
@@ -33,7 +34,7 @@ class _LivenessState extends State<Liveness> {
           PageViewModel(
             title: "Liveness",
             body:
-            "Liveness dapat memverifikasi user adalah orang sungguhan (bukan foto)",
+                "Liveness dapat memverifikasi user adalah orang sungguhan (bukan foto)",
             decoration: pageDecoration,
             footer: ElevatedButton(
               onPressed: () async {
@@ -42,11 +43,10 @@ class _LivenessState extends State<Liveness> {
                 //  final cameras = await availableCameras();
                 //}
                 //_introKey.currentState?.next();
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const StartCamera()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const StartCamera()));
               },
-              child: const Text(
-                'Start Liveness'
-              ),
+              child: const Text('Start Liveness'),
             ),
           ),
           PageViewModel(
@@ -55,7 +55,7 @@ class _LivenessState extends State<Liveness> {
             decoration: pageDecoration,
           )
         ],
-        onDone: (){},
+        onDone: () {},
         showSkipButton: false,
         showNextButton: false,
         showDoneButton: true,
@@ -65,13 +65,11 @@ class _LivenessState extends State<Liveness> {
         next: const Icon(Icons.arrow_forward),
         done: const Text('Done'),
         dotsDecorator: const DotsDecorator(
-            size: Size(10,10),
+            size: Size(10, 10),
             color: Colors.grey,
-            activeSize: Size(22,10),
+            activeSize: Size(22, 10),
             activeShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25))
-            )
-        ),
+                borderRadius: BorderRadius.all(Radius.circular(25)))),
       ),
     );
   }
@@ -121,7 +119,8 @@ class _StartCameraState extends State<StartCamera> {
   Future<void> _sendPicture(XFile imageFile) async {
     final url = Uri.parse('https://your-api-endpoint.com/upload');
     final request = http.MultipartRequest('POST', url);
-    request.files.add(await http.MultipartFile.fromPath('picture', imageFile.path));
+    request.files
+        .add(await http.MultipartFile.fromPath('picture', imageFile.path));
     final response = await request.send();
     if (response.statusCode == 200) {
       // handle successful response
@@ -138,7 +137,7 @@ class _StartCameraState extends State<StartCamera> {
 
   @override
   Widget build(BuildContext context) {
-    if(cameraController.value.isInitialized) {
+    if (cameraController.value.isInitialized) {
       return Scaffold(
         body: Stack(
           children: [
@@ -150,13 +149,14 @@ class _StartCameraState extends State<StartCamera> {
                   startCamera(direction);
                 });
               },
-              child: button(Icons.flip_camera_ios_outlined, Alignment.bottomLeft),
+              child:
+                  button(Icons.flip_camera_ios_outlined, Alignment.bottomLeft),
             ),
             GestureDetector(
               onTap: () async {
                 cameraController.takePicture().then((XFile? file) async {
-                  if(mounted) {
-                    if(file != null) {
+                  if (mounted) {
+                    if (file != null) {
                       await _sendPicture(file);
                     }
                   }

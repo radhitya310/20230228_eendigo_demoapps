@@ -102,14 +102,14 @@ class _MenuState extends State<Menu> {
             tabs: bottomNavbarIcons
                 .asMap()
                 .map((i, e) => MapEntry(
-                i,
-                Tab(
-                  icon: Icon(
-                    e,
-                    color: i == currentIndex ? Colors.grey : Colors.black,
-                    size: 30.0,
-                  ),
-                )))
+                    i,
+                    Tab(
+                      icon: Icon(
+                        e,
+                        color: i == currentIndex ? Colors.grey : Colors.black,
+                        size: 30.0,
+                      ),
+                    )))
                 .values
                 .toList(),
           ),
