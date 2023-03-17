@@ -1,3 +1,4 @@
+import 'package:eendigodemo/CONTOHCAMERAOVERLAY.dart';
 import 'package:eendigodemo/components/OCR/BCAOCR.dart';
 import 'package:eendigodemo/components/OCR/BPKBOCR.dart';
 import 'package:eendigodemo/components/OCR/KKOCR.dart';
@@ -70,6 +71,14 @@ class _OCRchoiceState extends State<OCRchoice> {
       'label': 'OCR NPWP',
       'icon': 'Assets/icons/npwp.png',
       'screens': NPWPOCR('NPWP \nOCR'),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },
+    {
+      'label': 'TEST CAMERA',
+      'icon': 'Assets/icons/npwp.png',
+      'screens': contohKamera(),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0

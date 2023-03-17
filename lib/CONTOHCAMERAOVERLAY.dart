@@ -12,16 +12,17 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
-class KKOCR extends StatefulWidget {
+class contohKamera extends StatefulWidget {
   @override
-  State<KKOCR> createState() => _OcrHomepageState();
+  State<contohKamera> createState() => _OcrHomepageState();
 }
 
-class _OcrHomepageState extends State<KKOCR> {
+class _OcrHomepageState extends State<contohKamera> {
   CameraController? cameraController;
   File? _image;
   bool isLoading = false;
   bool isCamera = false;
+  bool isInit = false;
   int direction = 0;
 
   _OcrHomepageState();
@@ -199,10 +200,24 @@ class _OcrHomepageState extends State<KKOCR> {
 
   @override
   Future<void> initializeCamera(int direction) async {
-    var cameras = await availableCameras();
-    cameraController =
-        CameraController(cameras[direction], ResolutionPreset.high);
-    await cameraController!.initialize();
+    try {
+      if (cameraController != null) {
+        await cameraController!.dispose();
+      }
+      var cameras = await availableCameras();
+      cameraController =
+          CameraController(cameras[direction], ResolutionPreset.high);
+      cameraController!.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          isInit = true;
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -210,6 +225,12 @@ class _OcrHomepageState extends State<KKOCR> {
     initializeCamera(direction);
     // TODO: implement initState
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    cameraController!.dispose();
+    super.dispose();
   }
 
   void imageChooser(BuildContext context) {
@@ -329,33 +350,36 @@ class _OcrHomepageState extends State<KKOCR> {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Stack(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3 / 4,
-                        child: CameraPreview(cameraController!),
-                      ),
-                      Positioned(
-                          top: (MediaQuery.of(context).size.height -
-                                  MediaQuery.of(context).size.height / 4) /
-                              4,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 25),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(10)),
-                                width: 400,
-                                height: 209,
-                              ),
-                            ),
-                          )),
-                    ],
-                  ),
+                  (isInit == true)
+                      ? Stack(children: [
+                          AspectRatio(
+                            aspectRatio: 3 / 4,
+                            child: CameraPreview(cameraController!),
+                          ),
+                          Positioned(
+                              top: (MediaQuery.of(context).size.height -
+                                      MediaQuery.of(context).size.height / 4) /
+                                  4,
+                              left: 0,
+                              right: 0,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 25),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    width: 400,
+                                    height: 209,
+                                  ),
+                                ),
+                              )),
+                        ])
+                      : AspectRatio(
+                          aspectRatio: 3 / 4,
+                          child: Center(child: CircularProgressIndicator())),
                   Container(
                     child: Center(
                         child: Stack(
@@ -366,17 +390,10 @@ class _OcrHomepageState extends State<KKOCR> {
                             child: InkWell(
                               onTap: () async {
                                 try {
-                                  // Ensure that the camera is initialized.
-                                  await initializeCamera(direction);
-
-                                  // Attempt to take a picture and get the file `image`
-                                  // where it was saved.
                                   final image =
                                       await cameraController!.takePicture();
 
                                   if (!mounted) return;
-
-                                  // If the picture was taken, display it on a new screen.
                                   _image = File(image.path);
                                   if (_image != null) {
                                     setState(() {
@@ -413,7 +430,12 @@ class _OcrHomepageState extends State<KKOCR> {
                             child: InkWell(
                               onTap: () async {
                                 setState(() {
-                                  direction = direction == 0 ? 1 : 0;
+                                  if (isInit == true) {
+                                    (direction == 0)
+                                        ? direction = 1
+                                        : direction = 0;
+                                  }
+                                  isInit = false;
                                   initializeCamera(direction);
                                 });
                               },
