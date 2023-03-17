@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:eendigodemo/CONTOHCAMERAOVERLAY.dart';
 import 'package:eendigodemo/components/OCR/BCAOCR.dart';
 import 'package:eendigodemo/components/OCR/BPKBOCR.dart';
@@ -5,8 +6,10 @@ import 'package:eendigodemo/components/OCR/KKOCR.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
 import 'package:eendigodemo/components/OCR/NPWPOCR.dart';
 import 'package:eendigodemo/components/OCR/REKMANDIRIOCR.dart';
+import 'package:eendigodemo/components/OCR/STNKOCR.dart';
 import 'package:eendigodemo/model/KKOCRModel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class OCRchoice extends StatefulWidget {
@@ -46,7 +49,7 @@ class _OCRchoiceState extends State<OCRchoice> {
     {
       'label': 'OCR KK',
       'icon': 'Assets/icons/kk.png',
-      'screens': KKOCR('KK \nOCR'),
+      'screens': KKOCR('KKGIYT  \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0
@@ -54,7 +57,7 @@ class _OCRchoiceState extends State<OCRchoice> {
     {
       'label': 'OCR STNK',
       'icon': 'Assets/icons/stnk.png',
-      'screens': KtpOCR('STNK \nOCR'),
+      'screens': STNKOCR('STNK \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 40.0,
       'icon-height': 40.0
@@ -84,6 +87,22 @@ class _OCRchoiceState extends State<OCRchoice> {
       'icon-height': 100.0
     },
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // if (Platform.isAndroid) {
+    //   print('The app is running on an Android device.');
+    // } else if (Platform.isIOS) {
+    //   print('The app is running on an iOS device.');
+    // } else {
+    //   print('The app is running on an unknown platform.');
+    // }
+    if (kIsWeb == true) {
+      print('web');
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

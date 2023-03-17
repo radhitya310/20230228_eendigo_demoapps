@@ -291,11 +291,11 @@ class _OcrHomepageState extends State<KtpOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          // getImagecamera();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraConts()));
+                          getImagecamera();
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => CameraConts()));
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
