@@ -1,39 +1,108 @@
-import 'package:eendigodemo/components/Facecompare/faceCompare.dart';
-import 'package:eendigodemo/components/ocrChoice.dart';
+import 'dart:io';
+import 'package:eendigodemo/CONTOHCAMERAOVERLAY.dart';
+import 'package:eendigodemo/components/OCR/BCAOCR.dart';
+import 'package:eendigodemo/components/OCR/BPKBOCR.dart';
+import 'package:eendigodemo/components/OCR/KKOCR.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
-import 'package:eendigodemo/liveness.dart';
+import 'package:eendigodemo/components/OCR/NPWPOCR.dart';
+import 'package:eendigodemo/components/OCR/REKMANDIRIOCR.dart';
+import 'package:eendigodemo/components/OCR/STNKOCR.dart';
+import 'package:eendigodemo/model/KKOCRModel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class OCRchoice extends StatefulWidget {
+  const OCRchoice({key});
 
-  final List<Map> OCRs = [
+  @override
+  State<OCRchoice> createState() => _OCRchoiceState();
+}
+
+class _OCRchoiceState extends State<OCRchoice> {
+  @override
+  final List<Map> OCRCHOI = [
     {
-      'label': 'Liveness',
-      'icon': CupertinoIcons.person,
-      'screen': const Liveness(),
+      'label': 'OCR KTP',
+      'icon': 'Assets/icons/ktp.png',
+      'screens': KtpOCR('KTP \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
     },
     {
-      'label': 'FaceCompare',
-      'icon': CupertinoIcons.person_2,
-      'screen': const FaceCompare(),
+      'label': 'OCR REK BCA',
+      'icon': 'Assets/icons/RK.png',
+      'screens': REKBCAOCR('RK BCA \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
     },
     {
-      'label': 'OCR',
-      'icon': CupertinoIcons.camera_viewfinder,
-      'screen': const OCRchoice(),
+      'label': 'OCR RK MANDIRI',
+      'icon': 'Assets/icons/RK.png',
+      'screens': REKMANDIRIOCR('RK MANDIRI \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
     },
     {
-      'label': 'More To Come',
-      'icon': Icons.more_horiz,
-      'screen': const OCRchoice(),
+      'label': 'OCR KK',
+      'icon': 'Assets/icons/kk.png',
+      'screens': KKOCR('KKGIYT  \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
-    }
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },
+    {
+      'label': 'OCR STNK',
+      'icon': 'Assets/icons/stnk.png',
+      'screens': STNKOCR('STNK \nOCR'),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 40.0,
+      'icon-height': 40.0
+    },
+    {
+      'label': 'OCR BPKB',
+      'icon': 'Assets/icons/bpkb.png',
+      'screens': BPKBOCR('BPKB \nOCR'),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },
+    {
+      'label': 'OCR NPWP',
+      'icon': 'Assets/icons/npwp.png',
+      'screens': NPWPOCR('NPWP \nOCR'),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },
+    {
+      'label': 'TEST CAMERA',
+      'icon': 'Assets/icons/npwp.png',
+      'screens': contohKamera(),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // if (Platform.isAndroid) {
+    //   print('The app is running on an Android device.');
+    // } else if (Platform.isIOS) {
+    //   print('The app is running on an iOS device.');
+    // } else {
+    //   print('The app is running on an unknown platform.');
+    // }
+    if (kIsWeb == true) {
+      print('web');
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                     runSpacing: 8,
                     alignment: WrapAlignment.spaceBetween,
                     children: [
-                      for (final OCR in OCRs)
+                      for (final OCR in OCRCHOI)
                         Material(
                             color: Color.fromARGB(113, 255, 255, 255),
                             borderRadius: BorderRadius.circular(16),
@@ -125,7 +194,7 @@ class HomeScreen extends StatelessWidget {
                                 highlightColor: OCR['color'].withOpacity(0.2),
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => OCR['screen']));
+                                      builder: (context) => OCR['screens']));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -150,8 +219,11 @@ class HomeScreen extends StatelessWidget {
                                               ),
                                             ),
                                             Align(
-                                              child:
-                                                  Icon(OCR['icon'], size: 50),
+                                              child: Image(
+                                                image: AssetImage(OCR['icon']),
+                                                width: OCR['icon-width'],
+                                                height: OCR['icon-height'],
+                                              ),
                                             ),
                                           ],
                                         ),
