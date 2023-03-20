@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:eendigodemo/model/LivenessCompareModel.dart';
 import 'package:eendigodemo/model/LivenessModel.dart';
 import 'package:eendigodemo/widget/FancyButton.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,22 +18,26 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_to_byte/image_to_byte.dart';
 
-class Liveness extends StatefulWidget {
-  const Liveness({Key? key}) : super(key: key);
+class FaceCompare extends StatefulWidget {
+  const FaceCompare({Key? key}) : super(key: key);
 
   @override
-  State<Liveness> createState() => _LivenessState();
+  State<FaceCompare> createState() => _FaceCompareState();
 }
 
-class _LivenessState extends State<Liveness> {
+class _FaceCompareState extends State<FaceCompare> {
   final _introKey = GlobalKey<IntroductionScreenState>();
   CameraController? cameraController;
   File? _image;
+  File? _image2;
   bool isLoading = false;
   bool isCamera = false;
   bool isLive = false;
+  bool isInit = false;
   bool isFailed = false;
+  bool isCompare = false;
   String liveScore = "0";
+  String similarity = "0";
   int direction = 0;
   String errMsg = "";
 
@@ -69,17 +74,20 @@ class _LivenessState extends State<Liveness> {
     super.dispose();
   }
 
-  Future<List<LivenessModel>> LivenessAPI(File _image) async {
-    List<LivenessModel> data = [];
-    const Url = 'https://liveness-go3voyqswq-et.a.run.app/liveness';
+  Future<List<LivenessCompareModel>> FaceCompareAPI() async {
+    List<LivenessCompareModel> data = [];
+    const Url = 'https://liveness-go3voyqswq-et.a.run.app/liveness-facecompare?';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    final file = File(_image.path);
+    final file = File(_image!.path);
     final pic = await http.MultipartFile.fromPath('img1', file.path);
     request.files.add(pic);
+    final file2 = File(_image2!.path);
+    final pic2 = await http.MultipartFile.fromPath('img2', file2.path);
+    request.files.add(pic2);
     request.fields['key'] = 'CV-ADINS-H1@B5476GTHDAD';
     request.fields['tenant_code'] = 'ADINS';
-
+    request.fields['nik'] = '3275083110990013';
     final timeout = Duration(seconds: 30);
     final client = http.Client();
     try {
@@ -95,20 +103,29 @@ class _LivenessState extends State<Liveness> {
       if (response.statusCode == 200) {
         var ujson1 = await utf8.decodeStream(response.stream);       
         Map<String, dynamic> responses = json.decode(ujson1);
-        LivenessModel livenessDa = LivenessModel.fromJson(responses);
+        LivenessCompareModel livenessDa = LivenessCompareModel.fromJson(responses);
         var status = responses['status'];
         var error = responses['error'];
-        var datetime = responses['datetime'];
-        if (status.toString().toLowerCase() == 'failed') {
+        if (status == 'Failed') {
           setState(() {
             isLoading = false;
-            isFailed = true;
+            isLive = true;
+            liveScore = livenessDa.result[0].faceLiveness.score.toString();
+            similarity = livenessDa.result[0].faceCompare.similarity.toString();
+            if(livenessDa.error.toLowerCase().contains('verify')){
+              isCompare = false;
+            }
+            
+            if(livenessDa.error.toLowerCase().contains('selfie')){
+              isLive = false;
+              isCompare = false;
+            }
+            
+            if(livenessDa.error.toLowerCase().contains('image')){
+              isFailed = false;
+            }
           });
-          var error = responses['error'];
-          errMsg = error;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Request Failed : ' + ujson1.toString())),
-          );
+          data.add(livenessDa);
         } else if (status == 'Success') {
           //var result = responses['result'];
           //List<ResultModel> resultObj = result as List<ResultModel>;
@@ -170,7 +187,7 @@ class _LivenessState extends State<Liveness> {
         bodyTextStyle: TextStyle(fontSize: 19));
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Liveness'),
+        title: const Text('Liveness Check & Compare'),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -183,14 +200,22 @@ class _LivenessState extends State<Liveness> {
           globalBackgroundColor: Colors.transparent,
           pages: [
             PageViewModel(
-              title: "Liveness",
+              title: "Liveness Check & Compare",
               bodyWidget: IntroPage(context),
               decoration: pageDecoration,
             ),
             PageViewModel(
-              title: "Posisikan wajah anda",
+              title: "Posisikan wajah anda di kamera",
               bodyWidget: SingleChildScrollView(
                 child: ImageCatcher(context),
+                physics: NeverScrollableScrollPhysics(),
+              ),
+              decoration: pageDecorationCam,
+            ),
+            PageViewModel(
+              title: "Ambil foto KTP",
+              bodyWidget: SingleChildScrollView(
+                child: KtpPage(context),
                 physics: NeverScrollableScrollPhysics(),
               ),
               decoration: pageDecorationCam,
@@ -224,26 +249,47 @@ class _LivenessState extends State<Liveness> {
 
   @override
   Future<void> initializeCamera(int direction) async {
-    var cameras = await availableCameras();
-    cameraController =
-        CameraController(cameras[direction], ResolutionPreset.high);
-    await cameraController!.initialize();
+    try {
+      if (cameraController != null) {
+        await cameraController!.dispose();
+      }
+      var cameras = await availableCameras();
+      cameraController =
+          CameraController(cameras[direction], ResolutionPreset.high);
+      cameraController!.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          isInit = true;
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     final pickedImageFile = File(image!.path);
     setState(() {
-      _image = pickedImageFile;
-      print('Image Path $_image');
-      isLoading = true;
-      LivenessAPI(_image!).then((value) {
+      if(_image == null){
+        _image = pickedImageFile;       
+      }else{
+_image2 = pickedImageFile;
+      }
+      
+      if(_image2 != null){
+        isLoading = true;
+      FaceCompareAPI().then((value) {
         if (value.isNotEmpty) {
           setState(() {
             isLoading = false;
           });
         }
       });
+      }
+      
     });
   }
 
@@ -316,7 +362,157 @@ class _LivenessState extends State<Liveness> {
   }
 
   Widget ImageCatcher(BuildContext context) {
+    if (isInit == true){
     return (isCamera == false)
+        ? const SingleChildScrollView()
+        : SingleChildScrollView(
+
+            physics: const NeverScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Stack(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 4.5 / 5,
+                      child: CameraPreview(cameraController!),
+                    ),
+                    Positioned(
+                        top: (MediaQuery.of(context).size.height -
+                                MediaQuery.of(context).size.height / 1.7) /
+                            4,
+                        left: 0,
+                        right: 0,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(10)),
+                              width: 400,
+                              height: 209,
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+                Center(
+                    child: Stack(
+                  children: [
+                    Positioned(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: InkWell(
+                          onTap: () async {
+                            try {
+                              // Ensure that the camera is initialized.
+                              //await initializeCamera(1);
+
+                              // Attempt to take a picture and get the file `image`
+                              // where it was saved.
+                              final image =
+                                  await cameraController!.takePicture();
+
+                              if (!mounted) return;
+
+                              // If the picture was taken, display it on a new screen.
+                              _image = File(image.path);
+                              // var img = await Image.file(_image!);
+                              // final _imageBytes = await imageToByte(_image);
+                              if (_image != null) {
+                                setState(() {
+                                  //cameraController!.dispose();
+                                  //initializeCamera(0);
+                                  //isCamera = false;
+                                  isLoading = true;
+                                });
+                                //_takePhoto();
+                                // FaceCompareAPI(_image!).then((value) {
+                                //   if (value.isNotEmpty) {
+                                //     setState(() {
+                                //       isLoading = false;
+                                //     });
+                                //   }
+                                // });
+                                Future(() => _introKey.currentState?.next());
+                              }
+                            } catch (e) {
+                              setState(() {
+                                  isCamera = false;
+                                  isLoading = false;
+                                  isFailed = true;
+                                  errMsg = e.toString();
+                                });
+                            }
+                          },
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 92, 64, 115),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.grey.shade300,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: (MediaQuery.of(context).size.height / 16) / 8,
+                      left: 20,
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: InkWell(
+                          onTap: () async {
+                            setState(() {
+                              if (isInit == true) {
+                                    (direction == 0)
+                                        ? direction = 1
+                                        : direction = 0;
+                                  }
+                                  isInit = false;
+                              initializeCamera(direction);
+                              // imageChooser(context);
+                              // Future(() => _introKey.currentState?.next());                             
+                            });
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 92, 64, 115),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.flip_camera_android,
+                              color: Colors.grey.shade300,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ))
+              ],
+            ),
+          );
+    }else{
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+  }
+
+  Widget KtpPage(BuildContext context) {
+    if (isInit == true){
+      return (isCamera == false)
         ? const SingleChildScrollView()
         : SingleChildScrollView(
             physics: const NeverScrollableScrollPhysics(),
@@ -360,7 +556,7 @@ class _LivenessState extends State<Liveness> {
                           onTap: () async {
                             try {
                               // Ensure that the camera is initialized.
-                              await initializeCamera(1);
+                              //await initializeCamera(direction);
 
                               // Attempt to take a picture and get the file `image`
                               // where it was saved.
@@ -370,16 +566,15 @@ class _LivenessState extends State<Liveness> {
                               if (!mounted) return;
 
                               // If the picture was taken, display it on a new screen.
-                              _image = File(image.path);
+                              _image2 = File(image.path);
                               // var img = await Image.file(_image!);
                               // final _imageBytes = await imageToByte(_image);
-                              if (_image != null) {
+                              if (_image2 != null) {
                                 setState(() {
-                                  isCamera = false;
                                   isLoading = true;
                                 });
                                 //_takePhoto();
-                                LivenessAPI(_image!).then((value) {
+                                FaceCompareAPI().then((value) {
                                   if (value.isNotEmpty) {
                                     setState(() {
                                       isLoading = false;
@@ -421,10 +616,16 @@ class _LivenessState extends State<Liveness> {
                         child: InkWell(
                           onTap: () async {
                             setState(() {
-                              // direction == 0 ? 1 : 0;
-                              // initializeCamera(direction);
-                              imageChooser(context);
-                              Future(() => _introKey.currentState?.next());
+                              //_changeCamera();
+                              if (isInit == true) {
+                                    (direction == 0)
+                                        ? direction = 1
+                                        : direction = 0;
+                                  }
+                                  isInit = false;
+                              initializeCamera(direction);
+                              // imageChooser(context);
+                              // Future(() => _introKey.currentState?.next());
                             });
                           },
                           child: Container(
@@ -448,7 +649,13 @@ class _LivenessState extends State<Liveness> {
               ],
             ),
           );
+    }else{
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
+
 
   Widget ResultWidget(BuildContext context) {
     if (isLoading == true) {
@@ -457,6 +664,7 @@ class _LivenessState extends State<Liveness> {
           Center(
             child: CircularProgressIndicator(),
           ),
+          const SizedBox(height: 15),
           Center(
             child: Text('This may take a while'),
           ),
@@ -487,8 +695,12 @@ class _LivenessState extends State<Liveness> {
                     const SizedBox(height: 20),
                     (isLive == false)
                         ? const Text("Sorry, you are spoofing.")
-                        : const Text("You are Live!"),
-                    Text("Your Live Score is " + liveScore)
+                        : const Text("You are Live,"),
+                    (isCompare == false)
+                        ? const Text(" and your image not match with KTP") 
+                        : const Text(" and matched with KTP"),
+                    Text("Your Live Score is " + liveScore),
+                    Text("Your face similarity with KTP is " + similarity)
                   ],
                 ));
     } else {
@@ -508,7 +720,7 @@ class _LivenessState extends State<Liveness> {
                 isLoading = true;
                 isFailed = false;
               });
-              LivenessAPI(_image!).then((value) {
+              FaceCompareAPI().then((value) {
                 if (value.isNotEmpty) {
                   setState(() {
                     isLoading = false;
@@ -528,7 +740,7 @@ class _LivenessState extends State<Liveness> {
   Widget IntroPage(BuildContext context) {
     return Container(
       child: Column(
-        children: [          
+        children: [
           Container(
                       height: MediaQuery.of(context).size.height / 5,
                       width: MediaQuery.of(context).size.width / 2,
@@ -536,14 +748,15 @@ class _LivenessState extends State<Liveness> {
           ,
           const SizedBox(height: 20),
           Text(
-              "Liveness Detection adalah sistem teknologi biometrik untuk mendeteksi keaslian wajah dari seseorang.",
-              style: TextStyle(fontSize: 25)),
+              "Liveness Check dan Compare adalah Product teknologi biometrik untuk mendeteksi keaslian wajah dari seseorang dan mengcompare dengan foto lain / foto KTP",
+              style: TextStyle(fontSize: 16)),
           const SizedBox(height: 50),
           FancyButton(
-            buttonText: 'Start Liveness',
+            buttonText: 'Start Demo',
             onPressed: () async {
               try {
-                await initializeCamera(1);
+                direction = 1;
+                await initializeCamera(direction);
                 if (defaultTargetPlatform == TargetPlatform.iOS ||
                     defaultTargetPlatform == TargetPlatform.android) {
                   // Some android/ios specific code

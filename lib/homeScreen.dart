@@ -1,3 +1,4 @@
+import 'package:eendigodemo/components/Facecompare/faceCompare.dart';
 import 'package:eendigodemo/components/ocrChoice.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
 import 'package:eendigodemo/liveness.dart';
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget {
     {
       'label': 'FaceCompare',
       'icon': CupertinoIcons.person_2,
-      'screen': const Liveness(),
+      'screen': const FaceCompare(),
       'color': Color.fromARGB(255, 176, 162, 191),
     },
     {
