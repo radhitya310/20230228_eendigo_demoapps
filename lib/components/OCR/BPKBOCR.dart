@@ -104,7 +104,6 @@ class _OcrHomepageState extends State<BPKBOCR> {
     }
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
-
     final timeout = Duration(seconds: 30);
     final client = http.Client();
     final response =
@@ -255,7 +254,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       });
                     } else {
                       print('no images');
-                    }
+                    } 
                   },
                   backgroundColor: Color.fromARGB(255, 190, 126, 174),
                   child: const Icon(Icons.send),

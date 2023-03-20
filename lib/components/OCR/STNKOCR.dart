@@ -65,7 +65,7 @@ class _OcrHomepageState extends State<STNKOCR> {
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 1);
+    final timeout = Duration(seconds: 20);
     final client = http.Client();
     final response =
         await client.send(request).timeout(timeout, onTimeout: () async {
