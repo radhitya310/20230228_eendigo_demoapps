@@ -272,11 +272,12 @@ class _OcrHomepageState extends State<KtpOCR> {
                 ),
               ),
               Expanded(
-                flex: 1,
+                // flex: 1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
+                      width: 150,
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
@@ -298,6 +299,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                       ),
                     ),
                     Container(
+                      width: 150,
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);

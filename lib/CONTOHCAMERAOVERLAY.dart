@@ -222,7 +222,7 @@ class _OcrHomepageState extends State<contohKamera> {
 
   @override
   void initState() {
-    initializeCamera(direction);
+    // initializeCamera(direction);
     // TODO: implement initState
     super.initState();
   }
@@ -278,10 +278,13 @@ class _OcrHomepageState extends State<contohKamera> {
                     ),
                     Container(
                       child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            isCamera = true;
-                          });
+                        onTap: () async {
+                          await initializeCamera(direction);
+                          if (cameraController != null) {
+                            setState(() {
+                              isCamera = true;
+                            });
+                          }
                           Navigator.pop(context);
                         },
                         child: Column(
@@ -400,6 +403,7 @@ class _OcrHomepageState extends State<contohKamera> {
                                       isCamera = false;
                                       print('asad');
                                     });
+                                    await cameraController!.dispose();
                                   }
                                 } catch (e) {
                                   // If an error occurs, log the error to the console.
@@ -448,6 +452,34 @@ class _OcrHomepageState extends State<contohKamera> {
                                 ),
                                 child: Icon(
                                   Icons.flip_camera_android,
+                                  color: Colors.grey.shade300,
+                                  size: 30,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: (MediaQuery.of(context).size.height / 4) / 8,
+                          right: 20,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              onTap: () async {
+                                await cameraController!.dispose();
+                                setState(() {
+                                  isCamera = false;
+                                });
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 92, 64, 115),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.cancel_sharp,
                                   color: Colors.grey.shade300,
                                   size: 30,
                                 ),
