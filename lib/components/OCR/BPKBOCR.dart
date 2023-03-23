@@ -106,54 +106,65 @@ class _OcrHomepageState extends State<BPKBOCR> {
     request.fields['tenant_code'] = 'FIF';
     final timeout = Duration(seconds: 30);
     final client = http.Client();
-    final response =
-        await client.send(request).timeout(timeout, onTimeout: () async {
-      // client.close();
-      print('request timeout');
-      throw Exception('request timeout');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Timeout')),
-      );
-    });
 
-    if (response.statusCode == 200) {
-      print('aa');
-      var ujson1 = await utf8.decodeStream(response.stream);
-      Map<String, dynamic> responses = json.decode(ujson1);
-      var message = responses['message'];
-      var date = responses['ocr_date'];
-      var status = responses['status'];
-      var num_of_pages = responses['num_of_pages'];
-      if (status == 'FAILED') {
+    try {
+      final response =
+          await client.send(request).timeout(timeout, onTimeout: () async {
+        // client.close();
+        print('request timeout');
+        throw Exception('request timeout');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Request Timeout')),
+        );
+      });
+
+      if (response.statusCode == 200) {
+        print('aa');
+        var ujson1 = await utf8.decodeStream(response.stream);
+        Map<String, dynamic> responses = json.decode(ujson1);
+        var message = responses['message'];
+        var date = responses['ocr_date'];
+        var status = responses['status'];
+        var num_of_pages = responses['num_of_pages'];
+        if (status == 'FAILED') {
+          setState(() {
+            isLoading = false;
+          });
+          print('failed');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        } else if (status == 'SUCCESS') {
+          Map<String, dynamic> read = responses['read'];
+          Read reads = Read.fromJson(read);
+
+          data.add(Bpkbocr(
+              ocrDate: date,
+              message: message,
+              read: reads,
+              status: status,
+              numOfPages: num_of_pages));
+        }
+      } else {
         setState(() {
           isLoading = false;
         });
         print('failed');
+        print(response.statusCode);
+        print(response.request);
+        // print(await utf8.decodeStream(response.stream));
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
+          SnackBar(content: Text('Request Failed')),
         );
-      } else if (status == 'SUCCESS') {
-        Map<String, dynamic> read = responses['read'];
-        Read reads = Read.fromJson(read);
-
-        data.add(Bpkbocr(
-            ocrDate: date,
-            message: message,
-            read: reads,
-            status: status,
-            numOfPages: num_of_pages));
       }
-    } else {
+    } catch (e) {
+      print('aaaa ${e}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${e}')),
+      );
       setState(() {
         isLoading = false;
       });
-      print('failed');
-      print(response.statusCode);
-      print(response.request);
-      // print(await utf8.decodeStream(response.stream));
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Failed')),
-      );
     }
 
     return data;
@@ -254,7 +265,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       });
                     } else {
                       print('no images');
-                    } 
+                    }
                   },
                   backgroundColor: Color.fromARGB(255, 190, 126, 174),
                   child: const Icon(Icons.send),

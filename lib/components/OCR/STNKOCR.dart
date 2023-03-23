@@ -65,8 +65,10 @@ class _OcrHomepageState extends State<STNKOCR> {
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 20);
+    final timeout = Duration(seconds: 120);
     final client = http.Client();
+
+    // try {
     final response =
         await client.send(request).timeout(timeout, onTimeout: () async {
       client.close();
@@ -105,6 +107,15 @@ class _OcrHomepageState extends State<STNKOCR> {
         SnackBar(content: Text('Request Failed')),
       );
     }
+    // } catch (e) {
+    //   print('aaaa ${e}');
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text('${e}')),
+    //   );
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // }
 
     return data;
   }
