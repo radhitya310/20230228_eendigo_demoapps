@@ -5,10 +5,11 @@ import 'package:eendigodemo/CameraController/CameraContorller.dart';
 import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
 import 'package:eendigodemo/model/KtpOCRModel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class KtpOCR extends StatefulWidget {
@@ -22,36 +23,36 @@ class KtpOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<KtpOCR> {
-  File? _image;
+  Uint8List? _image;
+  File? image;
   bool isLoading = false;
   final String title;
 
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    var image = await ImagePickerWeb.getImageAsBytes();
     if (image != null) {
-      final pickedImageFile = File(image.path);
       setState(() {
-        _image = pickedImageFile;
+        _image = image;
         print('Image Path $_image');
       });
     }
   }
 
-  @override
-  Future getImagecamera() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (image != null) {
-      final pickedImageFile = File(image.path);
-      setState(() {
-        _image = pickedImageFile;
-        print('Image Path $_image');
-      });
-    }
-  }
+  // @override
+  // Future getImagecamera() async {
+  //   var image = await ImagePicker().pickImage(source: ImageSource.camera);
+  //   if (image != null) {
+  //     final pickedImageFile = File(image.path);
+  //     setState(() {
+  //       _image = pickedImageFile;
+  //       print('Image Path $_image');
+  //     });
+  //   }
+  // }
 
-  Future<List<Ktpocr>> KtpOcrApi(File _KtpImage) async {
+  Future<List<Ktpocr>> KtpOcrApi(Uint8List _KtpImage) async {
     List<Ktpocr> data = [];
 
     final Url =
@@ -59,22 +60,19 @@ class _OcrHomepageState extends State<KtpOCR> {
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     // final file = File(_KtpImage.path);
-    final file = File(_KtpImage.path);
-    final pic = await http.MultipartFile.fromPath('img', file.path);
+    final pic = await http.MultipartFile.fromBytes('img', _KtpImage,
+        filename: 'ktp_image.jpg');
     request.files.add(pic);
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 20);
+    final timeout = Duration(seconds: 120);
     final client = http.Client();
     final response =
         await client.send(request).timeout(timeout, onTimeout: () async {
       client.close();
       print('request timeout');
       throw Exception('request timeout');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Timeout')),
-      );
     });
 
     if (response.statusCode == 200) {
@@ -88,7 +86,8 @@ class _OcrHomepageState extends State<KtpOCR> {
         setState(() {
           isLoading = false;
         });
-        print('failed');
+        // print('failed');
+        print(message);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );
@@ -114,133 +113,141 @@ class _OcrHomepageState extends State<KtpOCR> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage("Assets/img/background-eendigo_(1).png"),
-        fit: BoxFit.cover,
-      )),
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Container(
-              color: Color.fromARGB(136, 255, 255, 255),
-              padding: const EdgeInsets.all(16),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          // ignore: prefer_const_constructors
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Color.fromARGB(255, 89, 83, 108),
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          image: AssetImage("Assets/img/background-eendigo_(1).png"),
+          fit: BoxFit.cover,
+        )),
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(100),
+              child: Container(
+                color: Color.fromARGB(136, 255, 255, 255),
+                padding: const EdgeInsets.all(16),
+                child: SafeArea(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {});
+                          },
+                          style: const TextStyle(
+                            color: Colors.black,
                           ),
-                          fillColor: Colors.grey.shade300,
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255, 92, 64, 115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255, 92, 64, 115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          contentPadding:
-                              const EdgeInsets.only(top: 14.0, left: 20.0),
-                          hintText: 'Email Address',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Material(
-                      shape: const CircleBorder(),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Icon(
-                            Icons.person,
-                            color: Theme.of(context).primaryColor,
-                            size: 28,
+                          decoration: InputDecoration(
+                            filled: true,
+                            // ignore: prefer_const_constructors
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Color.fromARGB(255, 89, 83, 108),
+                            ),
+                            fillColor: Colors.grey.shade300,
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 92, 64, 115),
+                                ),
+                                borderRadius: BorderRadius.circular(50.0)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 92, 64, 115),
+                                ),
+                                borderRadius: BorderRadius.circular(50.0)),
+                            contentPadding:
+                                const EdgeInsets.only(top: 14.0, left: 20.0),
+                            hintText: 'Email Address',
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Material(
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: InkWell(
+                          onTap: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Icon(
+                              Icons.person,
+                              color: Theme.of(context).primaryColor,
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          floatingActionButton: (isLoading == false)
-              ? FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    if (_image != null) {
-                      KtpOcrApi(_image!).then((value) {
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            isLoading = false;
-                          });
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      OcrResults(data: value)));
-                        }
+            floatingActionButton: (isLoading == false)
+                ? FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        isLoading = true;
                       });
-                    } else {
-                      print('no images');
-                    }
-                  },
-                  backgroundColor: Color.fromARGB(255, 190, 126, 174),
-                  child: const Icon(Icons.send),
-                )
-              : null,
-          body: (isLoading == false)
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GradientText(title,
-                            style: (TextStyle(
-                                fontSize: 60, fontWeight: FontWeight.bold)),
-                            colors: [
-                              Color.fromARGB(255, 37, 162, 220),
-                              Color.fromARGB(255, 28, 115, 185),
-                              Color.fromARGB(255, 59, 67, 127),
-                            ])),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 70.0),
-                      child: Center(child: ImageCatcher(context)),
-                    ),
-                    Spacer()
-                  ],
-                )
-              : Center(
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Center(child: CircularProgressIndicator())),
-                )),
+                      if (_image != null) {
+                        KtpOcrApi(_image!).then((value) {
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        OcrResults(data: value)));
+                          }
+                        });
+                      } else {
+                        print('no images');
+                      }
+                    },
+                    backgroundColor: Color.fromARGB(255, 190, 126, 174),
+                    child: const Icon(Icons.send),
+                  )
+                : null,
+            body: Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width / 4,
+                child: (isLoading == false)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GradientText(title,
+                                  style: (TextStyle(
+                                      fontSize: 60,
+                                      fontWeight: FontWeight.bold)),
+                                  colors: [
+                                    Color.fromARGB(255, 37, 162, 220),
+                                    Color.fromARGB(255, 28, 115, 185),
+                                    Color.fromARGB(255, 59, 67, 127),
+                                  ])),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 70.0),
+                            child: Center(child: ImageCatcher(context)),
+                          ),
+                          Spacer()
+                        ],
+                      )
+                    : Center(
+                        child: SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Center(child: CircularProgressIndicator())),
+                      ),
+              ),
+            )),
+      ),
     );
   }
 
@@ -291,7 +298,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          getImagecamera();
+                          // getImagecamera();
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(
@@ -353,9 +360,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                       Container(
                           height: MediaQuery.of(context).size.height / 3.5,
                           width: MediaQuery.of(context).size.width - 50,
-                          child: Image.file(
-                            File(_image!.path),
-                          )),
+                          child: Image.memory(_image!)),
                       Positioned(
                         right: 20,
                         top: 0,

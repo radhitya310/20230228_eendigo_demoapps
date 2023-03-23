@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
 import 'package:eendigodemo/liveness.dart';
 import 'package:eendigodemo/model/KKOCRModel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker_web/image_picker_web.dart';
 
 class contohKamera extends StatefulWidget {
   @override
@@ -20,6 +23,7 @@ class contohKamera extends StatefulWidget {
 class _OcrHomepageState extends State<contohKamera> {
   CameraController? cameraController;
   File? _image;
+  Uint8List? bytes;
   bool isLoading = false;
   bool isCamera = false;
   bool isInit = false;
@@ -28,12 +32,14 @@ class _OcrHomepageState extends State<contohKamera> {
   _OcrHomepageState();
 
   Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    final pickedImageFile = File(image!.path);
-    setState(() {
-      _image = pickedImageFile;
-      print('Image Path $_image');
-    });
+    // var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    var image = await ImagePickerWeb.getImageAsBytes();
+    if (image != null) {
+      setState(() {
+        bytes = image;
+        // print('Image Path $_image');
+      });
+    }
   }
 
   @override
@@ -46,19 +52,18 @@ class _OcrHomepageState extends State<contohKamera> {
     });
   }
 
-  Future<List<Kkocr>> KtpOcrApi(File _KtpImage) async {
+  Future<List<Kkocr>> KtpOcrApi(Uint8List _KtpImage) async {
     List<Kkocr> data = [];
 
-    final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/kk/';
+    final Url = 'https://liveness-go3voyqswq-et.a.run.app/liveness';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    // final file = File(_KtpImage.path);
-    final file = File(_KtpImage.path);
-    final pic = await http.MultipartFile.fromPath('img', file.path);
+    final pic = await http.MultipartFile.fromBytes('img1', _KtpImage,
+        filename: '_image.jpg');
     request.files.add(pic);
-    request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
-    request.fields['tenant_code'] = 'FIF';
+    request.fields['tenant_code'] = 'ADINS';
+    request.fields['key'] = 'CV-ADINS-H1@B5476GTHDAD';
+    request.fields['nik'] = '1902010601010004';
 
     final response = await request.send();
 
@@ -66,29 +71,39 @@ class _OcrHomepageState extends State<contohKamera> {
       print('aa');
       var ujson1 = await utf8.decodeStream(response.stream);
       Map<String, dynamic> responses = json.decode(ujson1);
-      var message = responses['message'];
-      var date = responses['ocr_date'];
+      var message = responses['result'];
+      // var date = responses['ocr_date'];
       var status = responses['status'];
-      if (status == 'FAILED') {
+      var error = responses['error'];
+      if (status == 'Failed') {
         setState(() {
           isLoading = false;
         });
-        print('failed');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      } else if (status == 'SUCCESS') {
-        Map<String, dynamic> read = responses['read'];
-        Read reads = Read.fromJson(read);
+        print(error);
 
-        data.add(Kkocr(
-            message: message, ocrDate: date, read: reads, status: status));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error)),
+        );
+      } else if (status == 'Success') {
+        print(message[0]);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error)),
+        );
+        setState(() {
+          isLoading = false;
+        });
+        // Map<String, dynamic> read = responses['read'];
+        // Read reads = Read.fromJson(read);
+
+        // data.add(Kkocr(
+        //     message: message, ocrDate: date, read: reads, status: status));
       }
     } else {
       setState(() {
         isLoading = false;
       });
       print('failed');
+      print(response.statusCode);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Request Failed')),
       );
@@ -176,8 +191,8 @@ class _OcrHomepageState extends State<contohKamera> {
                   setState(() {
                     isLoading = true;
                   });
-                  if (_image != null) {
-                    KtpOcrApi(_image!).then((value) {
+                  if (bytes != null) {
+                    KtpOcrApi(bytes!).then((value) {
                       if (value.isNotEmpty) {
                         setState(() {
                           isLoading = false;
@@ -315,7 +330,7 @@ class _OcrHomepageState extends State<contohKamera> {
                 ? Container(
                     width: MediaQuery.of(context).size.width - 50,
                     height: MediaQuery.of(context).size.height / 3.5,
-                    child: (_image == null)
+                    child: (bytes == null)
                         ? InkWell(
                             splashColor: Colors.transparent,
                             onTap: () {
@@ -342,9 +357,7 @@ class _OcrHomepageState extends State<contohKamera> {
                         : Container(
                             height: MediaQuery.of(context).size.height / 3.5,
                             width: MediaQuery.of(context).size.width - 50,
-                            child: Image.file(
-                              File(_image!.path),
-                            )))
+                            child: Image.memory(bytes!)))
                 : SizedBox(
                     height: 100, width: 100, child: CircularProgressIndicator())
             : Column(
@@ -353,7 +366,9 @@ class _OcrHomepageState extends State<contohKamera> {
                   (isInit == true)
                       ? Stack(children: [
                           AspectRatio(
-                            aspectRatio: 3 / 4,
+                            aspectRatio:
+                                (MediaQuery.of(context).size.width / 3) /
+                                    (MediaQuery.of(context).size.width / 10),
                             child: CameraPreview(cameraController!),
                           ),
                           Positioned(
@@ -390,12 +405,14 @@ class _OcrHomepageState extends State<contohKamera> {
                             child: InkWell(
                               onTap: () async {
                                 try {
-                                  final image =
+                                  final XFile image =
                                       await cameraController!.takePicture();
-
+                                  print('aaa');
                                   if (!mounted) return;
                                   _image = File(image.path);
                                   if (_image != null) {
+                                    print('aab');
+                                    bytes = await image.readAsBytes();
                                     setState(() {
                                       isCamera = false;
                                       print('asad');
