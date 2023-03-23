@@ -264,7 +264,12 @@ class _OcrHomepageState extends State<BPKBOCR> {
                         }
                       });
                     } else {
-                      print('no images');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('no image')),
+                      );
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
                   },
                   backgroundColor: Color.fromARGB(255, 190, 126, 174),

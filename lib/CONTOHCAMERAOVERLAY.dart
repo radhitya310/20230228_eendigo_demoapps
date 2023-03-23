@@ -23,22 +23,13 @@ class _OcrHomepageState extends State<contohKamera> {
   bool isLoading = false;
   bool isCamera = false;
   bool isInit = false;
+  bool manyCamera = false;
   int direction = 0;
 
   _OcrHomepageState();
 
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    final pickedImageFile = File(image!.path);
-    setState(() {
-      _image = pickedImageFile;
-      print('Image Path $_image');
-    });
-  }
-
-  @override
-  Future getImagecamera() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
     final pickedImageFile = File(image!.path);
     setState(() {
       _image = pickedImageFile;
@@ -187,6 +178,9 @@ class _OcrHomepageState extends State<contohKamera> {
                     });
                   } else {
                     print('no images');
+                    setState(() {
+                      isLoading = false;
+                    });
                   }
                 },
                 backgroundColor: Colors.green,
@@ -204,7 +198,14 @@ class _OcrHomepageState extends State<contohKamera> {
       if (cameraController != null) {
         await cameraController!.dispose();
       }
-      var cameras = await availableCameras();
+      List<dynamic> cameras = await availableCameras();
+
+      print(cameras.length);
+
+      if (cameras.length > 1) {
+        manyCamera = true;
+      }
+
       cameraController =
           CameraController(cameras[direction], ResolutionPreset.high);
       cameraController!.initialize().then((_) {
@@ -427,38 +428,43 @@ class _OcrHomepageState extends State<contohKamera> {
                           ),
                         ),
                         Positioned(
-                          top: (MediaQuery.of(context).size.height / 4) / 8,
-                          left: 20,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: InkWell(
-                              onTap: () async {
-                                setState(() {
-                                  if (isInit == true) {
-                                    (direction == 0)
-                                        ? direction = 1
-                                        : direction = 0;
-                                  }
-                                  isInit = false;
-                                  initializeCamera(direction);
-                                });
-                              },
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 92, 64, 115),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.flip_camera_android,
-                                  color: Colors.grey.shade300,
-                                  size: 30,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                            top: (MediaQuery.of(context).size.height / 4) / 8,
+                            left: 20,
+                            child: (manyCamera == true)
+                                ? Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        setState(() {
+                                          if (isInit == true) {
+                                            (direction == 0)
+                                                ? direction = 1
+                                                : direction = 0;
+                                          }
+                                          isInit = false;
+                                          initializeCamera(direction);
+                                        });
+                                      },
+                                      child: Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color.fromARGB(255, 92, 64, 115),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.flip_camera_android,
+                                          color: Colors.grey.shade300,
+                                          size: 30,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    'a',
+                                    style: TextStyle(color: Colors.transparent),
+                                  )),
                         Positioned(
                           top: (MediaQuery.of(context).size.height / 4) / 8,
                           right: 20,
