@@ -30,11 +30,13 @@ class _OcrHomepageState extends State<contohKamera> {
 
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    final pickedImageFile = File(image!.path);
-    setState(() {
-      _image = pickedImageFile;
-      print('Image Path $_image');
-    });
+    if (image != null) {
+      final pickedImageFile = File(image!.path);
+      setState(() {
+        _image = pickedImageFile;
+        print('Image Path $_image');
+      });
+    }
   }
 
   Future<List<Kkocr>> KtpOcrApi(File _KtpImage) async {

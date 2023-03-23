@@ -63,7 +63,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
         throw Exception('request timeout');
       });
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 120) {
         print('aa');
         var ujson1 = await utf8.decodeStream(response.stream);
         Map<String, dynamic> responses = json.decode(ujson1);

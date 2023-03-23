@@ -65,7 +65,7 @@ class _OcrHomepageState extends State<KtpOCR> {
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 20);
+    final timeout = Duration(seconds: 120);
     final client = http.Client();
 
     try {
