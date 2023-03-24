@@ -53,7 +53,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 1);
+    final timeout = Duration(seconds: 120);
     final client = http.Client();
     try {
       response =
@@ -63,7 +63,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
         throw Exception('request timeout');
       });
 
-      if (response.statusCode == 120) {
+      if (response.statusCode == 200) {
         print('aa');
         var ujson1 = await utf8.decodeStream(response.stream);
         Map<String, dynamic> responses = json.decode(ujson1);
