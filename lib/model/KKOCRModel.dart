@@ -140,10 +140,10 @@ class Table {
   String tempatLahir;
 
   factory Table.fromJson(Map<String, dynamic> json) => Table(
-        agama: json["agama"]!,
-        jenisKelamin: json["jenis_kelamin"]!,
+        agama: json["agama"],
+        jenisKelamin: json["jenis_kelamin"],
         jenisPekerjaan: json["jenis_pekerjaan"],
-        kewarganegaraan: json["kewarganegaraan"]!,
+        kewarganegaraan: json["kewarganegaraan"],
         namaAyah: json["nama_ayah"],
         namaIbu: json["nama_ibu"],
         namaLengkap: json["nama_lengkap"],
@@ -151,19 +151,19 @@ class Table {
         no: json["no"],
         noKitasKitap: json["no_kitas_kitap"],
         noPaspor: json["no_paspor"],
-        pendidikan: json["pendidikan"]!,
+        pendidikan: json["pendidikan"],
         statusHubunganDalamKeluarga: json["status_hubungan_dalam_keluarga"],
-        statusPerkawinan: json["status_perkawinan"]!,
+        statusPerkawinan: json["status_perkawinan"],
         tanggalLahir: json["tanggal_lahir"],
-        tanggalPerkawinan: json["tanggal_perkawinan"]!,
-        tempatLahir: json["tempat_lahir"]!,
+        tanggalPerkawinan: json["tanggal_perkawinan"],
+        tempatLahir: json["tempat_lahir"],
       );
 
   Map<String, dynamic> toJson() => {
-        "agama": agamaValues.reverse[agama],
-        "jenis_kelamin": jenisKelaminValues.reverse[jenisKelamin],
+        "agama": agama,
+        "jenis_kelamin": jenisKelamin,
         "jenis_pekerjaan": jenisPekerjaan,
-        "kewarganegaraan": kewarganegaraanValues.reverse[kewarganegaraan],
+        "kewarganegaraan": kewarganegaraan,
         "nama_ayah": namaAyah,
         "nama_ibu": namaIbu,
         "nama_lengkap": namaLengkap,
@@ -171,73 +171,11 @@ class Table {
         "no": no,
         "no_kitas_kitap": noKitasKitap,
         "no_paspor": noPaspor,
-        "pendidikan": pendidikanValues.reverse[pendidikan],
+        "pendidikan": pendidikan,
         "status_hubungan_dalam_keluarga": statusHubunganDalamKeluarga,
-        "status_perkawinan": statusPerkawinanValues.reverse[statusPerkawinan],
+        "status_perkawinan": statusPerkawinan,
         "tanggal_lahir": tanggalLahir,
-        "tanggal_perkawinan":
-            tanggalPerkawinanValues.reverse[tanggalPerkawinan],
-        "tempat_lahir": tempatLahirValues.reverse[tempatLahir],
+        "tanggal_perkawinan": tanggalPerkawinan,
+        "tempat_lahir": tempatLahir,
       };
-}
-
-enum Agama { ISLAM, EMPTY }
-
-final agamaValues = EnumValues({"": Agama.EMPTY, "ISLAM": Agama.ISLAM});
-
-enum JenisKelamin { LAKI_LAKI, PEREMPUAN, EMPTY }
-
-final jenisKelaminValues = EnumValues({
-  "": JenisKelamin.EMPTY,
-  "LAKI-LAKI": JenisKelamin.LAKI_LAKI,
-  "PEREMPUAN": JenisKelamin.PEREMPUAN
-});
-
-enum Kewarganegaraan { WNI, EMPTY }
-
-final kewarganegaraanValues =
-    EnumValues({"": Kewarganegaraan.EMPTY, "WNI": Kewarganegaraan.WNI});
-
-enum Pendidikan { DIPLOMA_IV_STRATA_I, TOWCOLM_BEKOLAH, EMPTY }
-
-final pendidikanValues = EnumValues({
-  "DIPLOMA IV/STRATA I": Pendidikan.DIPLOMA_IV_STRATA_I,
-  "": Pendidikan.EMPTY,
-  "TOWCOLM BEKOLAH": Pendidikan.TOWCOLM_BEKOLAH
-});
-
-enum StatusPerkawinan { KAWIN_TERCATAT, BELUM_KAWIN, EMPTY }
-
-final statusPerkawinanValues = EnumValues({
-  "BELUM KAWIN": StatusPerkawinan.BELUM_KAWIN,
-  "": StatusPerkawinan.EMPTY,
-  "KAWIN TERCATAT": StatusPerkawinan.KAWIN_TERCATAT
-});
-
-enum TanggalPerkawinan { THE_16032018, THE_10032016, EMPTY }
-
-final tanggalPerkawinanValues = EnumValues({
-  "": TanggalPerkawinan.EMPTY,
-  "10-03-2016": TanggalPerkawinan.THE_10032016,
-  "16-03-2018": TanggalPerkawinan.THE_16032018
-});
-
-enum TempatLahir { BATU_BALANG, OKAITADI, EMPTY }
-
-final tempatLahirValues = EnumValues({
-  "BATU BALANG": TempatLahir.BATU_BALANG,
-  "": TempatLahir.EMPTY,
-  "OKAITADI": TempatLahir.OKAITADI
-});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

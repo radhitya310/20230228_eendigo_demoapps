@@ -79,7 +79,7 @@ class STNKRESULTS extends StatelessWidget {
           Text('Berlaku Sampai : ' + data[0].read.berlakuSampai),
           Text('Jenis Bahan Bakar : ' + data[0].read.bahanBakar),
           Text('Isi Silinder : ' + data[0].read.isiSilinder),
-          Text('No Pajak Aktif : ' + data[0].read.isPajakAktif),
+          Text('No Pajak Aktif : ' + data[0].read.isPajakAktif.toString()),
           Text('Jenis : ' + data[0].read.jenis),
           Text('Masa Berlaku Pajak : ' + data[0].read.masaBerlakuPajak),
           Text('Kode Lokasi : ' + data[0].read.kodeLokasi),
