@@ -194,6 +194,9 @@ class OCRBCAResults extends StatelessWidget {
                       .transactionSummary[i]
                       .warningMutasi2Description
                       .toString()),
+              Divider(
+                thickness: 1,
+              ),
             },
           ],
         )),
