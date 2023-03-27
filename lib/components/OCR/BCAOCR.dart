@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
-import 'package:eendigodemo/components/OCRResult/REKBCAResults.dart';
 import 'package:eendigodemo/model/REKBCAModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +10,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
+
+import '../OCRResult/BCAOCRResults.dart';
 
 class REKBCAOCR extends StatefulWidget {
   final List<Rekbcaocr> data = [];
@@ -55,60 +56,59 @@ class _OcrHomepageState extends State<REKBCAOCR> {
 
     final timeout = Duration(seconds: 120);
     final client = http.Client();
-    try {
-      response =
-          await client.send(request).timeout(timeout, onTimeout: () async {
-        client.close();
-        print('request timeout');
-        throw Exception('request timeout');
-      });
+    // try {
+    response = await client.send(request).timeout(timeout, onTimeout: () async {
+      client.close();
+      print('request timeout');
+      throw Exception('request timeout');
+    });
 
-      if (response.statusCode == 200) {
-        print('aa');
-        var ujson1 = await utf8.decodeStream(response.stream);
-        Map<String, dynamic> responses = json.decode(ujson1);
-        var message = responses['message'];
-        var date = responses['ocr_date'];
-        var status = responses['status'];
-        var num_of_pages = responses['num_of_pages'];
-        if (status == 'FAILED') {
-          setState(() {
-            isLoading = false;
-          });
-          print('failed');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-        } else if (status == 'SUCCESS') {
-          print(responses['read']);
-          Map<String, dynamic> read = responses['read'];
-          Read reads = Read.fromJson(read);
-
-          data.add(Rekbcaocr(
-              ocrDate: date,
-              message: message,
-              read: reads,
-              status: status,
-              numOfPages: num_of_pages));
-        }
-      } else {
+    if (response.statusCode == 200) {
+      print('aa');
+      var ujson1 = await utf8.decodeStream(response.stream);
+      Map<String, dynamic> responses = json.decode(ujson1);
+      var message = responses['message'];
+      var date = responses['ocr_date'];
+      var status = responses['status'];
+      var num_of_pages = responses['num_of_pages'];
+      if (status == 'FAILED') {
         setState(() {
           isLoading = false;
         });
         print('failed');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Request Failed')),
+          SnackBar(content: Text(message)),
         );
+      } else if (status == 'SUCCESS') {
+        print(responses['read']);
+        Map<String, dynamic> read = responses['read'];
+        Read reads = Read.fromJson(read);
+
+        data.add(Rekbcaocr(
+            ocrDate: date,
+            message: message,
+            read: reads,
+            status: status,
+            numOfPages: num_of_pages));
       }
-    } catch (e) {
-      print('aaaa ${e}');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${e}')),
-      );
+    } else {
       setState(() {
         isLoading = false;
       });
+      print('failed');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Request Failed')),
+      );
     }
+    // } catch (e) {
+    //   print('aaaa ${e}');
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text('${e}')),
+    //   );
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // }
 
     return data;
   }
@@ -205,7 +205,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      REKBCAOCRResults(data: value)));
+                                      OCRBCAResults(data: value)));
                         }
                       });
                     } else {

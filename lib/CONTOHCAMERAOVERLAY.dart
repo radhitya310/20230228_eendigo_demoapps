@@ -31,7 +31,7 @@ class _OcrHomepageState extends State<contohKamera> {
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final pickedImageFile = File(image!.path);
+      final pickedImageFile = File(image.path);
       setState(() {
         _image = pickedImageFile;
         print('Image Path $_image');
