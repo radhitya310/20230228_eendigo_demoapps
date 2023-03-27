@@ -42,6 +42,8 @@ class _OcrHomepageState extends State<REKBCAOCR> {
   Future<List<Rekbcaocr>> REKBCAOcrApi(File _fileRek) async {
     List<Rekbcaocr> data = [];
 
+    final response;
+
     final Url =
         'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/rkbcapdfib/';
 
@@ -51,54 +53,61 @@ class _OcrHomepageState extends State<REKBCAOCR> {
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 60);
+    final timeout = Duration(seconds: 120);
     final client = http.Client();
-    final response =
-        await client.send(request).timeout(timeout, onTimeout: () async {
-      client.close();
-      print('request timeout');
-      throw Exception('request timeout');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Timeout')),
-      );
-    });
+    try {
+      response =
+          await client.send(request).timeout(timeout, onTimeout: () async {
+        client.close();
+        print('request timeout');
+        throw Exception('request timeout');
+      });
 
-    if (response.statusCode == 200) {
-      print('aa');
-      var ujson1 = await utf8.decodeStream(response.stream);
-      Map<String, dynamic> responses = json.decode(ujson1);
-      var message = responses['message'];
-      var date = responses['ocr_date'];
-      var status = responses['status'];
-      var num_of_pages = responses['num_of_pages'];
-      if (status == 'FAILED') {
+      if (response.statusCode == 200) {
+        print('aa');
+        var ujson1 = await utf8.decodeStream(response.stream);
+        Map<String, dynamic> responses = json.decode(ujson1);
+        var message = responses['message'];
+        var date = responses['ocr_date'];
+        var status = responses['status'];
+        var num_of_pages = responses['num_of_pages'];
+        if (status == 'FAILED') {
+          setState(() {
+            isLoading = false;
+          });
+          print('failed');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        } else if (status == 'SUCCESS') {
+          print(responses['read']);
+          Map<String, dynamic> read = responses['read'];
+          Read reads = Read.fromJson(read);
+
+          data.add(Rekbcaocr(
+              ocrDate: date,
+              message: message,
+              read: reads,
+              status: status,
+              numOfPages: num_of_pages));
+        }
+      } else {
         setState(() {
           isLoading = false;
         });
         print('failed');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
+          SnackBar(content: Text('Request Failed')),
         );
-      } else if (status == 'SUCCESS') {
-        print(responses['read']);
-        Map<String, dynamic> read = responses['read'];
-        Read reads = Read.fromJson(read);
-
-        data.add(Rekbcaocr(
-            ocrDate: date,
-            message: message,
-            read: reads,
-            status: status,
-            numOfPages: num_of_pages));
       }
-    } else {
+    } catch (e) {
+      print('aaaa ${e}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${e}')),
+      );
       setState(() {
         isLoading = false;
       });
-      print('failed');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Failed')),
-      );
     }
 
     return data;
@@ -200,7 +209,12 @@ class _OcrHomepageState extends State<REKBCAOCR> {
                         }
                       });
                     } else {
-                      print('no images');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('no image')),
+                      );
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
                   },
                   backgroundColor: Color.fromARGB(255, 190, 126, 174),
@@ -266,7 +280,20 @@ class _OcrHomepageState extends State<REKBCAOCR> {
                     ),
                   )),
             )
-          : Center(child: Text(_file.toString())),
+          : Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: Text(_file.toString())),
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _file = null;
+                      });
+                    },
+                    child: Text('Delete'))
+              ],
+            )),
     ));
   }
 }

@@ -49,7 +49,7 @@ class _OCRchoiceState extends State<OCRchoice> {
     {
       'label': 'OCR KK',
       'icon': 'Assets/icons/kk.png',
-      'screens': KKOCR('KKGIYT  \nOCR'),
+      'screens': KKOCR('KK \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0

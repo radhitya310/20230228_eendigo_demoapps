@@ -65,7 +65,7 @@ class Read {
   String alamat;
   String bahanBakar;
   String berlakuSampai;
-  String isPajakAktif;
+  bool isPajakAktif;
   String isiSilinder;
   String jenis;
   String kodeLokasi;
@@ -90,7 +90,7 @@ class Read {
         bahanBakar: json["bahan_bakar"],
         berlakuSampai: json["berlaku_sampai"],
         isPajakAktif: json["is_pajak_aktif"],
-        isiSilinder: json["isi_silinder"],
+        isiSilinder: json["isi_sillinder"],
         jenis: json["jenis"],
         kodeLokasi: json["kode_lokasi"],
         masaBerlakuPajak: json["masa_berlaku_pajak"],

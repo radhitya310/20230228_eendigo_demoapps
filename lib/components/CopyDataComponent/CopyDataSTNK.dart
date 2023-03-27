@@ -43,7 +43,7 @@ class CopyColumnDataButton extends StatelessWidget {
         data.isiSilinder +
         '\n' +
         'No Pajak Aktif' +
-        data.isPajakAktif +
+        data.isPajakAktif.toString() +
         '\n' +
         'Jenis' +
         data.jenis +

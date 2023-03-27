@@ -65,45 +65,56 @@ class _OcrHomepageState extends State<STNKOCR> {
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
     request.fields['tenant_code'] = 'FIF';
 
-    final timeout = Duration(seconds: 20);
+    final timeout = Duration(seconds: 120);
     final client = http.Client();
-    final response =
-        await client.send(request).timeout(timeout, onTimeout: () async {
-      client.close();
-      print('request timeout');
-      throw Exception('request timeout');
-    });
 
-    if (response.statusCode == 200) {
-      print('aa');
-      var ujson1 = await utf8.decodeStream(response.stream);
-      Map<String, dynamic> responses = json.decode(ujson1);
-      var message = responses['message'];
-      var date = responses['ocr_date'];
-      var status = responses['status'];
-      if (status == 'FAILED') {
+    try {
+      final response =
+          await client.send(request).timeout(timeout, onTimeout: () async {
+        client.close();
+        print('request timeout');
+        throw Exception('request timeout');
+      });
+
+      if (response.statusCode == 200) {
+        print('aa');
+        var ujson1 = await utf8.decodeStream(response.stream);
+        Map<String, dynamic> responses = json.decode(ujson1);
+        var message = responses['message'];
+        var date = responses['ocr_date'];
+        var status = responses['status'];
+        if (status == 'FAILED') {
+          setState(() {
+            isLoading = false;
+          });
+          print('failed');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        } else if (status == 'SUCCESS') {
+          Map<String, dynamic> read = responses['read'];
+          Read reads = Read.fromJson(read);
+
+          data.add(Stnkocr(
+              ocrDate: date, message: message, read: reads, status: status));
+        }
+      } else {
         setState(() {
           isLoading = false;
         });
         print('failed');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
+          SnackBar(content: Text('Request Failed')),
         );
-      } else if (status == 'SUCCESS') {
-        Map<String, dynamic> read = responses['read'];
-        Read reads = Read.fromJson(read);
-
-        data.add(Stnkocr(
-            ocrDate: date, message: message, read: reads, status: status));
       }
-    } else {
+    } catch (e) {
+      print('aaaa ${e}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${e}')),
+      );
       setState(() {
         isLoading = false;
       });
-      print('failed');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Failed')),
-      );
     }
 
     return data;
@@ -203,7 +214,12 @@ class _OcrHomepageState extends State<STNKOCR> {
                         }
                       });
                     } else {
-                      print('no images');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('no image')),
+                      );
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
                   },
                   backgroundColor: Color.fromARGB(255, 190, 126, 174),
