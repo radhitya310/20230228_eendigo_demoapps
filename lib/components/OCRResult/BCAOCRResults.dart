@@ -166,7 +166,7 @@ class OCRBCAResults extends StatelessWidget {
               )
             },
             for (int i = 0;
-                i < data[0].read.transactionHistory.length - 1;
+                i < data[0].read.transactionSummary.length;
                 i++) ...{
               Text('Beggining Balance : ' +
                   data[0]
@@ -194,6 +194,9 @@ class OCRBCAResults extends StatelessWidget {
                       .transactionSummary[i]
                       .warningMutasi2Description
                       .toString()),
+              Divider(
+                thickness: 1,
+              ),
             },
           ],
         )),

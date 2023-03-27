@@ -109,11 +109,11 @@ class Identity {
 
   factory Identity.fromJson(Map<String, dynamic> json) => Identity(
         accountNumber: json["AccountNumber"],
-        alternateIncome1: json["AlternateIncome1"],
+        alternateIncome1: json["AlternateIncome1"]?.toDouble(),
         alternateIncome2: json["AlternateIncome2"]?.toDouble(),
         alternateIncome3: json["AlternateIncome3"]?.toDouble(),
         alternateIncome4: json["AlternateIncome4"]?.toDouble(),
-        alternateIncomeFinal: json["AlternateIncomeFinal"],
+        alternateIncomeFinal: json["AlternateIncomeFinal"]?.toDouble(),
         bankOffice: json["BankOffice"],
         creditTransactionsLast3Months:
             json["CreditTransactionsLast3Months"]?.toDouble(),

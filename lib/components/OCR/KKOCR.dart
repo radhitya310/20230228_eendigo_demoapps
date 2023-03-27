@@ -75,12 +75,9 @@ class _OcrHomepageState extends State<KKOCR> {
     try {
       final response =
           await client.send(request).timeout(timeout, onTimeout: () async {
-        // client.close();
+        client.close();
         print('request timeout');
         throw Exception('request timeout');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Request Timeout')),
-        );
       });
 
       if (response.statusCode == 200) {
