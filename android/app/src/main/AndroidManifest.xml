@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eendigo.eendigodemo">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    
    <application
-        android:label="eendigodemo"
+        android:label="Eendigo Demo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

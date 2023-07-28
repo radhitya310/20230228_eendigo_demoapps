@@ -10,62 +10,9 @@ class STNKRESULTS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: Container(
-          color: Theme.of(context).primaryColor,
-          padding: const EdgeInsets.all(16),
-          child: SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Material(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    borderRadius: BorderRadius.circular(32),
-                    child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: const [
-                            Icon(Icons.search),
-                            SizedBox(
-                              width: 16,
-                            ),
-                            Text(
-                              'Find services, food, or place',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                Material(
-                  shape: const CircleBorder(),
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Icon(
-                        Icons.person,
-                        color: Theme.of(context).primaryColor,
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+      appBar: AppBar(
+          title: const Text('Result'),
         ),
-      ),
       body: Center(
           child: Column(
         children: [

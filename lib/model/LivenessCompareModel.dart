@@ -1,7 +1,7 @@
 class FaceCompare {
   final String compare;
-  final double similarity;
-  final double threshold;
+  final String similarity;
+  final String threshold;
 
   FaceCompare({
     required this.compare,
@@ -12,8 +12,8 @@ class FaceCompare {
   factory FaceCompare.fromJson(Map<String, dynamic> json) {
     return FaceCompare(
       compare: json['compare'],
-      similarity: double.parse(json['similarity']),
-      threshold: double.parse(json['threshold']),
+      similarity: json['similarity'],
+      threshold: json['threshold'],
     );
   }
 }

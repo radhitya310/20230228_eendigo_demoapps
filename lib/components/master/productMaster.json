@@ -1,0 +1,16 @@
+{
+    "data": [
+        {
+            "name": "Liveness",
+            "url": "https://www.example.com",
+            "key": "12345",
+            "timeout": "5000"
+        },
+        {
+            "name": "FaceCompare",
+            "url": "https://www.example.com",
+            "key": "12345",
+            "timeout": "5000"
+        }
+    ]
+}

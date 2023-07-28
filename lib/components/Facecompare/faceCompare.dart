@@ -1,8 +1,10 @@
 // ignore_for_file: override_on_non_overriding_member, constant_identifier_names
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:eendigodemo/components/Facecompare/FaceCompareCapture.dart';
 import 'package:eendigodemo/model/LivenessCompareModel.dart';
 import 'package:eendigodemo/model/LivenessModel.dart';
 import 'package:eendigodemo/widget/FancyButton.dart';
@@ -17,6 +19,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_to_byte/image_to_byte.dart';
+
+import '../widget/backgroundImage.dart';
 
 class FaceCompare extends StatefulWidget {
   const FaceCompare({Key? key}) : super(key: key);
@@ -40,25 +44,7 @@ class _FaceCompareState extends State<FaceCompare> {
   String similarity = "0";
   int direction = 0;
   String errMsg = "";
-
-  // void _takePhoto() async {
-  //   try {
-  //     // Convert the blob data to a Uint8List.
-  //     // final reader = html.FileReader();
-  //     // reader.readAsArrayBuffer(blob);
-  //     // await reader.onLoad.first;
-  //     // final bytes = reader.result as Uint8List;
-
-  //     // Save the image to local storage.
-  //     final directory = 'C:\\';
-  //     final imagePath = '$directory/image.jpg';
-  //     //final file = html.File([bytes], 'image.jpg');
-  //     js.context.callMethod('saveAs', [_image, imagePath]);
-
-  //   } catch (e) {
-  //     print('Error taking photo: $e');
-  //   }
-  // }
+  String tambah = "";
 
   @override
   void initState() {
@@ -77,17 +63,20 @@ class _FaceCompareState extends State<FaceCompare> {
   Future<List<LivenessCompareModel>> FaceCompareAPI() async {
     List<LivenessCompareModel> data = [];
     const Url = 'https://liveness-go3voyqswq-et.a.run.app/liveness-facecompare?';
-
+tambah = tambah + "1 ";
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     final file = File(_image!.path);
     final pic = await http.MultipartFile.fromPath('img1', file.path);
     request.files.add(pic);
+    tambah = tambah + "2 ";
     final file2 = File(_image2!.path);
     final pic2 = await http.MultipartFile.fromPath('img2', file2.path);
     request.files.add(pic2);
     request.fields['key'] = 'CV-ADINS-H1@B5476GTHDAD';
     request.fields['tenant_code'] = 'ADINS';
-    request.fields['nik'] = '3275083110990013';
+    String random16Digit = generateRandom16DigitNumber();
+    tambah = tambah + "3 ";
+    request.fields['nik'] = random16Digit;
     final timeout = Duration(seconds: 30);
     final client = http.Client();
     try {
@@ -101,39 +90,37 @@ class _FaceCompareState extends State<FaceCompare> {
       });
 
       if (response.statusCode == 200) {
-        var ujson1 = await utf8.decodeStream(response.stream);       
+        var ujson1 = await utf8.decodeStream(response.stream);
         Map<String, dynamic> responses = json.decode(ujson1);
         LivenessCompareModel livenessDa = LivenessCompareModel.fromJson(responses);
+
         var status = responses['status'];
         var error = responses['error'];
         if (status == 'Failed') {
           setState(() {
+
             isLoading = false;
             isLive = true;
-            liveScore = livenessDa.result[0].faceLiveness.score.toString();
-            similarity = livenessDa.result[0].faceCompare.similarity.toString();
+            liveScore = livenessDa.result[0].faceLiveness.score.toString().isEmpty ? "0" : livenessDa.result[0].faceLiveness.score.toString();
+            similarity = livenessDa.result[0].faceCompare.similarity.toString().isEmpty ? "0" : livenessDa.result[0].faceCompare.similarity.toString();
             if(livenessDa.error.toLowerCase().contains('verify')){
               isCompare = false;
             }
-            
             if(livenessDa.error.toLowerCase().contains('selfie')){
               isLive = false;
               isCompare = false;
             }
-            
             if(livenessDa.error.toLowerCase().contains('image')){
               isFailed = false;
             }
           });
           data.add(livenessDa);
-        } else if (status == 'Success') {
-          //var result = responses['result'];
-          //List<ResultModel> resultObj = result as List<ResultModel>;
-
+        } else if (status == 'Success') {tambah = tambah + " disini ";
           data.add(livenessDa);
 
           setState(() {
             liveScore = data[0].result[0].faceLiveness.score.toString();
+            similarity = data[0].result[0].faceCompare.similarity.toString();
             if (data[0].result[0].faceLiveness.live == "True") {
               isLive = true;
             } else {
@@ -190,11 +177,8 @@ class _FaceCompareState extends State<FaceCompare> {
         title: const Text('Liveness Check & Compare'),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage("Assets/img/background-eendigo_(1).png"),
-          fit: BoxFit.cover,
-        )),
+        //Background Image
+        decoration: BackgroundImage(),
         child: IntroductionScreen(
           key: _introKey,
           globalBackgroundColor: Colors.transparent,
@@ -213,7 +197,7 @@ class _FaceCompareState extends State<FaceCompare> {
               decoration: pageDecorationCam,
             ),
             PageViewModel(
-              title: "Ambil foto KTP",
+              title: "Ambil foto pembanding",
               bodyWidget: SingleChildScrollView(
                 child: KtpPage(context),
                 physics: NeverScrollableScrollPhysics(),
@@ -229,19 +213,19 @@ class _FaceCompareState extends State<FaceCompare> {
           onDone: () {},
           showSkipButton: false,
           showNextButton: false,
-          showDoneButton: true,
-          showBackButton: true,
+          showDoneButton: false,
+          showBackButton: false,
           freeze: false,
           scrollPhysics: const NeverScrollableScrollPhysics(),
           back: const Icon(Icons.arrow_back),
           next: const Icon(Icons.arrow_forward),
           done: const Text('Done'),
           dotsDecorator: const DotsDecorator(
-              size: Size(10, 10),
-              color: Colors.grey,
-              activeSize: Size(22, 10),
-              activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25)))),
+                size: Size(0, 0),
+                color: Colors.transparent,
+                activeSize: Size(0, 0),
+                activeShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25)))),
         ),
       ),
     );
@@ -268,6 +252,17 @@ class _FaceCompareState extends State<FaceCompare> {
       print(e);
     }
   }
+
+String generateRandom16DigitNumber() {
+  Random random = Random();
+  String number = '';
+
+  for (int i = 0; i < 16; i++) {
+    number += random.nextInt(10).toString();
+  }
+
+  return number;
+}
 
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -373,10 +368,13 @@ _image2 = pickedImageFile;
               children: [
                 Stack(
                   children: [
-                    AspectRatio(
-                      aspectRatio: 4.5 / 5,
-                      child: CameraPreview(cameraController!),
-                    ),
+                    Container(
+                        width: MediaQuery.of(context).size.width *
+                            0.6, // 80% of screen width
+                        height: MediaQuery.of(context).size.height *
+                            0.5, // 50% of screen height
+                        child: CameraPreview(cameraController!),
+                      ),
                     Positioned(
                         top: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).size.height / 1.7) /
@@ -443,7 +441,7 @@ _image2 = pickedImageFile;
                                   isCamera = false;
                                   isLoading = false;
                                   isFailed = true;
-                                  errMsg = e.toString();
+                                  errMsg = e.toString()+ ' 4';
                                 });
                             }
                           },
@@ -521,10 +519,13 @@ _image2 = pickedImageFile;
               children: [
                 Stack(
                   children: [
-                    AspectRatio(
-                      aspectRatio: 4.5 / 5,
-                      child: CameraPreview(cameraController!),
-                    ),
+                    Container(
+                        width: MediaQuery.of(context).size.width *
+                            0.6, // 80% of screen width
+                        height: MediaQuery.of(context).size.height *
+                            0.5, // 50% of screen height
+                        child: CameraPreview(cameraController!),
+                      ),
                     Positioned(
                         top: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).size.height / 1.7) /
@@ -588,7 +589,7 @@ _image2 = pickedImageFile;
                                   isCamera = false;
                                   isLoading = false;
                                   isFailed = true;
-                                  errMsg = e.toString();
+                                  errMsg = e.toString()+ ' 5';
                                 });
                             }
                           },
@@ -658,6 +659,8 @@ _image2 = pickedImageFile;
 
 
   Widget ResultWidget(BuildContext context) {
+    Color labelColor = double.parse(liveScore) > 50 ? Colors.blue : Colors.red;
+    Color labelColorSimilarity = double.parse(similarity) > 0.8 ? Colors.blue : Colors.red;
     if (isLoading == true) {
       return Column(
         children: const [
@@ -693,14 +696,70 @@ _image2 = pickedImageFile;
                               
                             : Image.asset(_image!.path)),
                     const SizedBox(height: 20),
-                    (isLive == false)
-                        ? const Text("Sorry, you are spoofing.")
-                        : const Text("You are Live,"),
-                    (isCompare == false)
-                        ? const Text(" and your image not match with KTP") 
-                        : const Text(" and matched with KTP"),
-                    Text("Your Live Score is " + liveScore),
-                    Text("Your face similarity with KTP is " + similarity)
+                    (isLive == false) ? const Text("Sorry, you are spoofing.") : const Text("You are Live,"),
+                    // (isCompare == false) ? const Text(" and your image not match with KTP") : const Text(" and matched with KTP"),
+                    Center(
+                        child: Container(
+                          padding: EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border.all(
+                              color: labelColor,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            'Live Score: ' + double.parse(liveScore).toStringAsFixed(2),
+                            style: TextStyle(
+                              color: labelColor,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto',
+                              letterSpacing: 2.0,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black,
+                                  offset: Offset(0, 2),
+                                  blurRadius: 6.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Text("Your Live Score is " + liveScore),
+                    Center(
+                        child: Container(
+                          padding: EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border.all(
+                              color: labelColor,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            'Similarity Score: ' + double.parse(similarity).toStringAsFixed(2),
+                            style: TextStyle(
+                              color: labelColorSimilarity,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto',
+                              letterSpacing: 2.0,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black,
+                                  offset: Offset(0, 2),
+                                  blurRadius: 6.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Text("Your face similarity with KTP is " + similarity)
                   ],
                 ));
     } else {
@@ -710,7 +769,7 @@ _image2 = pickedImageFile;
             child: Text('Failed to Connect to Server'),
           ),
           Center(
-            child: Text('Error Message : ' + errMsg),
+            child: Text(tambah + 'Error Message : ' + errMsg),
           ),
           FancyButton(
             buttonText: 'Retry',
@@ -754,25 +813,29 @@ _image2 = pickedImageFile;
           FancyButton(
             buttonText: 'Start Demo',
             onPressed: () async {
-              try {
-                direction = 1;
-                await initializeCamera(direction);
-                if (defaultTargetPlatform == TargetPlatform.iOS ||
-                    defaultTargetPlatform == TargetPlatform.android) {
-                  // Some android/ios specific code
-                  if (await Permission.camera.request().isGranted) {
-                    final cameras = await availableCameras();
-                  }
-                }
-                // _introKey.currentState?.next();
-                setState(() {
-                  isCamera = true;
-                  cameraController?.resumePreview();
-                });
-                Future(() => _introKey.currentState?.next());
-              } catch (e) {
-                debugPrint(e.toString());
-              }
+              // try {
+              //   direction = 1;
+              //   await initializeCamera(direction);
+              //   if (defaultTargetPlatform == TargetPlatform.iOS ||
+              //       defaultTargetPlatform == TargetPlatform.android) {
+              //     // Some android/ios specific code
+              //     if (await Permission.camera.request().isGranted) {
+              //       final cameras = await availableCameras();
+              //     }
+              //   }
+              //   // _introKey.currentState?.next();
+              //   setState(() {
+              //     isCamera = true;
+              //     cameraController?.resumePreview();
+              //   });
+              //   Future(() => _introKey.currentState?.next());
+              // } catch (e) {
+              //   debugPrint(e.toString());
+              // }
+              Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FaceCompareCapture()));
             },
           )
         ],

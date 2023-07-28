@@ -1,10 +1,30 @@
+import 'dart:io';
+
 import 'package:eendigodemo/homeScreen.dart';
+import 'package:eendigodemo/widget/CustomErrorWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
 
+import 'components/Settings/settingScreen.dart';
+
 void main() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+    runApp(ErrorWidgetClass(details));
+  };
   runApp(const MyApp());
+}
+
+class ErrorWidgetClass extends StatelessWidget {
+  final FlutterErrorDetails errorDetails;
+  ErrorWidgetClass(this.errorDetails);
+  @override
+  Widget build(BuildContext context) {
+    return CustomErrorWidget(
+      errorMessage: errorDetails.exceptionAsString(),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -15,17 +35,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Eendigo Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: Menu(),
@@ -43,39 +54,34 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   int currentIndex = 0;
 
-  final List<Widget> tabs = <Widget>[
-    HomeScreen(),
-    const Text("Apa"),
-    const Text("mantap"),
-    const Center(child: Text("Notifikasi halamannya standar"))
-  ];
+  final List<Widget> tabs = <Widget>[HomeScreen(), SettingScreen()];
 
   final List<IconData> bottomNavbarIcons = const [
     CupertinoIcons.home,
-    CupertinoIcons.chat_bubble,
-    CupertinoIcons.bell,
-    CupertinoIcons.person,
+    CupertinoIcons.settings
   ];
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: bottomNavbarIcons.length,
-      child: Scaffold(
-        bottomNavigationBar: Material(
-          color: Colors.white38,
-          child: TabBar(
-            indicatorPadding: EdgeInsets.zero,
-            indicator: const BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Colors.grey),
+    if (Theme.of(context).platform == TargetPlatform.android ||
+        Theme.of(context).platform == TargetPlatform.iOS) {
+      return DefaultTabController(
+        length: bottomNavbarIcons.length,
+        child: Scaffold(
+          bottomNavigationBar: Material(
+            color: Colors.white38,
+            child: TabBar(
+              indicatorPadding: EdgeInsets.zero,
+              indicator: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey),
+                ),
               ),
-            ),
-            onTap: (index) {
-              setState(() {
-                if (index != 2) {
-                  currentIndex = index;
-                }
+              onTap: (index) {
+                setState(() {
+                  if (index != 2) {
+                    currentIndex = index;
+                  }
 /*                else {
                   Navigator.push(
                       context,
@@ -98,28 +104,31 @@ class _MenuState extends State<Menu> {
                         },
                       ));
                 }*/
-              });
-            },
-            tabs: bottomNavbarIcons
-                .asMap()
-                .map((i, e) => MapEntry(
-                    i,
-                    Tab(
-                      icon: Icon(
-                        e,
-                        color: i == currentIndex ? Colors.grey : Colors.black,
-                        size: 30.0,
-                      ),
-                    )))
-                .values
-                .toList(),
+                });
+              },
+              tabs: bottomNavbarIcons
+                  .asMap()
+                  .map((i, e) => MapEntry(
+                      i,
+                      Tab(
+                        icon: Icon(
+                          e,
+                          color: i == currentIndex ? Colors.grey : Colors.black,
+                          size: 30.0,
+                        ),
+                      )))
+                  .values
+                  .toList(),
+            ),
+          ),
+          body: IndexedStack(
+            index: currentIndex,
+            children: tabs,
           ),
         ),
-        body: IndexedStack(
-          index: currentIndex,
-          children: tabs,
-        ),
-      ),
-    );
+      );
+    } else {
+      return HomeScreen();
+    }
   }
 }

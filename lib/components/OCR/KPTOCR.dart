@@ -129,71 +129,9 @@ class _OcrHomepageState extends State<KtpOCR> {
       )),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Container(
-              color: Color.fromARGB(136, 255, 255, 255),
-              padding: const EdgeInsets.all(16),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          // ignore: prefer_const_constructors
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Color.fromARGB(255, 89, 83, 108),
-                          ),
-                          fillColor: Colors.grey.shade300,
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255, 92, 64, 115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255, 92, 64, 115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          contentPadding:
-                              const EdgeInsets.only(top: 14.0, left: 20.0),
-                          hintText: 'Email Address',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Material(
-                      shape: const CircleBorder(),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Icon(
-                            Icons.person,
-                            color: Theme.of(context).primaryColor,
-                            size: 28,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          floatingActionButton: (isLoading == false)
+          appBar: AppBar(
+          title: const Text('OCR KTP'),
+        ),floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {
                     setState(() {

@@ -46,6 +46,9 @@ dependencies:
   file_picker: ^5.2.6
   image_to_byte: ^1.0.0
   path_provider: ^2.0.13
+  shared_preferences: ^2.0.20
+  settings_ui: ^2.0.2
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -57,12 +60,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
-  flutter_launcher_icons: ^0.9.2
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/splash-removebg-preview.png"
+  image_path: "assets/icons/logo-eendigo.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
