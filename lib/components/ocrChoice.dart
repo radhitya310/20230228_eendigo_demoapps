@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:eendigodemo/CONTOHCAMERAOVERLAY.dart';
 import 'package:eendigodemo/components/OCR/BCAOCR.dart';
 import 'package:eendigodemo/components/OCR/BPKBOCR.dart';
+import 'package:eendigodemo/components/OCR/INVOICEOCR.dart';
 import 'package:eendigodemo/components/OCR/KKOCR.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
 import 'package:eendigodemo/components/OCR/NPWPOCR.dart';
@@ -74,6 +75,14 @@ class _OCRchoiceState extends State<OCRchoice> {
       'label': 'OCR NPWP',
       'icon': 'Assets/icons/npwp.png',
       'screens': NPWPOCR('NPWP \nOCR'),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },    
+    {
+      'label': 'OCR Invoice',
+      'icon': 'Assets/icons/invoice_icon.png',
+      'screens': InvoiceOCR(),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0

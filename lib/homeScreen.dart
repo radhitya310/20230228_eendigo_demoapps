@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text("Welcome, Tenant", style: TextStyle(fontSize: 30)),
-                  Text("v.1.1.9", style: TextStyle(fontSize: 15)),
+                  Text("v.1.1.13", style: TextStyle(fontSize: 15)),
                   const SizedBox(height: 20),
                   Wrap(
                       runSpacing: 8,

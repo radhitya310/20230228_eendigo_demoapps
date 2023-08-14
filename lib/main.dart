@@ -9,23 +9,23 @@ import 'package:flutter/animation.dart';
 import 'components/Settings/settingScreen.dart';
 
 void main() {
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.dumpErrorToConsole(details);
-    runApp(ErrorWidgetClass(details));
-  };
+  // FlutterError.onError = (FlutterErrorDetails details) {
+  //   FlutterError.dumpErrorToConsole(details);
+  //   runApp(ErrorWidgetClass(details));
+  // };
   runApp(const MyApp());
 }
 
-class ErrorWidgetClass extends StatelessWidget {
-  final FlutterErrorDetails errorDetails;
-  ErrorWidgetClass(this.errorDetails);
-  @override
-  Widget build(BuildContext context) {
-    return CustomErrorWidget(
-      errorMessage: errorDetails.exceptionAsString(),
-    );
-  }
-}
+// class ErrorWidgetClass extends StatelessWidget {
+//   final FlutterErrorDetails errorDetails;
+//   ErrorWidgetClass(this.errorDetails);
+//   @override
+//   Widget build(BuildContext context) {
+//     return CustomErrorWidget(
+//       errorMessage: errorDetails.exceptionAsString(),
+//     );
+//   }
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

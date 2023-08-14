@@ -63,7 +63,7 @@ class _OcrHomepageState extends State<KtpOCR> {
     final pic = await http.MultipartFile.fromPath('img', file.path);
     request.files.add(pic);
     request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
-    request.fields['tenant_code'] = 'FIF';
+    request.fields['tenant_code'] = 'ADINS';
 
     final timeout = Duration(seconds: 120);
     final client = http.Client();
