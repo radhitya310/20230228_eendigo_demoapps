@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/components/OCRResult/BPKBResults.dart';
 import 'package:eendigodemo/model/BPKBModel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,20 +22,19 @@ class BPKBOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<BPKBOCR> {
-  File? _image;
-  File? _image2;
+  Uint8List? _image;
+  Uint8List? _image2;
   bool isLoading = false;
   final String title;
 
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    var image = await FilePicker.platform.pickFiles();
     if (image != null) {
-      final pickedImageFile = File(image.path);
       setState(() {
-        _image = pickedImageFile;
-        print('Image Path $_image');
+        _image = image.files.first.bytes;
+        // print('Image Path $_image');
       });
     }
   }
@@ -44,19 +45,18 @@ class _OcrHomepageState extends State<BPKBOCR> {
     if (image != null) {
       final pickedImageFile = File(image.path);
       setState(() {
-        _image = pickedImageFile;
-        print('Image Path $_image');
+        _image = pickedImageFile.readAsBytesSync();
+        // print('Image Path $_image');
       });
     }
   }
 
   Future getImage2() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    var image = await FilePicker.platform.pickFiles();
     if (image != null) {
-      final pickedImageFile = File(image.path);
       setState(() {
-        _image2 = pickedImageFile;
-        print('Image Path $_image');
+        _image2 = image.files.first.bytes;
+        // print('Image Path $_image');
       });
     }
   }
@@ -67,43 +67,38 @@ class _OcrHomepageState extends State<BPKBOCR> {
     if (image != null) {
       final pickedImageFile = File(image.path);
       setState(() {
-        _image2 = pickedImageFile;
-        print('Image Path $_image');
+        _image2 = pickedImageFile.readAsBytesSync();
+        // print('Image Path $_image');
       });
     }
   }
 
-  Future<List<Bpkbocr>> KtpOcrApi(File? _BPKBImage, File? _BPKBImage2) async {
+  Future<List<Bpkbocr>> KtpOcrApi(
+      Uint8List? _BPKBImage, Uint8List? _BPKBImage2) async {
     List<Bpkbocr> data = [];
 
-    final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/bpkb/';
+    final Url = 'https://api.eendigo.app/ocr/bpkb';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
 
-    final file = File('');
-    final file2 = File('');
-
     if (_BPKBImage != null && _BPKBImage2 != null) {
-      final file = File(_BPKBImage.path);
-      final file2 = File(_BPKBImage2.path);
-      final pic = await http.MultipartFile.fromPath('halaman2', file.path);
+      final pic = http.MultipartFile.fromBytes('halaman2', _BPKBImage,
+          filename: 'BPKB1');
       request.files.add(pic);
-      final pic2 = await http.MultipartFile.fromPath('halaman3', file2.path);
+      final pic2 = http.MultipartFile.fromBytes('halaman3', _BPKBImage2,
+          filename: 'BPKB2');
       request.files.add(pic2);
     } else if (_BPKBImage != null && _BPKBImage2 == null) {
-      final file = File(_BPKBImage.path);
-      final pic = await http.MultipartFile.fromPath('halaman2', file.path);
-      // final pic2 = await http.MultipartFile.fromPath('halaman3', '');
+      final pic = http.MultipartFile.fromBytes('halaman2', _BPKBImage,
+          filename: 'BPKB1');
       request.files.add(pic);
-      // request.files.add(pic2);
-    } else {
-      final file2 = File(_BPKBImage2!.path);
-      final pic2 = await http.MultipartFile.fromPath('halaman3', file2.path);
+    } else if (_BPKBImage == null && _BPKBImage2 != null) {
+      final pic2 = http.MultipartFile.fromBytes('halaman3', _BPKBImage2,
+          filename: 'BPKB2');
       request.files.add(pic2);
     }
-    request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
-    request.fields['tenant_code'] = 'FIF';
+    request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
+    request.fields['tenant_code'] = 'ADINS';
     final timeout = Duration(seconds: 120);
     final client = http.Client();
 
@@ -178,8 +173,8 @@ class _OcrHomepageState extends State<BPKBOCR> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-          title: const Text('OCR BPKB'),
-        ),
+            title: const Text('OCR BPKB'),
+          ),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {
@@ -187,7 +182,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       isLoading = true;
                     });
                     if (_image != null || _image2 != null) {
-                      KtpOcrApi(_image, _image2).then((value) {
+                      KtpOcrApi(_image!, _image2!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -269,6 +264,8 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
+                          print(flag);
+
                           if (flag == 0) {
                             getImage();
                           } else {
@@ -357,8 +354,8 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       Container(
                           height: MediaQuery.of(context).size.height / 3.5,
                           width: MediaQuery.of(context).size.width - 50,
-                          child: Image.file(
-                            File(_image!.path),
+                          child: Image.memory(
+                            _image!,
                           )),
                       Positioned(
                         right: 20,
@@ -417,8 +414,8 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       Container(
                           height: MediaQuery.of(context).size.height / 3.5,
                           width: MediaQuery.of(context).size.width - 50,
-                          child: Image.file(
-                            File(_image2!.path),
+                          child: Image.memory(
+                            _image2!,
                           )),
                       Positioned(
                         right: 20,

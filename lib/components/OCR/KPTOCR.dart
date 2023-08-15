@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:eendigodemo/CameraController/CameraContorller.dart';
 import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
+import 'package:file_picker/file_picker.dart';
+
 import 'package:eendigodemo/model/KtpOCRModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
@@ -22,59 +23,61 @@ class KtpOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<KtpOCR> {
-  File? _image;
   bool isLoading = false;
+  Uint8List? webimage;
   final String title;
 
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    var image = await FilePicker.platform.pickFiles();
     if (image != null) {
-      final pickedImageFile = File(image.path);
       setState(() {
-        _image = pickedImageFile;
-        print('Image Path $_image');
+        webimage = image.files.first.bytes!;
       });
     }
   }
 
-  @override
   Future getImagecamera() async {
     var image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      final pickedImageFile = File(image.path);
-      setState(() {
-        _image = pickedImageFile;
-        print('Image Path $_image');
+      setState(() async {
+        webimage = await image.readAsBytes();
+        // print('Image Path $_image');
       });
     }
   }
 
-  Future<List<Ktpocr>> KtpOcrApi(File _KtpImage) async {
+  Future<List<Ktpocr>> KtpOcrApi(Uint8List _KtpImage) async {
     List<Ktpocr> data = [];
 
-    final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/ktp/';
+    var headers = {
+      'Content-Type': 'multipart/form-data',
+      'Merchant-Key': '',
+      'Authorization': 'Basic YWRpbnM6N3VscHFtNXc2a2RycWVqbDY1N20='
+    };
 
-    var request = http.MultipartRequest('POST', Uri.parse(Url));
+    print(_KtpImage);
+
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://api.eendigo.app/ocr/ktp'));
     // final file = File(_KtpImage.path);
-    final file = File(_KtpImage.path);
-    final pic = await http.MultipartFile.fromPath('img', file.path);
-    request.files.add(pic);
-    request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
+    // final file = File(_KtpImage.path);
+
+    request.fields.addAll(
+        {'key': 'CV-ADINS-PROD-H1@DT476WATDADT4WA', 'tenant_code': 'ADINS'});
+
+    request.files
+        .add(http.MultipartFile.fromBytes('img', _KtpImage, filename: 'KTP'));
+    request.headers.addAll(headers);
+    request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
     request.fields['tenant_code'] = 'ADINS';
 
     final timeout = Duration(seconds: 120);
     final client = http.Client();
 
     try {
-      final response =
-          await client.send(request).timeout(timeout, onTimeout: () async {
-        client.close();
-        print('request timeout');
-        throw Exception('request timeout');
-      });
+      http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
         print('aa');
@@ -88,6 +91,7 @@ class _OcrHomepageState extends State<KtpOCR> {
             isLoading = false;
           });
           print('failed');
+          print(message.toString());
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(message)),
           );
@@ -103,6 +107,9 @@ class _OcrHomepageState extends State<KtpOCR> {
           isLoading = false;
         });
         print('failed');
+        print(response.statusCode);
+        print('Server error: ${await response.stream.bytesToString()}');
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Request Failed')),
         );
@@ -130,15 +137,24 @@ class _OcrHomepageState extends State<KtpOCR> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-          title: const Text('OCR KTP'),
-        ),floatingActionButton: (isLoading == false)
+            title: const Text('OCR KTP'),
+          ),
+          floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {
                     setState(() {
                       isLoading = true;
                     });
-                    if (_image != null) {
-                      KtpOcrApi(_image!).then((value) {
+                    if (webimage == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('no image')),
+                      );
+                      setState(() {
+                        isLoading = false;
+                      });
+                    } else {
+                      print('a');
+                      KtpOcrApi(webimage!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -149,13 +165,6 @@ class _OcrHomepageState extends State<KtpOCR> {
                                   builder: (context) =>
                                       OcrResults(data: value)));
                         }
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('no image')),
-                      );
-                      setState(() {
-                        isLoading = false;
                       });
                     }
                   },
@@ -272,13 +281,12 @@ class _OcrHomepageState extends State<KtpOCR> {
     );
   }
 
-  @override
   Widget ImageCatcher(BuildContext context) {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
             height: MediaQuery.of(context).size.height / 3.5,
-            child: (_image == null)
+            child: (webimage == null)
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
@@ -305,8 +313,10 @@ class _OcrHomepageState extends State<KtpOCR> {
                       Container(
                           height: MediaQuery.of(context).size.height / 3.5,
                           width: MediaQuery.of(context).size.width - 50,
-                          child: Image.file(
-                            File(_image!.path),
+                          child: Image.memory(
+                            webimage!,
+                            width: 100,
+                            height: 100,
                           )),
                       Positioned(
                         right: 20,
@@ -319,7 +329,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                               child: TextButton(
                                   onPressed: () {
                                     setState(() {
-                                      _image = null;
+                                      webimage = null;
                                     });
                                   },
                                   child: Icon(

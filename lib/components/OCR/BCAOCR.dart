@@ -45,14 +45,13 @@ class _OcrHomepageState extends State<REKBCAOCR> {
 
     final response;
 
-    final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/rkbcapdfib/';
+    final Url = 'https://api.eendigo.app/ocr/rkbcapdfib/';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     final files = await http.MultipartFile.fromPath('file', _fileRek.path);
     request.files.add(files);
-    request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
-    request.fields['tenant_code'] = 'FIF';
+    request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
+    request.fields['tenant_code'] = 'ADINS';
 
     final timeout = Duration(seconds: 120);
     final client = http.Client();
@@ -124,8 +123,8 @@ class _OcrHomepageState extends State<REKBCAOCR> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-          title: const Text('OCR Rek BCA'),
-        ),
+            title: const Text('OCR Rek BCA'),
+          ),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {

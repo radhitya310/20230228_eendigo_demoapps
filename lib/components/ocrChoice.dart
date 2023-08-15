@@ -6,6 +6,7 @@ import 'package:eendigodemo/components/OCR/INVOICEOCR.dart';
 import 'package:eendigodemo/components/OCR/KKOCR.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
 import 'package:eendigodemo/components/OCR/NPWPOCR.dart';
+import 'package:eendigodemo/components/OCR/PASPOROCR.dart';
 import 'package:eendigodemo/components/OCR/REKMANDIRIOCR.dart';
 import 'package:eendigodemo/components/OCR/STNKOCR.dart';
 import 'package:eendigodemo/model/KKOCRModel.dart';
@@ -78,7 +79,15 @@ class _OCRchoiceState extends State<OCRchoice> {
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0
-    },    
+    },
+    {
+      'label': 'OCR Paspor',
+      'icon': 'Assets/icons/paspor.png',
+      'screens': PASPOROCR('NPWP \nOCR'),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },
     {
       'label': 'OCR Invoice',
       'icon': 'Assets/icons/invoice_icon.png',

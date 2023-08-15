@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
 import 'package:eendigodemo/components/OCRResult/OCRNPWPResults.dart';
 import 'package:eendigodemo/model/NPWPModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -22,19 +24,19 @@ class NPWPOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<NPWPOCR> {
-  File? _image;
+  Uint8List? _image;
   bool isLoading = false;
 
   final String title;
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    var image = await FilePicker.platform.pickFiles();
     if (image != null) {
-      final pickedImageFile = File(image.path);
+      final pickedImageFile = image.files.first.bytes;
       setState(() {
         _image = pickedImageFile;
-        print('Image Path $_image');
+        // print('Image Path $_image');
       });
     }
   }
@@ -45,25 +47,25 @@ class _OcrHomepageState extends State<NPWPOCR> {
     if (image != null) {
       final pickedImageFile = File(image.path);
       setState(() {
-        _image = pickedImageFile;
+        _image = pickedImageFile.readAsBytesSync();
         print('Image Path $_image');
       });
     }
   }
 
-  Future<List<Npwpocr>> NPWPOcrApi(File _KtpImage) async {
+  Future<List<Npwpocr>> NPWPOcrApi(Uint8List _KtpImage) async {
     List<Npwpocr> data = [];
 
-    final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/npwp/';
+    final Url = 'https://api.eendigo.app/ocr/npwp';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     // final file = File(_KtpImage.path);
-    final file = File(_KtpImage.path);
-    final pic = await http.MultipartFile.fromPath('img', file.path);
+    // final file = File(_KtpImage.path);
+    final pic =
+        http.MultipartFile.fromBytes('img', _KtpImage, filename: 'NPWP');
     request.files.add(pic);
-    request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
-    request.fields['tenant_code'] = 'FIF';
+    request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
+    request.fields['tenant_code'] = 'ADINS';
 
     final timeout = Duration(seconds: 10);
     final client = http.Client();
@@ -131,8 +133,9 @@ class _OcrHomepageState extends State<NPWPOCR> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-          title: const Text('OCR NPWP'),
-        ),floatingActionButton: (isLoading == false)
+            title: const Text('OCR NPWP'),
+          ),
+          floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {
                     setState(() {
@@ -304,8 +307,8 @@ class _OcrHomepageState extends State<NPWPOCR> {
                       Container(
                           height: MediaQuery.of(context).size.height / 3.5,
                           width: MediaQuery.of(context).size.width - 50,
-                          child: Image.file(
-                            File(_image!.path),
+                          child: Image.memory(
+                            _image!,
                           )),
                       Positioned(
                         right: 20,

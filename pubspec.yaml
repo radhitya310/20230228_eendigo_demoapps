@@ -43,11 +43,12 @@ dependencies:
   dotted_border: ^2.0.0+3
   google_fonts: ^2.1.0
   simple_gradient_text: ^1.2.4
-  file_picker: ^5.2.6
+  file_picker: ^5.3.3
   image_to_byte: ^1.0.0
   path_provider: ^2.0.13
   shared_preferences: ^2.0.20
   settings_ui: ^2.0.2
+  dio: ^5.3.2
   flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:

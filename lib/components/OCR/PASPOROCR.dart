@@ -1,45 +1,43 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:eendigodemo/components/OCRResult/OCRKKResult.dart';
+import 'package:eendigodemo/CameraController/CameraContorller.dart';
 import 'package:eendigodemo/components/OCRResult/OCRNPWPResults.dart';
-import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
-import 'package:eendigodemo/liveness.dart';
-import 'package:eendigodemo/model/KKOCRModel.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:eendigodemo/components/OCRResult/PasporResult.dart';
+import 'package:eendigodemo/model/PasporOCRModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-class KKOCR extends StatefulWidget {
+class PASPOROCR extends StatefulWidget {
+  final List<OcrPaspor> data = [];
   final String title;
 
-  KKOCR(this.title);
+  PASPOROCR(this.title);
 
   @override
-  State<KKOCR> createState() => _OcrHomepageState(title);
+  State<PASPOROCR> createState() => _OcrHomepageState(title);
 }
 
-class _OcrHomepageState extends State<KKOCR> {
+class _OcrHomepageState extends State<PASPOROCR> {
   Uint8List? _image;
   bool isLoading = false;
-  bool isCamera = false;
-  final String title;
 
+  final String title;
   _OcrHomepageState(this.title);
 
   Future getImage() async {
     var image = await FilePicker.platform.pickFiles();
     if (image != null) {
+      final pickedImageFile = image.files.first.bytes;
       setState(() {
-        _image = image.files.first.bytes;
-        print('Image Path $_image');
+        _image = pickedImageFile;
+        // print('Image Path $_image');
       });
     }
   }
@@ -48,27 +46,29 @@ class _OcrHomepageState extends State<KKOCR> {
   Future getImagecamera() async {
     var image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      setState(() async {
-        _image = await image.readAsBytes();
+      final pickedImageFile = File(image.path);
+      setState(() {
+        _image = pickedImageFile.readAsBytesSync();
         print('Image Path $_image');
       });
     }
   }
 
-  Future<List<Kkocr>> KKOcrApi(Uint8List _KtpImage) async {
-    List<Kkocr> data = [];
+  Future<List<OcrPaspor>> PASPOROcrApi(Uint8List _PasporImage) async {
+    List<OcrPaspor> data = [];
 
-    final Url = 'https://api.eendigo.app/ocr/kk';
+    final Url = 'https://api.eendigo.app/ocr/npwp';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    // final file = html.File(_KtpImage.path.codeUnits, _KtpImage.path);
+    // final file = File(_KtpImage.path);
+    // final file = File(_KtpImage.path);
     final pic =
-        await http.MultipartFile.fromBytes('img', _KtpImage, filename: 'KK');
+        http.MultipartFile.fromBytes('img', _PasporImage, filename: 'PASPOR');
     request.files.add(pic);
     request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
     request.fields['tenant_code'] = 'ADINS';
 
-    final timeout = Duration(seconds: 120);
+    final timeout = Duration(seconds: 10);
     final client = http.Client();
 
     try {
@@ -98,8 +98,16 @@ class _OcrHomepageState extends State<KKOCR> {
           Map<String, dynamic> read = responses['read'];
           Read reads = Read.fromJson(read);
 
-          data.add(Kkocr(
-              message: message, ocrDate: date, read: reads, status: status));
+          Map<String, dynamic> readConfidences = responses['read_confidence'];
+          ReadConfidence readConfidence =
+              ReadConfidence.fromJson(readConfidences);
+
+          data.add(OcrPaspor(
+              message: message,
+              ocrDate: date,
+              read: reads,
+              readConfidence: readConfidence,
+              status: status));
         }
       } else {
         setState(() {
@@ -119,6 +127,7 @@ class _OcrHomepageState extends State<KKOCR> {
         isLoading = false;
       });
     }
+
     return data;
   }
 
@@ -133,7 +142,7 @@ class _OcrHomepageState extends State<KKOCR> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            title: const Text('OCR KK'),
+            title: const Text('OCR NPWP'),
           ),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
@@ -142,7 +151,7 @@ class _OcrHomepageState extends State<KKOCR> {
                       isLoading = true;
                     });
                     if (_image != null) {
-                      KKOcrApi(_image!).then((value) {
+                      PASPOROcrApi(_image!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -151,7 +160,7 @@ class _OcrHomepageState extends State<KKOCR> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      OcrKKResults(data: value)));
+                                      PASPORresult(data: value)));
                         }
                       });
                     } else {
@@ -245,8 +254,11 @@ class _OcrHomepageState extends State<KKOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          getImagecamera();
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
+                          // getImagecamera();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraConts()));
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -304,7 +316,9 @@ class _OcrHomepageState extends State<KKOCR> {
                       Container(
                           height: MediaQuery.of(context).size.height / 3.5,
                           width: MediaQuery.of(context).size.width - 50,
-                          child: Image.memory(_image!)),
+                          child: Image.memory(
+                            _image!,
+                          )),
                       Positioned(
                         right: 20,
                         top: 0,
