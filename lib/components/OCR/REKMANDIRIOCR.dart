@@ -122,8 +122,20 @@ class _OcrHomepageState extends State<REKMANDIRIOCR> {
       )),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('OCR Rek Mandiri'),
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('Assets/icons/logo-eendigo-trial.png',
+                        fit: BoxFit.contain),
+                  ],
+                ),
+              ),
+            ),
           ),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(

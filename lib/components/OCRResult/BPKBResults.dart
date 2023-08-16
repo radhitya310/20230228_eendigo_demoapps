@@ -9,39 +9,65 @@ class BPKBRESULTS extends StatelessWidget {
   // final List<Widget> data1;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text('Result'),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("Assets/img/background-eendigo_(1).png"),
+          fit: BoxFit.cover,
         ),
-      body: Center(
-          child: Column(
-        children: [
-          Text('date : ' + data[0].ocrDate),
-          Text('message : ' + data[0].message),
-          Text('status : ' + data[0].status),
-          Text('Alamat : ' + data[0].read.alamat),
-          Text('Alamat Email : ' + data[0].read.alamatEmail),
-          Text('Bahan Bakar : ' + data[0].read.bahanBakar),
-          Text('Isi Silinder : ' + data[0].read.isiSilinder),
-          Text('Jenis : ' + data[0].read.jenis),
-          Text('Jumlah Roda : ' + data[0].read.jumlahRoda),
-          Text('Jumlah Sumbu : ' + data[0].read.jumlahSumbu),
-          Text('Lok Dikeluarkan : ' + data[0].read.lokDikeluarkan),
-          Text('Merk : ' + data[0].read.merk),
-          Text('Model : ' + data[0].read.model),
-          Text('NIK : ' + data[0].read.nik),
-          Text('No BPKB : ' + data[0].read.noBpkb),
-          Text('No Mesin : ' + data[0].read.nomorMesin),
-          Text('No Rangka : ' + data[0].read.nomorRangka),
-          Text('No Registrasi : ' + data[0].read.nomorRegistrasi),
-          Text('Pekerjaan : ' + data[0].read.pekerjaan),
-          Text('Tanggal Dikeluarkan : ' + data[0].read.tglDikeluarkan),
-          Text('Tahun Pembuatan : ' + data[0].read.tahunPembuatan),
-          Text('Type : ' + data[0].read.type),
-          Text('Warna : ' + data[0].read.warna),
-          CopyColumnDataButton(data: data[0].read),
-        ],
-      )),
+      ),
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(100),
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("Assets/img/background-eendigo_(1).png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            padding: const EdgeInsets.all(12),
+            child: SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('Assets/icons/logo-eendigo-trial.png',
+                      fit: BoxFit.contain),
+                ],
+              ),
+            ),
+          ),
+        ),
+        body: Center(
+            child: Column(
+          children: [
+            Text('date : ' + data[0].ocrDate),
+            Text('message : ' + data[0].message),
+            Text('status : ' + data[0].status),
+            Text('Alamat : ' + data[0].read.alamat),
+            Text('Alamat Email : ' + data[0].read.alamatEmail),
+            Text('Bahan Bakar : ' + data[0].read.bahanBakar),
+            Text('Isi Silinder : ' + data[0].read.isiSilinder),
+            Text('Jenis : ' + data[0].read.jenis),
+            Text('Jumlah Roda : ' + data[0].read.jumlahRoda),
+            Text('Jumlah Sumbu : ' + data[0].read.jumlahSumbu),
+            Text('Lok Dikeluarkan : ' + data[0].read.lokDikeluarkan),
+            Text('Merk : ' + data[0].read.merk),
+            Text('Model : ' + data[0].read.model),
+            Text('NIK : ' + data[0].read.nik),
+            Text('No BPKB : ' + data[0].read.noBpkb),
+            Text('No Mesin : ' + data[0].read.nomorMesin),
+            Text('No Rangka : ' + data[0].read.nomorRangka),
+            Text('No Registrasi : ' + data[0].read.nomorRegistrasi),
+            Text('Pekerjaan : ' + data[0].read.pekerjaan),
+            Text('Tanggal Dikeluarkan : ' + data[0].read.tglDikeluarkan),
+            Text('Tahun Pembuatan : ' + data[0].read.tahunPembuatan),
+            Text('Type : ' + data[0].read.type),
+            Text('Warna : ' + data[0].read.warna),
+            CopyColumnDataButton(data: data[0].read),
+          ],
+        )),
+      ),
     );
   }
 }

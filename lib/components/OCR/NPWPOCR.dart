@@ -97,8 +97,15 @@ class _OcrHomepageState extends State<NPWPOCR> {
           Map<String, dynamic> read = responses['read'];
           Read reads = Read.fromJson(read);
 
+          Map<String, dynamic> readconfidence = responses['read_confidence'];
+          Read2 readconfidences = Read2.fromJson(readconfidence);
+
           data.add(Npwpocr(
-              ocrDate: date, message: message, read: reads, status: status));
+              ocrDate: date,
+              message: message,
+              read: reads,
+              readConfidence: readconfidences,
+              status: status));
         }
       } else {
         setState(() {
@@ -125,15 +132,27 @@ class _OcrHomepageState extends State<NPWPOCR> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage("Assets/img/background-eendigo_(1).png"),
-        fit: BoxFit.cover,
-      )),
-      child: Scaffold(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          image: AssetImage("Assets/img/background-eendigo_(1).png"),
+          fit: BoxFit.cover,
+        )),
+        child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('OCR NPWP'),
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('Assets/icons/logo-eendigo-trial.png',
+                        fit: BoxFit.contain),
+                  ],
+                ),
+              ),
+            ),
           ),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
@@ -167,35 +186,40 @@ class _OcrHomepageState extends State<NPWPOCR> {
                   child: const Icon(Icons.send),
                 )
               : null,
-          body: (isLoading == false)
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GradientText(title,
-                            style: (TextStyle(
-                                fontSize: 60, fontWeight: FontWeight.bold)),
-                            colors: [
-                              Color.fromARGB(255, 37, 162, 220),
-                              Color.fromARGB(255, 28, 115, 185),
-                              Color.fromARGB(255, 59, 67, 127),
-                            ])),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 70.0),
-                      child: Center(child: ImageCatcher(context)),
-                    ),
-                    Spacer()
-                  ],
-                )
-              : Center(
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Center(child: CircularProgressIndicator())),
-                )),
-    );
+          body: Center(
+            child: Container(
+                width: MediaQuery.of(context).size.height / 1.3,
+                child: (isLoading == false)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GradientText(title,
+                                  style: (TextStyle(
+                                      fontSize: 60,
+                                      fontWeight: FontWeight.bold)),
+                                  colors: [
+                                    Color.fromARGB(255, 37, 162, 220),
+                                    Color.fromARGB(255, 28, 115, 185),
+                                    Color.fromARGB(255, 59, 67, 127),
+                                  ])),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 70.0),
+                            child: Center(child: ImageCatcher(context)),
+                          ),
+                          Spacer()
+                        ],
+                      )
+                    : Center(
+                        child: SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Center(child: CircularProgressIndicator())),
+                      )),
+          ),
+        ));
   }
 
   void imageChooser(BuildContext context) {
@@ -279,7 +303,7 @@ class _OcrHomepageState extends State<NPWPOCR> {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height / 3.5,
+            height: MediaQuery.of(context).size.height / 1.7,
             child: (_image == null)
                 ? InkWell(
                     splashColor: Colors.transparent,
@@ -287,7 +311,7 @@ class _OcrHomepageState extends State<NPWPOCR> {
                       imageChooser(context);
                     },
                     child: Container(
-                        height: MediaQuery.of(context).size.height / 3.5,
+                        height: 200,
                         width: MediaQuery.of(context).size.width - 50,
                         child: DottedBorder(
                           color: const Color.fromARGB(255, 78, 199, 30),
@@ -305,7 +329,7 @@ class _OcrHomepageState extends State<NPWPOCR> {
                 : Stack(
                     children: [
                       Container(
-                          height: MediaQuery.of(context).size.height / 3.5,
+                          height: MediaQuery.of(context).size.height / 1.5,
                           width: MediaQuery.of(context).size.width - 50,
                           child: Image.memory(
                             _image!,

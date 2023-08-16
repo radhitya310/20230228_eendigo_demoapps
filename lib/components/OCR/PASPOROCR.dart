@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
-import 'package:eendigodemo/components/OCRResult/OCRNPWPResults.dart';
 import 'package:eendigodemo/components/OCRResult/PasporResult.dart';
 import 'package:eendigodemo/model/PasporOCRModel.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,7 +56,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
   Future<List<OcrPaspor>> PASPOROcrApi(Uint8List _PasporImage) async {
     List<OcrPaspor> data = [];
 
-    final Url = 'https://api.eendigo.app/ocr/npwp';
+    final Url = 'https://adinsocr-xityk2yyoa-et.a.run.app/ocr_passport';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     // final file = File(_KtpImage.path);
@@ -141,8 +140,20 @@ class _OcrHomepageState extends State<PASPOROCR> {
       )),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('OCR NPWP'),
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('Assets/icons/logo-eendigo-trial.png',
+                        fit: BoxFit.contain),
+                  ],
+                ),
+              ),
+            ),
           ),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
@@ -176,34 +187,39 @@ class _OcrHomepageState extends State<PASPOROCR> {
                   child: const Icon(Icons.send),
                 )
               : null,
-          body: (isLoading == false)
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GradientText(title,
-                            style: (TextStyle(
-                                fontSize: 60, fontWeight: FontWeight.bold)),
-                            colors: [
-                              Color.fromARGB(255, 37, 162, 220),
-                              Color.fromARGB(255, 28, 115, 185),
-                              Color.fromARGB(255, 59, 67, 127),
-                            ])),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 70.0),
-                      child: Center(child: ImageCatcher(context)),
+          body: Center(
+            child: Container(
+              width: MediaQuery.of(context).size.height / 1.3,
+              child: (isLoading == false)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GradientText(title,
+                                style: (TextStyle(
+                                    fontSize: 60, fontWeight: FontWeight.bold)),
+                                colors: [
+                                  Color.fromARGB(255, 37, 162, 220),
+                                  Color.fromARGB(255, 28, 115, 185),
+                                  Color.fromARGB(255, 59, 67, 127),
+                                ])),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 70.0),
+                          child: Center(child: ImageCatcher(context)),
+                        ),
+                        Spacer()
+                      ],
+                    )
+                  : Center(
+                      child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Center(child: CircularProgressIndicator())),
                     ),
-                    Spacer()
-                  ],
-                )
-              : Center(
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Center(child: CircularProgressIndicator())),
-                )),
+            ),
+          )),
     );
   }
 
@@ -288,7 +304,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height / 3.5,
+            height: MediaQuery.of(context).size.height / 1.7,
             child: (_image == null)
                 ? InkWell(
                     splashColor: Colors.transparent,
@@ -314,7 +330,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
                 : Stack(
                     children: [
                       Container(
-                          height: MediaQuery.of(context).size.height / 3.5,
+                          height: MediaQuery.of(context).size.height / 1.5,
                           width: MediaQuery.of(context).size.width - 50,
                           child: Image.memory(
                             _image!,

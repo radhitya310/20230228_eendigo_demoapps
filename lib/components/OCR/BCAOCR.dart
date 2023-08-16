@@ -122,8 +122,20 @@ class _OcrHomepageState extends State<REKBCAOCR> {
       )),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('OCR Rek BCA'),
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('Assets/icons/logo-eendigo-trial.png',
+                        fit: BoxFit.contain),
+                  ],
+                ),
+              ),
+            ),
           ),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
@@ -195,7 +207,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
     return Center(
         child: Container(
       width: MediaQuery.of(context).size.width - 50,
-      height: MediaQuery.of(context).size.height / 3.5,
+      height: MediaQuery.of(context).size.height / 1.7,
       child: (_file == null)
           ? InkWell(
               splashColor: Colors.transparent,

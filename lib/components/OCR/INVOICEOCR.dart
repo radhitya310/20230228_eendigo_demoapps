@@ -183,8 +183,20 @@ class _InvoiceOCRState extends State<InvoiceOCR> {
       )),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('OCR Invoice'),
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(100),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              child: SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('Assets/icons/logo-eendigo-trial.png',
+                        fit: BoxFit.contain),
+                  ],
+                ),
+              ),
+            ),
           ),
           body: (isLoading == false)
               ? SingleChildScrollView(
@@ -310,35 +322,49 @@ class _InvoiceOCRState extends State<InvoiceOCR> {
                 children: List.generate(
                   iomData!.table![index].info!.length + 1,
                   (rowIndex) {
-                    
                     return TableRow(
-                      children: rowIndex == 0 ? 
-                          List.generate(
-                        iomData!.table![index].info![rowIndex].row!.length,
-                        (colIndex) {
-                          return TableCell(
-                            child: Container(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(iomData!.table![index].info![rowIndex]
-                                    .row![colIndex].label
-                                    .toString() + ' (' + iomData!.table![index].info![rowIndex]
-                                    .row![colIndex].type
-                                    .toString() + ')',style: TextStyle(fontWeight: FontWeight.bold)), ),
-                          );
-                        },
-                      )
-                       : List.generate(
-                        iomData!.table![index].info![rowIndex - 1].row!.length,
-                        (colIndex) {
-                          return TableCell(
-                            child: Container(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(iomData!.table![index].info![rowIndex - 1]
-                                    .row![colIndex].value
-                                    .toString())),
-                          );
-                        },
-                      ),
+                      children: rowIndex == 0
+                          ? List.generate(
+                              iomData!
+                                  .table![index].info![rowIndex].row!.length,
+                              (colIndex) {
+                                return TableCell(
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                        iomData!.table![index].info![rowIndex]
+                                                .row![colIndex].label
+                                                .toString() +
+                                            ' (' +
+                                            iomData!
+                                                .table![index]
+                                                .info![rowIndex]
+                                                .row![colIndex]
+                                                .type
+                                                .toString() +
+                                            ')',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                );
+                              },
+                            )
+                          : List.generate(
+                              iomData!.table![index].info![rowIndex - 1].row!
+                                  .length,
+                              (colIndex) {
+                                return TableCell(
+                                  child: Container(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(iomData!
+                                          .table![index]
+                                          .info![rowIndex - 1]
+                                          .row![colIndex]
+                                          .value
+                                          .toString())),
+                                );
+                              },
+                            ),
                     );
                   },
                 ),

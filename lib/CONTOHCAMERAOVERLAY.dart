@@ -74,8 +74,15 @@ class _OcrHomepageState extends State<contohKamera> {
         Map<String, dynamic> read = responses['read'];
         Read reads = Read.fromJson(read);
 
+        Map<String, dynamic> readC = responses['read_confidence'];
+        ReadConfidence readConfidence = ReadConfidence.fromJson(readC);
+
         data.add(Kkocr(
-            message: message, ocrDate: date, read: reads, status: status));
+            message: message,
+            ocrDate: date,
+            read: reads,
+            readConfidence: readConfidence,
+            status: status));
       }
     } else {
       setState(() {

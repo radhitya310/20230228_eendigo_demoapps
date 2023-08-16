@@ -10,9 +10,21 @@ class STNKRESULTS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: const Text('Result'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          child: SafeArea(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('Assets/icons/logo-eendigo-trial.png',
+                    fit: BoxFit.contain),
+              ],
+            ),
+          ),
         ),
+      ),
       body: Center(
           child: Column(
         children: [
