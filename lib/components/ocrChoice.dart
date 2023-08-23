@@ -5,6 +5,7 @@ import 'package:eendigodemo/components/OCR/BPKBOCR.dart';
 import 'package:eendigodemo/components/OCR/KKOCR.dart';
 import 'package:eendigodemo/components/OCR/KPTOCR.dart';
 import 'package:eendigodemo/components/OCR/NPWPOCR.dart';
+import 'package:eendigodemo/components/OCR/PASPOROCR.dart';
 import 'package:eendigodemo/components/OCR/REKMANDIRIOCR.dart';
 import 'package:eendigodemo/components/OCR/STNKOCR.dart';
 import 'package:eendigodemo/model/KKOCRModel.dart';
@@ -71,6 +72,14 @@ class _OCRchoiceState extends State<OCRchoice> {
       'icon-height': 100.0
     },
     {
+      'label': 'OCR Paspor',
+      'icon': 'Assets/icons/paspor.png',
+      'screens': PASPOROCR('PASPOR \nOCR'),
+      'color': Color.fromARGB(255, 176, 162, 191),
+      'icon-width': 100.0,
+      'icon-height': 100.0
+    },
+    {
       'label': 'OCR NPWP',
       'icon': 'Assets/icons/npwp.png',
       'screens': NPWPOCR('NPWP \nOCR'),
@@ -118,53 +127,13 @@ class _OCRchoiceState extends State<OCRchoice> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(100),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: SafeArea(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Material(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      borderRadius: BorderRadius.circular(32),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.search),
-                              SizedBox(
-                                width: 16,
-                              ),
-                              Text(
-                                'Find services, food, or place',
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Material(
-                    shape: const CircleBorder(),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Icon(
-                          Icons.person,
-                          color: Theme.of(context).primaryColor,
-                          size: 28,
-                        ),
-                      ),
-                    ),
-                  ),
+                  Image.asset('Assets/icons/logo-eendigo-trial.png',
+                      width: 250, fit: BoxFit.scaleDown),
                 ],
               ),
             ),

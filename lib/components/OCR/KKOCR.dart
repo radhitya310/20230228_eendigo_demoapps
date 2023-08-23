@@ -58,16 +58,15 @@ class _OcrHomepageState extends State<KKOCR> {
   Future<List<Kkocr>> KKOcrApi(File _KtpImage) async {
     List<Kkocr> data = [];
 
-    final Url =
-        'https://5236635838005115.ap-southeast-5.fc.aliyuncs.com/2016-08-15/proxy/ocr/kk/';
+    final Url = 'https://api.eendigo.app/ocr/kk';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     // final file = File(_KtpImage.path);
     final file = File(_KtpImage.path);
     final pic = await http.MultipartFile.fromPath('img', file.path);
     request.files.add(pic);
-    request.fields['key'] = 'CV-ADINS-H1@W35GHRE0ZBFIF';
-    request.fields['tenant_code'] = 'FIF';
+    request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
+    request.fields['tenant_code'] = 'ADINS';
 
     final timeout = Duration(seconds: 120);
     final client = http.Client();
@@ -99,8 +98,15 @@ class _OcrHomepageState extends State<KKOCR> {
           Map<String, dynamic> read = responses['read'];
           Read reads = Read.fromJson(read);
 
+          Map<String, dynamic> readC = responses['read_confidence'];
+          ReadConfidence readConfidence = ReadConfidence.fromJson(readC);
+
           data.add(Kkocr(
-              message: message, ocrDate: date, read: reads, status: status));
+              message: message,
+              ocrDate: date,
+              read: reads,
+              readConfidence: readConfidence,
+              status: status));
         }
       } else {
         setState(() {
@@ -108,7 +114,7 @@ class _OcrHomepageState extends State<KKOCR> {
         });
         print('failed');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Request Failed')),
+          SnackBar(content: Text('Request Failed ${response.statusCode}')),
         );
       }
     } catch (e) {
@@ -136,62 +142,13 @@ class _OcrHomepageState extends State<KKOCR> {
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(100),
             child: Container(
-              color: Color.fromARGB(136, 255, 255, 255),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: SafeArea(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: TextField(
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          // ignore: prefer_const_constructors
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Color.fromARGB(255, 89, 83, 108),
-                          ),
-                          fillColor: Colors.grey.shade300,
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255, 92, 64, 115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(255, 92, 64, 115),
-                              ),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          contentPadding:
-                              const EdgeInsets.only(top: 14.0, left: 20.0),
-                          hintText: 'Email Address',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Material(
-                      shape: const CircleBorder(),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Icon(
-                            Icons.person,
-                            color: Theme.of(context).primaryColor,
-                            size: 28,
-                          ),
-                        ),
-                      ),
-                    ),
+                    Image.asset('Assets/icons/logo-eendigo-trial.png',
+                        width: 250, fit: BoxFit.scaleDown),
                   ],
                 ),
               ),

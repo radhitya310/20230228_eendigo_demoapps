@@ -74,8 +74,15 @@ class _OcrHomepageState extends State<contohKamera> {
         Map<String, dynamic> read = responses['read'];
         Read reads = Read.fromJson(read);
 
+        Map<String, dynamic> readC = responses['read'];
+        ReadConfidence readsC = ReadConfidence.fromJson(readC);
+
         data.add(Kkocr(
-            message: message, ocrDate: date, read: reads, status: status));
+            message: message,
+            ocrDate: date,
+            read: reads,
+            readConfidence: readsC,
+            status: status));
       }
     } else {
       setState(() {
@@ -83,7 +90,7 @@ class _OcrHomepageState extends State<contohKamera> {
       });
       print('failed');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request Failed')),
+        SnackBar(content: Text('Request Failed ${response.statusCode}')),
       );
     }
     return data;

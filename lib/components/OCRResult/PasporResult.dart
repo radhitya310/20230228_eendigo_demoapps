@@ -1,10 +1,12 @@
 import 'package:eendigodemo/components/CopyDataComponent/CopyDataNPWP.dart';
+import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
 import 'package:eendigodemo/model/NPWPModel.dart';
+import 'package:eendigodemo/model/PasporOCRModel.dart';
 import 'package:flutter/material.dart';
 
-class NPWPResults extends StatelessWidget {
-  final List<Npwpocr> data;
-  const NPWPResults({required this.data});
+class PASPORresult extends StatelessWidget {
+  final List<OcrPaspor> data;
+  const PASPORresult({required this.data});
 
   // final List<Widget> data1;
   @override
@@ -80,20 +82,41 @@ class NPWPResults extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Nama Lengkap',
+                              child: Text('Nama Depan',
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.nama,
+                              child: Text(data[i].read.name,
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                  data[i].readConfidence.nama.toString(),
+                                  data[i].readConfidence.name.toString(),
+                                  style: TextStyle(fontSize: 14)),
+                            ))
+                          ]),
+                          TableRow(children: [
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Nama Belakang',
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(data[i].read.surname,
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  data[i].readConfidence.surname.toString(),
                                   style: TextStyle(fontSize: 14)),
                             ))
                           ]),
@@ -102,59 +125,19 @@ class NPWPResults extends StatelessWidget {
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child:
-                                  Text('NIK', style: TextStyle(fontSize: 14)),
+                                  Text('Id No', style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.nik,
-                                  style: TextStyle(fontSize: 14)),
-                            )),
-                            TableCell(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].readConfidence.nik.toString(),
-                                  style: TextStyle(fontSize: 14)),
-                            )),
-                          ]),
-                          TableRow(children: [
-                            TableCell(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child:
-                                  Text('KPP', style: TextStyle(fontSize: 14)),
-                            )),
-                            TableCell(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.kpp,
-                                  style: TextStyle(fontSize: 14)),
-                            )),
-                            TableCell(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].readConfidence.kpp.toString(),
-                                  style: TextStyle(fontSize: 14)),
-                            )),
-                          ]),
-                          TableRow(children: [
-                            TableCell(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('No NPWP',
-                                  style: TextStyle(fontSize: 14)),
-                            )),
-                            TableCell(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.noNpwp,
+                              child: Text(data[i].read.idNo,
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                  data[i].readConfidence.noNpwp.toString(),
+                                  data[i].readConfidence.idNo.toString(),
                                   style: TextStyle(fontSize: 14)),
                             )),
                           ]),
@@ -162,20 +145,149 @@ class NPWPResults extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Tempat Lahir',
+                              child: Text('Gender',
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.alamat,
+                              child: Text(data[i].read.gender,
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                  data[i].readConfidence.alamat.toString(),
+                                  data[i].readConfidence.gender.toString(),
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                          ]),
+                          TableRow(children: [
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Date Birth',
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(data[i].read.dateBirth,
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  data[i].readConfidence.dateBirth.toString(),
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                          ]),
+                          TableRow(children: [
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Date Expire',
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(data[i].read.dateExpire,
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  data[i].readConfidence.dateExpire.toString(),
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                          ]),
+                          TableRow(children: [
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Nationality',
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(data[i].read.nationality,
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  data[i].readConfidence.nationality.toString(),
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                          ]),
+                          TableRow(children: [
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Country',
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(data[i].read.country,
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  data[i].readConfidence.country.toString(),
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                          ]),
+                          TableRow(children: [
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Passport No',
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(data[i].read.passportNo,
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  data[i].readConfidence.passportNo.toString(),
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                          ]),
+                          TableRow(children: [
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Passport Type',
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(data[i].read.passportType,
+                                  style: TextStyle(fontSize: 14)),
+                            )),
+                            TableCell(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  data[i]
+                                      .readConfidence
+                                      .passportType
+                                      .toString(),
                                   style: TextStyle(fontSize: 14)),
                             )),
                           ]),
@@ -186,7 +298,6 @@ class NPWPResults extends StatelessWidget {
                 ),
               )
             },
-            CopyColumnDataButtonNPWP(data: data[0].read),
           ],
         )),
       ),

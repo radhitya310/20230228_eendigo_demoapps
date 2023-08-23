@@ -1,30 +1,33 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:eendigodemo/components/OCRResult/BPKBResults.dart';
-import 'package:eendigodemo/model/BPKBModel.dart';
+import 'package:eendigodemo/CameraController/CameraContorller.dart';
+import 'package:eendigodemo/components/OCRResult/PasporResult.dart';
+import 'package:eendigodemo/model/PasporOCRModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-class BPKBOCR extends StatefulWidget {
-  final List<Bpkbocr> data = [];
+class PASPOROCR extends StatefulWidget {
+  final List<OcrPaspor> data = [];
   final String title;
 
-  BPKBOCR(this.title);
+  PASPOROCR(this.title);
 
   @override
-  State<BPKBOCR> createState() => _OcrHomepageState(title);
+  State<PASPOROCR> createState() => _OcrHomepageState(title);
 }
 
-class _OcrHomepageState extends State<BPKBOCR> {
+class _OcrHomepageState extends State<PASPOROCR> {
   File? _image;
-  File? _image2;
   bool isLoading = false;
-  final String title;
 
+  final String title;
   _OcrHomepageState(this.title);
 
   Future getImage() async {
@@ -50,60 +53,20 @@ class _OcrHomepageState extends State<BPKBOCR> {
     }
   }
 
-  Future getImage2() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      final pickedImageFile = File(image.path);
-      setState(() {
-        _image2 = pickedImageFile;
-        print('Image Path $_image');
-      });
-    }
-  }
+  Future<List<OcrPaspor>> PASPOROcrApi(File? _PasporImage) async {
+    List<OcrPaspor> data = [];
 
-  @override
-  Future getImagecamera2() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (image != null) {
-      final pickedImageFile = File(image.path);
-      setState(() {
-        _image2 = pickedImageFile;
-        print('Image Path $_image');
-      });
-    }
-  }
-
-  Future<List<Bpkbocr>> KtpOcrApi(File? _BPKBImage, File? _BPKBImage2) async {
-    List<Bpkbocr> data = [];
-
-    final Url = 'https://api.eendigo.app/ocr/bpkb';
+    final Url = 'https://adinsocr-xityk2yyoa-et.a.run.app/ocr_passport';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-
-    final file = File('');
-    final file2 = File('');
-
-    if (_BPKBImage != null && _BPKBImage2 != null) {
-      final file = File(_BPKBImage.path);
-      final file2 = File(_BPKBImage2.path);
-      final pic = await http.MultipartFile.fromPath('halaman2', file.path);
-      request.files.add(pic);
-      final pic2 = await http.MultipartFile.fromPath('halaman3', file2.path);
-      request.files.add(pic2);
-    } else if (_BPKBImage != null && _BPKBImage2 == null) {
-      final file = File(_BPKBImage.path);
-      final pic = await http.MultipartFile.fromPath('halaman2', file.path);
-      // final pic2 = await http.MultipartFile.fromPath('halaman3', '');
-      request.files.add(pic);
-      // request.files.add(pic2);
-    } else {
-      final file2 = File(_BPKBImage2!.path);
-      final pic2 = await http.MultipartFile.fromPath('halaman3', file2.path);
-      request.files.add(pic2);
-    }
+    // final file = File(_KtpImage.path);
+    final file = File(_PasporImage!.path);
+    final pic = await http.MultipartFile.fromPath('img', file.path);
+    request.files.add(pic);
     request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
     request.fields['tenant_code'] = 'ADINS';
-    final timeout = Duration(seconds: 120);
+
+    final timeout = Duration(seconds: 10);
     final client = http.Client();
 
     try {
@@ -121,7 +84,6 @@ class _OcrHomepageState extends State<BPKBOCR> {
         var message = responses['message'];
         var date = responses['ocr_date'];
         var status = responses['status'];
-        var num_of_pages = responses['num_of_pages'];
         if (status == 'FAILED') {
           setState(() {
             isLoading = false;
@@ -134,21 +96,22 @@ class _OcrHomepageState extends State<BPKBOCR> {
           Map<String, dynamic> read = responses['read'];
           Read reads = Read.fromJson(read);
 
-          data.add(Bpkbocr(
-              ocrDate: date,
+          Map<String, dynamic> readConfidences = responses['read_confidence'];
+          ReadConfidence readConfidence =
+              ReadConfidence.fromJson(readConfidences);
+
+          data.add(OcrPaspor(
               message: message,
+              ocrDate: date,
               read: reads,
-              status: status,
-              numOfPages: num_of_pages));
+              readConfidence: readConfidence,
+              status: status));
         }
       } else {
         setState(() {
           isLoading = false;
         });
         print('failed');
-        print(response.statusCode);
-        print(response.request);
-        // print(await utf8.decodeStream(response.stream));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Request Failed ${response.statusCode}')),
         );
@@ -185,7 +148,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset('Assets/icons/logo-eendigo-trial.png',
-                        width: 250, fit: BoxFit.scaleDown),
+                        fit: BoxFit.contain),
                   ],
                 ),
               ),
@@ -197,8 +160,8 @@ class _OcrHomepageState extends State<BPKBOCR> {
                     setState(() {
                       isLoading = true;
                     });
-                    if (_image != null || _image2 != null) {
-                      KtpOcrApi(_image, _image2).then((value) {
+                    if (_image != null) {
+                      PASPOROcrApi(_image!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -207,7 +170,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      BPKBRESULTS(data: value)));
+                                      PASPORresult(data: value)));
                         }
                       });
                     } else {
@@ -223,38 +186,43 @@ class _OcrHomepageState extends State<BPKBOCR> {
                   child: const Icon(Icons.send),
                 )
               : null,
-          body: (isLoading == false)
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: GradientText(title,
-                            style: (TextStyle(
-                                fontSize: 60, fontWeight: FontWeight.bold)),
-                            colors: [
-                              Color.fromARGB(255, 37, 162, 220),
-                              Color.fromARGB(255, 28, 115, 185),
-                              Color.fromARGB(255, 59, 67, 127),
-                            ])),
-                    Column(
+          body: Center(
+            child: Container(
+              width: MediaQuery.of(context).size.height / 1.3,
+              child: (isLoading == false)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Center(child: ImageCatcher(context)),
-                        Center(child: ImageCatcher2(context)),
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GradientText(title,
+                                style: (TextStyle(
+                                    fontSize: 60, fontWeight: FontWeight.bold)),
+                                colors: [
+                                  Color.fromARGB(255, 37, 162, 220),
+                                  Color.fromARGB(255, 28, 115, 185),
+                                  Color.fromARGB(255, 59, 67, 127),
+                                ])),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 70.0),
+                          child: Center(child: ImageCatcher(context)),
+                        ),
+                        Spacer()
                       ],
                     )
-                  ],
-                )
-              : Center(
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Center(child: CircularProgressIndicator())),
-                )),
+                  : Center(
+                      child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Center(child: CircularProgressIndicator())),
+                    ),
+            ),
+          )),
     );
   }
 
-  void imageChooser(BuildContext context, int flag) {
+  void imageChooser(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -280,11 +248,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          if (flag == 0) {
-                            getImage();
-                          } else {
-                            getImage2();
-                          }
+                          getImage();
                         },
                         child: Container(
                           child: Column(
@@ -304,13 +268,8 @@ class _OcrHomepageState extends State<BPKBOCR> {
                     Container(
                       child: InkWell(
                         onTap: () {
-                          Navigator.pop(context);
-                          if (flag == 0) {
-                            getImagecamera();
-                          } else {
-                            getImagecamera2();
-                          }
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
+                          // Navigator.pop(context);
+                          getImagecamera();
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -336,7 +295,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
   }
 
   @override
-  Widget ImageCatcher(BuildContext contex) {
+  Widget ImageCatcher(BuildContext context) {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
@@ -345,7 +304,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context, 0);
+                      imageChooser(context);
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 3.5,
@@ -366,7 +325,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                 : Stack(
                     children: [
                       Container(
-                          height: MediaQuery.of(context).size.height / 3.5,
+                          height: MediaQuery.of(context).size.height / 1.5,
                           width: MediaQuery.of(context).size.width - 50,
                           child: Image.file(
                             File(_image!.path),
@@ -383,66 +342,6 @@ class _OcrHomepageState extends State<BPKBOCR> {
                                   onPressed: () {
                                     setState(() {
                                       _image = null;
-                                    });
-                                  },
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                  ))),
-                        ),
-                      )
-                    ],
-                  )));
-  }
-
-  @override
-  Widget ImageCatcher2(BuildContext contex) {
-    return Center(
-        child: Container(
-            width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height / 3.5,
-            child: (_image2 == null)
-                ? InkWell(
-                    splashColor: Colors.transparent,
-                    onTap: () {
-                      imageChooser(context, 1);
-                    },
-                    child: Container(
-                        height: MediaQuery.of(context).size.height / 3.5,
-                        width: MediaQuery.of(context).size.width - 50,
-                        child: DottedBorder(
-                          color: const Color.fromARGB(255, 78, 199, 30),
-                          strokeWidth: 1,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(CupertinoIcons.plus),
-                              ],
-                            ),
-                          ),
-                        )),
-                  )
-                : Stack(
-                    children: [
-                      Container(
-                          height: MediaQuery.of(context).size.height / 3.5,
-                          width: MediaQuery.of(context).size.width - 50,
-                          child: Image.file(
-                            File(_image2!.path),
-                          )),
-                      Positioned(
-                        right: 20,
-                        top: 0,
-                        child: Container(
-                          color: Color.fromARGB(255, 219, 218, 218),
-                          width: 40,
-                          height: 40,
-                          child: Center(
-                              child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _image2 = null;
                                     });
                                   },
                                   child: Icon(

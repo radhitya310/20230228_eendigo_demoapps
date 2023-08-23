@@ -49,53 +49,13 @@ class HomeScreen extends StatelessWidget {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(100),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: SafeArea(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Material(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      borderRadius: BorderRadius.circular(32),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: const [
-                              Icon(Icons.search),
-                              SizedBox(
-                                width: 16,
-                              ),
-                              Text(
-                                'Find services, food, or place',
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Material(
-                    shape: const CircleBorder(),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Icon(
-                          Icons.person,
-                          color: Theme.of(context).primaryColor,
-                          size: 28,
-                        ),
-                      ),
-                    ),
-                  ),
+                  Image.asset('Assets/icons/logo-eendigo-trial.png',
+                      width: 250, fit: BoxFit.scaleDown),
                 ],
               ),
             ),
