@@ -219,34 +219,45 @@ class _OcrHomepageState extends State<BPKBOCR> {
                   child: const Icon(Icons.send),
                 )
               : null,
-          body: (isLoading == false)
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: GradientText(title,
-                            style: (TextStyle(
-                                fontSize: 60, fontWeight: FontWeight.bold)),
-                            colors: [
-                              Color.fromARGB(255, 37, 162, 220),
-                              Color.fromARGB(255, 28, 115, 185),
-                              Color.fromARGB(255, 59, 67, 127),
-                            ])),
-                    Column(
-                      children: [
-                        Center(child: ImageCatcher(context)),
-                        Center(child: ImageCatcher2(context)),
-                      ],
+          body: Center(
+            child: Container(
+              width: MediaQuery.of(context).size.height / 1.3,
+              child: (isLoading == false)
+                  ? Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 1.8,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.all(0.0),
+                                child: GradientText(title,
+                                    style: (TextStyle(
+                                        fontSize: 60,
+                                        fontWeight: FontWeight.bold)),
+                                    colors: [
+                                      Color.fromARGB(255, 37, 162, 220),
+                                      Color.fromARGB(255, 28, 115, 185),
+                                      Color.fromARGB(255, 59, 67, 127),
+                                    ])),
+                            Column(
+                              children: [
+                                Center(child: ImageCatcher(context)),
+                                Center(child: ImageCatcher2(context)),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
                     )
-                  ],
-                )
-              : Center(
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Center(child: CircularProgressIndicator())),
-                )),
+                  : Center(
+                      child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Center(child: CircularProgressIndicator())),
+                    ),
+            ),
+          )),
     );
   }
 
@@ -398,7 +409,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height / 3.5,
+            height: MediaQuery.of(context).size.height / 1.7,
             child: (_image2 == null)
                 ? InkWell(
                     splashColor: Colors.transparent,
@@ -406,7 +417,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       imageChooser(context, 1);
                     },
                     child: Container(
-                        height: MediaQuery.of(context).size.height / 3.5,
+                        height: MediaQuery.of(context).size.height / 1.5,
                         width: MediaQuery.of(context).size.width - 50,
                         child: DottedBorder(
                           color: const Color.fromARGB(255, 78, 199, 30),

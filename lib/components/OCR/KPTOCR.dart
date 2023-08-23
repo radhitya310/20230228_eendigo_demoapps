@@ -317,7 +317,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context);
+                      getImage();
                     },
                     child: Container(
                         height: 200,

@@ -308,7 +308,7 @@ class _OcrHomepageState extends State<NPWPOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context);
+                      getImage();
                     },
                     child: Container(
                         height: 200,

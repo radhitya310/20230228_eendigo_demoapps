@@ -38,6 +38,10 @@ class MyApp extends StatelessWidget {
       title: 'Eendigo Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: TextTheme(
+          bodyText1: TextStyle(fontSize: 24), // Apply to body text
+          // Add more text styles as needed
+        ), // Apply to body text
       ),
       home: Menu(),
     );

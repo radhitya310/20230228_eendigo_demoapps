@@ -83,7 +83,7 @@ class _OCRchoiceState extends State<OCRchoice> {
     {
       'label': 'OCR Paspor',
       'icon': 'Assets/icons/paspor.png',
-      'screens': PASPOROCR('NPWP \nOCR'),
+      'screens': PASPOROCR('PASPOR \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0

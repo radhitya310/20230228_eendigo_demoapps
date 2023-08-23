@@ -8,151 +8,180 @@ class OCRREKMANDIRIResults extends StatelessWidget {
   // final List<Widget> data1;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          child: SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('Assets/icons/logo-eendigo-trial.png',
-                    fit: BoxFit.contain),
-              ],
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("Assets/img/background-eendigo_(1).png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(100),
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            child: SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('Assets/icons/logo-eendigo-trial.png',
+                      fit: BoxFit.contain),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-            child: Column(
-          children: [
-            Text('AccountNumber : ' + data[0].read.identity.accountNumber),
-            Text('AlternateIncome1 : ' +
-                data[0].read.identity.alternateIncome1.toString()),
-            Text('AlternateIncome2 : ' +
-                data[0].read.identity.alternateIncome2.toString()),
-            Text('AlternateIncome3 : ' +
-                data[0].read.identity.alternateIncome3.toString()),
-            Text('AlternateIncome4 : ' +
-                data[0].read.identity.alternateIncome4.toString()),
-            Text('AlternateIncomeFinal : ' +
-                data[0].read.identity.alternateIncomeFinal.toString()),
-            Text('CreditTransactionsLast3Months : ' +
-                data[0].read.identity.creditTransactionsLast3Months.toString()),
-            Text('DebitTransactionsLast3Months : ' +
-                data[0].read.identity.debitTransactionsLast3Months.toString()),
-            Text('EndingBalance : ' +
-                data[0].read.identity.endingBalance.toString()),
-            Text('Name : ' + data[0].read.identity.name),
-            Text('TotalTransactionsCreditLast3Months : ' +
-                data[0]
-                    .read
-                    .identity
-                    .totalTransactionsCreditLast3Months
-                    .toString()),
-            Text('TotalTransactionsDebitLast3Months : ' +
-                data[0]
-                    .read
-                    .identity
-                    .totalTransactionsDebitLast3Months
-                    .toString()),
-            Text('TotalTransactionsLast3Months : ' +
-                data[0].read.identity.totalTransactionsLast3Months.toString()),
-            Text('WarningMutasi1 : ' +
-                data[0].read.identity.warningMutasi1.toString()),
-            Text('WarningMutasi1Description : ' +
-                data[0].read.identity.warningMutasi1Description),
-            for (int i = 0;
-                i < data[0].read.transactionHistory.length;
-                i++) ...{
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Text('Data  ${i + 1}'),
-                    Table(
-                      border: TableBorder.all(width: 1.0, color: Colors.grey),
-                      children: [
-                        if (data[0].read.transactionHistory.isNotEmpty) ...{
-                          TableRow(children: [
-                            TableCell(child: Text('Amount')),
-                            TableCell(
-                                child: Text(data[0]
-                                    .read
-                                    .transactionHistory[i]
-                                    .amount
-                                    .toString())),
-                          ]),
-                          TableRow(children: [
-                            TableCell(child: Text('Date')),
-                            TableCell(
-                                child: Text(
-                                    data[0].read.transactionHistory[i].date)),
-                          ]),
-                          TableRow(children: [
-                            TableCell(child: Text('Description')),
-                            TableCell(
-                                child: Text(data[0]
-                                    .read
-                                    .transactionHistory[i]
-                                    .description)),
-                          ]),
-                          TableRow(children: [
-                            TableCell(child: Text('Ending Balance')),
-                            TableCell(
-                                child: Text(data[0]
-                                    .read
-                                    .transactionHistory[i]
-                                    .endingBalance
-                                    .toString())),
-                          ]),
-                          TableRow(children: [
-                            TableCell(child: Text('Type')),
-                            TableCell(
-                                child: Text(
-                                    data[0].read.transactionHistory[i].type)),
-                          ]),
-                        }
-                      ],
-                    ),
-                  ],
-                ),
-              )
-            },
-            for (int j = 0;
-                j < data[0].read.transactionSummary.length;
-                j++) ...{
-              Text('Beggining Balance : ' +
+        body: SingleChildScrollView(
+          child: Center(
+              child: Column(
+            children: [
+              Text('AccountNumber : ' + data[0].read.identity.accountNumber),
+              Text('AlternateIncome1 : ' +
+                  data[0].read.identity.alternateIncome1.toString()),
+              Text('AlternateIncome2 : ' +
+                  data[0].read.identity.alternateIncome2.toString()),
+              Text('AlternateIncome3 : ' +
+                  data[0].read.identity.alternateIncome3.toString()),
+              Text('AlternateIncome4 : ' +
+                  data[0].read.identity.alternateIncome4.toString()),
+              Text('AlternateIncomeFinal : ' +
+                  data[0].read.identity.alternateIncomeFinal.toString()),
+              Text('CreditTransactionsLast3Months : ' +
                   data[0]
                       .read
-                      .transactionSummary[j]
-                      .beginningBalance
+                      .identity
+                      .creditTransactionsLast3Months
                       .toString()),
-              Text('Credit : ' +
-                  data[0].read.transactionSummary[j].credit.toString()),
-              Text('Credit Freq : ' +
-                  data[0].read.transactionSummary[j].creditFreq.toString()),
-              Text('Debit : ' +
-                  data[0].read.transactionSummary[j].debit.toString()),
-              Text('Debit Freq: ' +
-                  data[0].read.transactionSummary[j].debitFreq.toString()),
-              Text('Ending Balance : ' +
-                  data[0].read.transactionSummary[j].endingBalance.toString()),
-              Text('Period : ' +
-                  data[0].read.transactionSummary[j].period.toString()),
-              Text('warning Mutasi 2 : ' +
-                  data[0].read.transactionSummary[j].warningMutasi2.toString()),
-              Text('Warning Mutasi 2 Description : ' +
+              Text('DebitTransactionsLast3Months : ' +
                   data[0]
                       .read
-                      .transactionSummary[j]
-                      .warningMutasi2Description
+                      .identity
+                      .debitTransactionsLast3Months
                       .toString()),
-            },
-          ],
-        )),
+              Text('EndingBalance : ' +
+                  data[0].read.identity.endingBalance.toString()),
+              Text('Name : ' + data[0].read.identity.name),
+              Text('TotalTransactionsCreditLast3Months : ' +
+                  data[0]
+                      .read
+                      .identity
+                      .totalTransactionsCreditLast3Months
+                      .toString()),
+              Text('TotalTransactionsDebitLast3Months : ' +
+                  data[0]
+                      .read
+                      .identity
+                      .totalTransactionsDebitLast3Months
+                      .toString()),
+              Text('TotalTransactionsLast3Months : ' +
+                  data[0]
+                      .read
+                      .identity
+                      .totalTransactionsLast3Months
+                      .toString()),
+              Text('WarningMutasi1 : ' +
+                  data[0].read.identity.warningMutasi1.toString()),
+              Text('WarningMutasi1Description : ' +
+                  data[0].read.identity.warningMutasi1Description),
+              for (int i = 0;
+                  i < data[0].read.transactionHistory.length;
+                  i++) ...{
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text('Data  ${i + 1}'),
+                      Table(
+                        border: TableBorder.all(width: 1.0, color: Colors.grey),
+                        children: [
+                          if (data[0].read.transactionHistory.isNotEmpty) ...{
+                            TableRow(children: [
+                              TableCell(child: Text('Amount')),
+                              TableCell(
+                                  child: Text(data[0]
+                                      .read
+                                      .transactionHistory[i]
+                                      .amount
+                                      .toString())),
+                            ]),
+                            TableRow(children: [
+                              TableCell(child: Text('Date')),
+                              TableCell(
+                                  child: Text(
+                                      data[0].read.transactionHistory[i].date)),
+                            ]),
+                            TableRow(children: [
+                              TableCell(child: Text('Description')),
+                              TableCell(
+                                  child: Text(data[0]
+                                      .read
+                                      .transactionHistory[i]
+                                      .description)),
+                            ]),
+                            TableRow(children: [
+                              TableCell(child: Text('Ending Balance')),
+                              TableCell(
+                                  child: Text(data[0]
+                                      .read
+                                      .transactionHistory[i]
+                                      .endingBalance
+                                      .toString())),
+                            ]),
+                            TableRow(children: [
+                              TableCell(child: Text('Type')),
+                              TableCell(
+                                  child: Text(
+                                      data[0].read.transactionHistory[i].type)),
+                            ]),
+                          }
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              },
+              for (int j = 0;
+                  j < data[0].read.transactionSummary.length;
+                  j++) ...{
+                Text('Beggining Balance : ' +
+                    data[0]
+                        .read
+                        .transactionSummary[j]
+                        .beginningBalance
+                        .toString()),
+                Text('Credit : ' +
+                    data[0].read.transactionSummary[j].credit.toString()),
+                Text('Credit Freq : ' +
+                    data[0].read.transactionSummary[j].creditFreq.toString()),
+                Text('Debit : ' +
+                    data[0].read.transactionSummary[j].debit.toString()),
+                Text('Debit Freq: ' +
+                    data[0].read.transactionSummary[j].debitFreq.toString()),
+                Text('Ending Balance : ' +
+                    data[0]
+                        .read
+                        .transactionSummary[j]
+                        .endingBalance
+                        .toString()),
+                Text('Period : ' +
+                    data[0].read.transactionSummary[j].period.toString()),
+                Text('warning Mutasi 2 : ' +
+                    data[0]
+                        .read
+                        .transactionSummary[j]
+                        .warningMutasi2
+                        .toString()),
+                Text('Warning Mutasi 2 Description : ' +
+                    data[0]
+                        .read
+                        .transactionSummary[j]
+                        .warningMutasi2Description
+                        .toString()),
+              },
+            ],
+          )),
+        ),
       ),
     );
   }

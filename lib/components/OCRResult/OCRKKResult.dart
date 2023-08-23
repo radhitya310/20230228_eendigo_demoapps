@@ -16,6 +16,7 @@ class OcrKKResults extends StatelessWidget {
         ),
       ),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(100),
           child: Container(
@@ -35,242 +36,493 @@ class OcrKKResults extends StatelessWidget {
           child: Center(
               child: Column(
             children: [
-              Text('alamat : ' + data[0].read.alamat),
-              Text('desa kelurahan : ' + data[0].read.desaKelurahan),
-              Text('kabupaten kota : ' + data[0].read.kabupatenKota),
-              Text('kecamatan : ' + data[0].read.kecamatan),
-              Text('Kode Pos : ' + data[0].read.kodePos),
-              Text('Nama Kepala Keluarga : ' + data[0].read.namaKepalaKeluarga),
-              Text('Nomor Blanko : ' + data[0].read.nomorBlanko),
-              Text('Nomor KK : ' + data[0].read.nomorKk),
-              Text('Provinsi : ' + data[0].read.provinsi),
-              Text('Rt/Rw : ' + data[0].read.rtRw),
+              Text('alamat : ' + data[0].read.alamat,
+                  style: TextStyle(fontSize: 24)),
+              Text('desa kelurahan : ' + data[0].read.desaKelurahan,
+                  style: TextStyle(fontSize: 24)),
+              Text('kabupaten kota : ' + data[0].read.kabupatenKota,
+                  style: TextStyle(fontSize: 24)),
+              Text('kecamatan : ' + data[0].read.kecamatan,
+                  style: TextStyle(fontSize: 24)),
+              Text('Kode Pos : ' + data[0].read.kodePos,
+                  style: TextStyle(fontSize: 24)),
+              Text('Nama Kepala Keluarga : ' + data[0].read.namaKepalaKeluarga,
+                  style: TextStyle(fontSize: 24)),
+              Text('Nomor Blanko : ' + data[0].read.nomorBlanko,
+                  style: TextStyle(fontSize: 24)),
+              Text('Nomor KK : ' + data[0].read.nomorKk,
+                  style: TextStyle(fontSize: 24)),
+              Text('Provinsi : ' + data[0].read.provinsi,
+                  style: TextStyle(fontSize: 24)),
+              Text('Rt/Rw : ' + data[0].read.rtRw,
+                  style: TextStyle(fontSize: 24)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Read Confidence'),
+                child: Text('Read Confidence', style: TextStyle(fontSize: 24)),
               ),
-              Text('alamat : ' + data[0].readConfidence.alamat.toString()),
-              Text('desa kelurahan : ' +
-                  data[0].readConfidence.desaKelurahan.toString()),
-              Text('kabupaten kota : ' +
-                  data[0].readConfidence.kabupatenKota.toString()),
+              Text('alamat : ' + data[0].readConfidence.alamat.toString(),
+                  style: TextStyle(fontSize: 24)),
               Text(
-                  'kecamatan : ' + data[0].readConfidence.kecamatan.toString()),
-              Text('Kode Pos : ' + data[0].readConfidence.kodePos.toString()),
-              Text('Nama Kepala Keluarga : ' +
-                  data[0].readConfidence.namaKepalaKeluarga.toString()),
-              Text('Nomor Blanko : ' +
-                  data[0].readConfidence.nomorBlanko.toString()),
-              Text('Nomor KK : ' + data[0].readConfidence.nomorKk.toString()),
-              Text('Provinsi : ' + data[0].readConfidence.provinsi.toString()),
-              Text('Rt/Rw : ' + data[0].readConfidence.rtRw.toString()),
-              Text('Data Keluarga'),
+                  'desa kelurahan : ' +
+                      data[0].readConfidence.desaKelurahan.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text(
+                  'kabupaten kota : ' +
+                      data[0].readConfidence.kabupatenKota.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text('kecamatan : ' + data[0].readConfidence.kecamatan.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text('Kode Pos : ' + data[0].readConfidence.kodePos.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text(
+                  'Nama Kepala Keluarga : ' +
+                      data[0].readConfidence.namaKepalaKeluarga.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text(
+                  'Nomor Blanko : ' +
+                      data[0].readConfidence.nomorBlanko.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text('Nomor KK : ' + data[0].readConfidence.nomorKk.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text('Provinsi : ' + data[0].readConfidence.provinsi.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text('Rt/Rw : ' + data[0].readConfidence.rtRw.toString(),
+                  style: TextStyle(fontSize: 24)),
+              Text('Data Keluarga', style: TextStyle(fontSize: 24)),
               for (int i = 0; i < data[0].read.table.length; i++) ...{
                 Padding(
                   padding: EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      Text('Data  ${i + 1}'),
+                      Text('Data  ${i + 1}', style: TextStyle(fontSize: 24)),
                       Table(
                         border: TableBorder.all(width: 1.0, color: Colors.grey),
                         children: [
                           if (data[0].read.table.isNotEmpty) ...{
                             TableRow(children: [
-                              TableCell(child: Text('Parameter')),
-                              TableCell(child: Text('Hasil OCR')),
-                              TableCell(child: Text('Read Confidence')),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Parameter',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Hasil OCR',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Read Confidence',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Nama Lengkap')),
                               TableCell(
-                                  child:
-                                      Text(data[0].read.table[i].namaLengkap)),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Nama Lengkap',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .namaLengkap_confidence
-                                      .toString()))
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(data[0].read.table[i].namaLengkap,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .namaLengkap_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              ))
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Nama Ayah')),
                               TableCell(
-                                  child: Text(data[0].read.table[i].namaAyah)),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Nama Ayah',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .namaAyah_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(data[0].read.table[i].namaAyah,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .namaAyah_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Nama Ibu')),
                               TableCell(
-                                  child: Text(data[0].read.table[i].namaIbu)),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Nama Ibu',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .namaIbu_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(data[0].read.table[i].namaIbu,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .namaIbu_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Kewarnegaraan')),
                               TableCell(
-                                  child: Text(data[0]
-                                      .read
-                                      .table[i]
-                                      .kewarganegaraan
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Kewarnegaraan',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .kewarganegaraan_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .read
+                                        .table[i]
+                                        .kewarganegaraan
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .kewarganegaraan_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Pekerjaan')),
                               TableCell(
-                                  child: Text(
-                                      data[0].read.table[i].jenisPekerjaan)),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Pekerjaan',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .jenisPekerjaan_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0].read.table[i].jenisPekerjaan,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .jenisPekerjaan_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Hubungan status')),
                               TableCell(
-                                  child: Text(data[0]
-                                      .read
-                                      .table[i]
-                                      .statusHubunganDalamKeluarga)),
+                                  child: Text('Hubungan status',
+                                      style: TextStyle(fontSize: 24))),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .statusHubunganDalamKeluarga_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .read
+                                        .table[i]
+                                        .statusHubunganDalamKeluarga,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .statusHubunganDalamKeluarga_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Agama')),
                               TableCell(
-                                  child: Text(
-                                      data[0].read.table[i].agama.toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Agama',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .agama_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0].read.table[i].agama.toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .agama_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('NIK')),
-                              TableCell(child: Text(data[0].read.table[i].nik)),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .nik_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:
+                                    Text('NIK', style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(data[0].read.table[i].nik,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .nik_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Tanggal Lahir')),
                               TableCell(
-                                  child:
-                                      Text(data[0].read.table[i].tanggalLahir)),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Tanggal Lahir',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .tanggalLahir_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(data[0].read.table[i].tanggalLahir,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .tanggalLahir_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Tempat Lahir')),
                               TableCell(
-                                  child: Text(data[0]
-                                      .read
-                                      .table[i]
-                                      .tempatLahir
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Tempat Lahir',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .tempatLahir_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .read
+                                        .table[i]
+                                        .tempatLahir
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .tempatLahir_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Status Perkawinan')),
                               TableCell(
-                                  child: Text(data[0]
-                                      .read
-                                      .table[i]
-                                      .statusPerkawinan
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Status Perkawinan',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .statusPerkawinan_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .read
+                                        .table[i]
+                                        .statusPerkawinan
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .statusPerkawinan_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Tanggal Perkawinan')),
                               TableCell(
-                                  child: Text(data[0]
-                                      .read
-                                      .table[i]
-                                      .tanggalPerkawinan
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Tanggal Perkawinan',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .tanggalPerkawinan_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .read
+                                        .table[i]
+                                        .tanggalPerkawinan
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .tanggalPerkawinan_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('Pendidikan')),
                               TableCell(
-                                  child: Text(data[0]
-                                      .read
-                                      .table[i]
-                                      .pendidikan
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Pendidikan',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .pendidikan_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0].read.table[i].pendidikan.toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .pendidikan_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('No Paspor')),
                               TableCell(
-                                  child: Text(data[0].read.table[i].noPaspor)),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('No Paspor',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .noPaspor_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(data[0].read.table[i].noPaspor,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .noPaspor_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                             TableRow(children: [
-                              TableCell(child: Text('No Kitas Kitab')),
                               TableCell(
-                                  child:
-                                      Text(data[0].read.table[i].noKitasKitap)),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('No Kitas Kitab',
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                               TableCell(
-                                  child: Text(data[0]
-                                      .readConfidence
-                                      .table2[i]
-                                      .noKitasKitap_confidence
-                                      .toString())),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(data[0].read.table[i].noKitasKitap,
+                                    style: TextStyle(fontSize: 24)),
+                              )),
+                              TableCell(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                    data[0]
+                                        .readConfidence
+                                        .table2[i]
+                                        .noKitasKitap_confidence
+                                        .toString(),
+                                    style: TextStyle(fontSize: 24)),
+                              )),
                             ]),
                           }
                         ],

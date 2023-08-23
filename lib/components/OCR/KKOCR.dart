@@ -44,17 +44,6 @@ class _OcrHomepageState extends State<KKOCR> {
     }
   }
 
-  @override
-  Future getImagecamera() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (image != null) {
-      setState(() async {
-        _image = await image.readAsBytes();
-        print('Image Path $_image');
-      });
-    }
-  }
-
   Future<List<Kkocr>> KKOcrApi(Uint8List _KtpImage) async {
     List<Kkocr> data = [];
 
@@ -222,79 +211,6 @@ class _OcrHomepageState extends State<KKOCR> {
     );
   }
 
-  void imageChooser(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Select image from",
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          getImage();
-                        },
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                CupertinoIcons.archivebox,
-                                size: 50,
-                              ),
-                              Text("From gallery")
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          getImagecamera();
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              CupertinoIcons.camera,
-                              size: 50,
-                            ),
-                            Text("From camera")
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget ImageCatcher(BuildContext context) {
     return Center(
@@ -305,7 +221,7 @@ class _OcrHomepageState extends State<KKOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context);
+                      getImage();
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 3.5,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
 import 'package:eendigodemo/model/REKBCAModel.dart';
@@ -24,7 +25,7 @@ class REKBCAOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<REKBCAOCR> {
-  File? _file;
+  FilePickerResult? _file;
   bool isLoading = false;
   final String title;
 
@@ -35,12 +36,12 @@ class _OcrHomepageState extends State<REKBCAOCR> {
 
     if (result != null) {
       setState(() {
-        _file = File(result.files.single.path!);
+        _file = result;
       });
     }
   }
 
-  Future<List<Rekbcaocr>> REKBCAOcrApi(File _fileRek) async {
+  Future<List<Rekbcaocr>> REKBCAOcrApi(Uint8List _fileRek) async {
     List<Rekbcaocr> data = [];
 
     final response;
@@ -48,7 +49,8 @@ class _OcrHomepageState extends State<REKBCAOCR> {
     final Url = 'https://api.eendigo.app/ocr/rkbcapdfib/';
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    final files = await http.MultipartFile.fromPath('file', _fileRek.path);
+    final files = await http.MultipartFile.fromBytes('file', _fileRek,
+        filename: 'BCAREK');
     request.files.add(files);
     request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
     request.fields['tenant_code'] = 'ADINS';
@@ -144,7 +146,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
                       isLoading = true;
                     });
                     if (_file != null) {
-                      REKBCAOcrApi(_file!).then((value) {
+                      REKBCAOcrApi(_file!.files.first.bytes!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -171,34 +173,39 @@ class _OcrHomepageState extends State<REKBCAOCR> {
                   child: const Icon(Icons.send),
                 )
               : null,
-          body: (isLoading == false)
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GradientText(title,
-                            style: (TextStyle(
-                                fontSize: 60, fontWeight: FontWeight.bold)),
-                            colors: [
-                              Color.fromARGB(255, 37, 162, 220),
-                              Color.fromARGB(255, 28, 115, 185),
-                              Color.fromARGB(255, 59, 67, 127),
-                            ])),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 70.0),
-                      child: Center(child: ImageCatcher(context)),
+          body: Center(
+            child: Container(
+              width: MediaQuery.of(context).size.height / 1.8,
+              child: (isLoading == false)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GradientText(title,
+                                style: (TextStyle(
+                                    fontSize: 60, fontWeight: FontWeight.bold)),
+                                colors: [
+                                  Color.fromARGB(255, 37, 162, 220),
+                                  Color.fromARGB(255, 28, 115, 185),
+                                  Color.fromARGB(255, 59, 67, 127),
+                                ])),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 70.0),
+                          child: Center(child: ImageCatcher(context)),
+                        ),
+                        Spacer()
+                      ],
+                    )
+                  : Center(
+                      child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Center(child: CircularProgressIndicator())),
                     ),
-                    Spacer()
-                  ],
-                )
-              : Center(
-                  child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Center(child: CircularProgressIndicator())),
-                )),
+            ),
+          )),
     );
   }
 
@@ -215,7 +222,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
                 getFile();
               },
               child: Container(
-                  height: MediaQuery.of(context).size.height / 3.5,
+                  height: MediaQuery.of(context).size.height / 1.5,
                   width: MediaQuery.of(context).size.width - 50,
                   child: DottedBorder(
                     color: const Color.fromARGB(255, 78, 199, 30),
@@ -234,7 +241,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
               child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: Text(_file.toString())),
+                Center(child: Text(_file!.files.first.name)),
                 TextButton(
                     onPressed: () {
                       setState(() {

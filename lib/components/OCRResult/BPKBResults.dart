@@ -17,6 +17,7 @@ class BPKBRESULTS extends StatelessWidget {
         ),
       ),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(100),
           child: Container(

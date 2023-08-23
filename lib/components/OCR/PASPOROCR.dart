@@ -309,7 +309,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context);
+                      getImage();
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 3.5,
