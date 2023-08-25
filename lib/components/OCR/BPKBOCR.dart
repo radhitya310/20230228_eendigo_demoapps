@@ -130,11 +130,15 @@ class _OcrHomepageState extends State<BPKBOCR> {
           Map<String, dynamic> read = responses['read'];
           Read reads = Read.fromJson(read);
 
+          Map<String, dynamic> readC = responses['read_confidence'];
+          Read2 readsC = Read2.fromJson(readC);
+
           data.add(Bpkbocr(
               ocrDate: date,
               message: message,
               read: reads,
               status: status,
+              readConfidence: readsC,
               numOfPages: num_of_pages));
         }
       } else {
@@ -194,7 +198,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       isLoading = true;
                     });
                     if (_image != null || _image2 != null) {
-                      KtpOcrApi(_image!, _image2!).then((value) {
+                      KtpOcrApi(_image, _image2).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -240,11 +244,26 @@ class _OcrHomepageState extends State<BPKBOCR> {
                                       Color.fromARGB(255, 28, 115, 185),
                                       Color.fromARGB(255, 59, 67, 127),
                                     ])),
-                            Column(
-                              children: [
-                                Center(child: ImageCatcher(context)),
-                                Center(child: ImageCatcher2(context)),
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text('BPKB HALAMAN 2'),
+                                  ),
+                                  Center(child: ImageCatcher(context)),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text('BPKB HALAMAN 3'),
+                                  ),
+                                  Center(child: ImageCatcher2(context)),
+                                ],
+                              ),
                             )
                           ],
                         ),
@@ -261,89 +280,6 @@ class _OcrHomepageState extends State<BPKBOCR> {
     );
   }
 
-  void imageChooser(BuildContext context, int flag) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Select image from",
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          print(flag);
-
-                          if (flag == 0) {
-                            getImage();
-                          } else {
-                            getImage2();
-                          }
-                        },
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                CupertinoIcons.archivebox,
-                                size: 50,
-                              ),
-                              Text("From gallery")
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          if (flag == 0) {
-                            getImagecamera();
-                          } else {
-                            getImagecamera2();
-                          }
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              CupertinoIcons.camera,
-                              size: 50,
-                            ),
-                            Text("From camera")
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget ImageCatcher(BuildContext contex) {
     return Center(
@@ -354,10 +290,10 @@ class _OcrHomepageState extends State<BPKBOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context, 0);
+                      getImage();
                     },
                     child: Container(
-                        height: MediaQuery.of(context).size.height / 3.5,
+                        height: MediaQuery.of(context).size.height / 1.5,
                         width: MediaQuery.of(context).size.width - 50,
                         child: DottedBorder(
                           color: const Color.fromARGB(255, 78, 199, 30),
@@ -409,12 +345,12 @@ class _OcrHomepageState extends State<BPKBOCR> {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height / 1.7,
+            height: MediaQuery.of(context).size.height / 3.5,
             child: (_image2 == null)
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      imageChooser(context, 1);
+                      getImage2();
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 1.5,
@@ -435,7 +371,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                 : Stack(
                     children: [
                       Container(
-                          height: MediaQuery.of(context).size.height / 3.5,
+                          height: MediaQuery.of(context).size.height / 1.5,
                           width: MediaQuery.of(context).size.width - 50,
                           child: Image.memory(
                             _image2!,
