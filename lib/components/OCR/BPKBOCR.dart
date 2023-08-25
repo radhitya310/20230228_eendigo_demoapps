@@ -134,10 +134,14 @@ class _OcrHomepageState extends State<BPKBOCR> {
           Map<String, dynamic> read = responses['read'];
           Read reads = Read.fromJson(read);
 
+          Map<String, dynamic> readC = responses['read_confidence'];
+          Read2 readsC = Read2.fromJson(readC);
+
           data.add(Bpkbocr(
               ocrDate: date,
               message: message,
               read: reads,
+              readConfidence: readsC,
               status: status,
               numOfPages: num_of_pages));
         }
@@ -237,11 +241,26 @@ class _OcrHomepageState extends State<BPKBOCR> {
                               Color.fromARGB(255, 28, 115, 185),
                               Color.fromARGB(255, 59, 67, 127),
                             ])),
-                    Column(
-                      children: [
-                        Center(child: ImageCatcher(context)),
-                        Center(child: ImageCatcher2(context)),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('BPKB HALAMAN 2'),
+                          ),
+                          Center(child: ImageCatcher(context)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('BPKB HALAMAN 3'),
+                          ),
+                          Center(child: ImageCatcher2(context)),
+                        ],
+                      ),
                     )
                   ],
                 )
