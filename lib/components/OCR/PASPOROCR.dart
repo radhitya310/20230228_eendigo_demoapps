@@ -287,7 +287,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
     return Center(
         child: Container(
             width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height / 1.7,
+            height: MediaQuery.of(context).size.height / 2.2,
             child: (_image == null)
                 ? InkWell(
                     splashColor: Colors.transparent,
