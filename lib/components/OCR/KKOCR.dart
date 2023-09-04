@@ -1,19 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/components/OCRResult/OCRKKResult.dart';
-import 'package:eendigodemo/components/OCRResult/OCRNPWPResults.dart';
-import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
-import 'package:eendigodemo/liveness.dart';
+import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/KKOCRModel.dart';
+import 'package:eendigodemo/pageBase.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -47,10 +43,9 @@ class _OcrHomepageState extends State<KKOCR> {
   Future<List<Kkocr>> KKOcrApi(Uint8List _KtpImage) async {
     List<Kkocr> data = [];
 
-    final Url = 'https://api.eendigo.app/ocr/kk';
+    final Url = UrlPath.ocrKK;
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    // final file = html.File(_KtpImage.path.codeUnits, _KtpImage.path);
     final pic =
         await http.MultipartFile.fromBytes('img', _KtpImage, filename: 'KK');
     request.files.add(pic);
@@ -120,95 +115,76 @@ class _OcrHomepageState extends State<KKOCR> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage("Assets/img/background-eendigo_(1).png"),
-        fit: BoxFit.cover,
-      )),
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('Assets/icons/logo-eendigo-trial.png',
-                        fit: BoxFit.contain),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          floatingActionButton: (isLoading == false)
-              ? FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    if (_image != null) {
-                      KKOcrApi(_image!).then((value) {
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            isLoading = false;
-                          });
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      OcrKKResults(data: value)));
-                        }
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('no image')),
-                      );
+    return PageBase(
+        body: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: EendigoLogo(),
+            floatingActionButton: (isLoading == false)
+                ? FloatingActionButton(
+                    onPressed: () {
                       setState(() {
-                        isLoading = false;
+                        isLoading = true;
                       });
-                    }
-                  },
-                  backgroundColor: Color.fromARGB(255, 190, 126, 174),
-                  child: const Icon(Icons.send),
-                )
-              : null,
-          body: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.height / 1.3,
-              child: (isLoading == false)
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GradientText(title,
-                                style: (TextStyle(
-                                    fontSize: 60, fontWeight: FontWeight.bold)),
-                                colors: [
-                                  Color.fromARGB(255, 37, 162, 220),
-                                  Color.fromARGB(255, 28, 115, 185),
-                                  Color.fromARGB(255, 59, 67, 127),
-                                ])),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 70.0),
-                          child: Center(child: ImageCatcher(context)),
-                        ),
-                        Spacer()
-                      ],
-                    )
-                  : Center(
-                      child: SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: Center(child: CircularProgressIndicator())),
-                    ),
-            ),
-          )),
-    );
+                      if (_image != null) {
+                        KKOcrApi(_image!).then((value) {
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        OcrKKResults(data: value)));
+                          }
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('no image')),
+                        );
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    },
+                    backgroundColor: Color.fromARGB(255, 190, 126, 174),
+                    child: const Icon(Icons.send),
+                  )
+                : null,
+            body: Center(
+              child: Container(
+                width: MediaQuery.of(context).size.height / 1.3,
+                child: (isLoading == false)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GradientText(title,
+                                  style: (TextStyle(
+                                      fontSize: 60,
+                                      fontWeight: FontWeight.bold)),
+                                  colors: [
+                                    Color.fromARGB(255, 37, 162, 220),
+                                    Color.fromARGB(255, 28, 115, 185),
+                                    Color.fromARGB(255, 59, 67, 127),
+                                  ])),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 70.0),
+                            child: Center(child: ImageCatcher(context)),
+                          ),
+                          Spacer()
+                        ],
+                      )
+                    : Center(
+                        child: SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Center(child: CircularProgressIndicator())),
+                      ),
+              ),
+            )));
   }
 
   @override

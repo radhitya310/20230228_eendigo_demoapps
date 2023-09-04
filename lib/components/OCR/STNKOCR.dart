@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:eendigodemo/CameraController/CameraContorller.dart';
 import 'package:eendigodemo/components/OCRResult/OCRSTNKResults.dart';
+import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/STNKOCRModel.dart';
+import 'package:eendigodemo/pageBase.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
@@ -55,7 +55,7 @@ class _OcrHomepageState extends State<STNKOCR> {
   Future<List<Stnkocr>> KtpOcrApi(Uint8List _KtpImage) async {
     List<Stnkocr> data = [];
 
-    final Url = 'https://api.eendigo.app/ocr/stnk';
+    final Url = UrlPath.ocrSTNK;
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     final pic =
@@ -121,13 +121,8 @@ class _OcrHomepageState extends State<STNKOCR> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage("Assets/img/background-eendigo_(1).png"),
-        fit: BoxFit.cover,
-      )),
-      child: Scaffold(
+    return PageBase(
+      body: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(100),
@@ -208,8 +203,7 @@ class _OcrHomepageState extends State<STNKOCR> {
                           child: Center(child: CircularProgressIndicator())),
                     ),
             ),
-          )),
-    );
+          )));
   }
 
   void imageChooser(BuildContext context) {

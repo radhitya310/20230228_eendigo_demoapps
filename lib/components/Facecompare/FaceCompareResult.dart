@@ -1,13 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:eendigodemo/components/Facecompare/faceCompare.dart';
 import 'package:eendigodemo/model/LivenessCompareModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class FaceCompareResult extends StatelessWidget {
   final List<LivenessCompareModel> data;

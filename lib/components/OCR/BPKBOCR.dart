@@ -3,7 +3,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/components/OCRResult/BPKBResults.dart';
+import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/BPKBModel.dart';
+import 'package:eendigodemo/pageBase.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +80,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
       Uint8List? _BPKBImage, Uint8List? _BPKBImage2) async {
     List<Bpkbocr> data = [];
 
-    final Url = 'https://api.eendigo.app/ocr/bpkb';
+    final Url = UrlPath.ocrBPKB;
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
 
@@ -164,101 +167,81 @@ class _OcrHomepageState extends State<BPKBOCR> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage("Assets/img/background-eendigo_(1).png"),
-        fit: BoxFit.cover,
-      )),
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('Assets/icons/logo-eendigo-trial.png',
-                        fit: BoxFit.contain),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          floatingActionButton: (isLoading == false)
-              ? FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    if (_image != null || _image2 != null) {
-                      KtpOcrApi(_image!, _image2!).then((value) {
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            isLoading = false;
-                          });
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      BPKBRESULTS(data: value)));
-                        }
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('no image')),
-                      );
+    return PageBase(
+        body: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: EendigoLogo(),
+            floatingActionButton: (isLoading == false)
+                ? FloatingActionButton(
+                    onPressed: () {
                       setState(() {
-                        isLoading = false;
+                        isLoading = true;
                       });
-                    }
-                  },
-                  backgroundColor: Color.fromARGB(255, 190, 126, 174),
-                  child: const Icon(Icons.send),
-                )
-              : null,
-          body: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.height / 1.3,
-              child: (isLoading == false)
-                  ? Center(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 1.8,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                                padding: const EdgeInsets.all(0.0),
-                                child: GradientText(title,
-                                    style: (TextStyle(
-                                        fontSize: 60,
-                                        fontWeight: FontWeight.bold)),
-                                    colors: [
-                                      Color.fromARGB(255, 37, 162, 220),
-                                      Color.fromARGB(255, 28, 115, 185),
-                                      Color.fromARGB(255, 59, 67, 127),
-                                    ])),
-                            Column(
-                              children: [
-                                Center(child: ImageCatcher(context)),
-                                Center(child: ImageCatcher2(context)),
-                              ],
-                            )
-                          ],
+                      if (_image != null || _image2 != null) {
+                        KtpOcrApi(_image!, _image2!).then((value) {
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        BPKBRESULTS(data: value)));
+                          }
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('no image')),
+                        );
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    },
+                    backgroundColor: Color.fromARGB(255, 190, 126, 174),
+                    child: const Icon(Icons.send),
+                  )
+                : null,
+            body: Center(
+              child: Container(
+                width: MediaQuery.of(context).size.height / 1.3,
+                child: (isLoading == false)
+                    ? Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 1.8,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: GradientText(title,
+                                      style: (TextStyle(
+                                          fontSize: 60,
+                                          fontWeight: FontWeight.bold)),
+                                      colors: [
+                                        Color.fromARGB(255, 37, 162, 220),
+                                        Color.fromARGB(255, 28, 115, 185),
+                                        Color.fromARGB(255, 59, 67, 127),
+                                      ])),
+                              Column(
+                                children: [
+                                  Center(child: ImageCatcher(context)),
+                                  Center(child: ImageCatcher2(context)),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
+                      )
+                    : Center(
+                        child: SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Center(child: CircularProgressIndicator())),
                       ),
-                    )
-                  : Center(
-                      child: SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: Center(child: CircularProgressIndicator())),
-                    ),
-            ),
-          )),
-    );
+              ),
+            )));
   }
 
   void imageChooser(BuildContext context, int flag) {

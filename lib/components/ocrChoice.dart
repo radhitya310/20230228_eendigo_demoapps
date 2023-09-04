@@ -1,16 +1,13 @@
-import 'dart:io';
 import 'package:eendigodemo/CONTOHCAMERAOVERLAY.dart';
 import 'package:eendigodemo/components/OCR/BCAOCR.dart';
 import 'package:eendigodemo/components/OCR/BPKBOCR.dart';
 import 'package:eendigodemo/components/OCR/INVOICEOCR.dart';
 import 'package:eendigodemo/components/OCR/KKOCR.dart';
-import 'package:eendigodemo/components/OCR/KPTOCR.dart';
+import 'package:eendigodemo/components/OCR/KTPOCR.dart';
 import 'package:eendigodemo/components/OCR/NPWPOCR.dart';
 import 'package:eendigodemo/components/OCR/PASPOROCR.dart';
 import 'package:eendigodemo/components/OCR/REKMANDIRIOCR.dart';
 import 'package:eendigodemo/components/OCR/STNKOCR.dart';
-import 'package:eendigodemo/model/KKOCRModel.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +24,7 @@ class _OCRchoiceState extends State<OCRchoice> {
     {
       'label': 'OCR KTP',
       'icon': 'Assets/icons/ktp.png',
-      'screens': KtpOCR('KTP \nOCR'),
+      'screens': KTPOCR('KTP \nOCR'),
       'color': Color.fromARGB(255, 176, 162, 191),
       'icon-width': 100.0,
       'icon-height': 100.0

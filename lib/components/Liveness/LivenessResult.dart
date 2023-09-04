@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:eendigodemo/model/LivenessModel.dart';
-import 'package:eendigodemo/widget/FancyButton.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

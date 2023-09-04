@@ -1,6 +1,5 @@
 import 'package:eendigodemo/components/Facecompare/faceCompare.dart';
 import 'package:eendigodemo/components/ocrChoice.dart';
-import 'package:eendigodemo/components/OCR/KPTOCR.dart';
 import 'package:eendigodemo/liveness.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,12 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'label': 'OCR',
       'icon': CupertinoIcons.camera_viewfinder,
-      'screen': const OCRchoice(),
-      'color': Color.fromARGB(255, 176, 162, 191),
-    },
-    {
-      'label': 'More To Come',
-      'icon': Icons.more_horiz,
       'screen': const OCRchoice(),
       'color': Color.fromARGB(255, 176, 162, 191),
     }
@@ -115,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text("Welcome, Tenant", style: TextStyle(fontSize: 30)),
-                  Text("v.1.1.13", style: TextStyle(fontSize: 15)),
+                  Text("v.1.1.15", style: TextStyle(fontSize: 15)),
                   const SizedBox(height: 20),
                   Wrap(
                       runSpacing: 8,

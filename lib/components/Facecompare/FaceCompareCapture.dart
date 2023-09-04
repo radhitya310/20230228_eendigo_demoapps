@@ -6,10 +6,6 @@ import 'package:eendigodemo/components/Facecompare/FaceCompareDetail.dart';
 import 'package:eendigodemo/widget/FancyButton.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class FaceCompareCapture extends StatefulWidget {

@@ -1,8 +1,5 @@
 import 'package:eendigodemo/model/InvoiceOCRModel.dart' as IOM;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class OCRInvoiceResult extends StatelessWidget {

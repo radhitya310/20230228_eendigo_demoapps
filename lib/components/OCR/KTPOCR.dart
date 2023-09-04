@@ -1,10 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
+import 'package:eendigodemo/components/master/urlMaster.dart';
+import 'package:eendigodemo/pageBase.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:file_picker/file_picker.dart';
-
 import 'package:eendigodemo/model/KtpOCRModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,17 +13,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-class KtpOCR extends StatefulWidget {
+class KTPOCR extends StatefulWidget {
   final List<Ktpocr> data = [];
   final String title;
 
-  KtpOCR(this.title);
+  KTPOCR(this.title);
 
   @override
-  State<KtpOCR> createState() => _OcrHomepageState(title);
+  State<KTPOCR> createState() => _OcrHomepageState(title);
 }
 
-class _OcrHomepageState extends State<KtpOCR> {
+class _OcrHomepageState extends State<KTPOCR> {
   bool isLoading = false;
   Uint8List? webimage;
   final String title;
@@ -60,9 +61,7 @@ class _OcrHomepageState extends State<KtpOCR> {
     print(_KtpImage);
 
     var request = http.MultipartRequest(
-        'POST', Uri.parse('https://api.eendigo.app/ocr/ktp'));
-    // final file = File(_KtpImage.path);
-    // final file = File(_KtpImage.path);
+        'POST', Uri.parse(UrlPath.ocrKTP));
 
     request.fields.addAll(
         {'key': 'CV-ADINS-PROD-H1@DT476WATDADT4WA', 'tenant_code': 'ADINS'});
@@ -135,29 +134,10 @@ class _OcrHomepageState extends State<KtpOCR> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage("Assets/img/background-eendigo_(1).png"),
-        fit: BoxFit.cover,
-      )),
-      child: Scaffold(
+    return PageBase(
+      body: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('Assets/icons/logo-eendigo-trial.png',
-                        fit: BoxFit.contain),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          appBar: EendigoLogo(),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {
@@ -226,8 +206,7 @@ class _OcrHomepageState extends State<KtpOCR> {
                       ),
               ),
             ),
-          )),
-    );
+          )));
   }
 
   void imageChooser(BuildContext context) {

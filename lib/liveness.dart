@@ -2,9 +2,7 @@
 
 import 'dart:convert';
 import 'package:camera/camera.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/components/Liveness/LivenessCapture.dart';
-import 'package:eendigodemo/components/Liveness/LivenessResult.dart';
 import 'package:eendigodemo/model/LivenessModel.dart';
 import 'package:eendigodemo/widget/FancyButton.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,14 +10,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:image_to_byte/image_to_byte.dart';
-
-import 'components/widget/backgroundImage.dart';
 
 class Liveness extends StatefulWidget {
   const Liveness({Key? key}) : super(key: key);

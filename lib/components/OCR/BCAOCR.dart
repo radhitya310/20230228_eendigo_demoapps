@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:eendigodemo/CameraController/CameraContorller.dart';
+import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/REKBCAModel.dart';
+import 'package:eendigodemo/pageBase.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -46,7 +45,7 @@ class _OcrHomepageState extends State<REKBCAOCR> {
 
     final response;
 
-    final Url = 'https://api.eendigo.app/ocr/rkbcapdfib/';
+    final Url = UrlPath.ocrBCA;
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     final files = await http.MultipartFile.fromBytes('file', _fileRek,
@@ -101,44 +100,16 @@ class _OcrHomepageState extends State<REKBCAOCR> {
         SnackBar(content: Text('Request Failed')),
       );
     }
-    // } catch (e) {
-    //   print('aaaa ${e}');
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('${e}')),
-    //   );
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // }
 
     return data;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage("Assets/img/background-eendigo_(1).png"),
-        fit: BoxFit.cover,
-      )),
-      child: Scaffold(
+    return PageBase(
+      body: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('Assets/icons/logo-eendigo-trial.png',
-                        fit: BoxFit.contain),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          appBar: EendigoLogo(),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {
@@ -205,8 +176,9 @@ class _OcrHomepageState extends State<REKBCAOCR> {
                           child: Center(child: CircularProgressIndicator())),
                     ),
             ),
-          )),
-    );
+          )
+        ),
+      );
   }
 
   @override
