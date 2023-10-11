@@ -48,11 +48,11 @@ class Read {
     required this.noNpwp,
   });
 
-  String alamat;
-  String kpp;
-  String nama;
-  String nik;
-  String noNpwp;
+  String? alamat;
+  String? kpp;
+  String? nama;
+  String? nik;
+  String? noNpwp;
 
   factory Read.fromJson(Map<String, dynamic> json) => Read(
         alamat: json["alamat"],
@@ -80,11 +80,11 @@ class Read2 {
     required this.noNpwp,
   });
 
-  num alamat;
-  num kpp;
-  num nama;
-  num nik;
-  num noNpwp;
+  num? alamat;
+  num? kpp;
+  num? nama;
+  num? nik;
+  num? noNpwp;
 
   factory Read2.fromJson(Map<String, dynamic> json) => Read2(
         alamat: json["alamat"],

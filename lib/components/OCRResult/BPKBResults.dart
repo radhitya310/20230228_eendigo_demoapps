@@ -1,4 +1,3 @@
-import 'package:eendigodemo/components/CopyDataComponent/CopyDataBPKB.dart';
 import 'package:eendigodemo/model/BPKBModel.dart';
 import 'package:flutter/material.dart';
 
@@ -510,8 +509,7 @@ class BPKBRESULTS extends StatelessWidget {
                     ],
                   ),
                 )
-              },
-              CopyColumnDataButton(data: data[0].read),
+              }
             ],
           ),
         )),

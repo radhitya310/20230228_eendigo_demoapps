@@ -20,7 +20,7 @@ class BPKBOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<BPKBOCR> {
-  File? _image;
+  File?   _image;
   File? _image2;
   bool isLoading = false;
   final String title;

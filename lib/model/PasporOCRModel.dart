@@ -37,16 +37,16 @@ class OcrPaspor {
 }
 
 class Read {
-  String country;
-  String dateBirth;
-  String dateExpire;
-  String gender;
-  String idNo;
-  String name;
-  String nationality;
-  String passportNo;
-  String passportType;
-  String surname;
+  String? country;
+  String? dateBirth;
+  String? dateExpire;
+  String? gender;
+  String? idNo;
+  String? name;
+  String? nationality;
+  String? passportNo;
+  String? passportType;
+  String? surname;
 
   Read({
     required this.country,
@@ -89,16 +89,16 @@ class Read {
 }
 
 class ReadConfidence {
-  num country;
-  num dateBirth;
-  num dateExpire;
-  num gender;
-  num idNo;
-  num name;
-  num nationality;
-  num passportNo;
-  num passportType;
-  num surname;
+  num? country;
+  num? dateBirth;
+  num? dateExpire;
+  num? gender;
+  num? idNo;
+  num? name;
+  num? nationality;
+  num? passportNo;
+  num? passportType;
+  num? surname;
 
   ReadConfidence({
     required this.country,

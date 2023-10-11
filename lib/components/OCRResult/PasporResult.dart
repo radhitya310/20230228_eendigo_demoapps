@@ -1,4 +1,3 @@
-import 'package:eendigodemo/components/CopyDataComponent/CopyDataNPWP.dart';
 import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
 import 'package:eendigodemo/model/NPWPModel.dart';
 import 'package:eendigodemo/model/PasporOCRModel.dart';
@@ -88,7 +87,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.name,
+                              child: Text(data[i].read.name ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -109,7 +108,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.surname,
+                              child: Text(data[i].read.surname ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -130,7 +129,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.idNo,
+                              child: Text(data[i].read.idNo ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -151,7 +150,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.gender,
+                              child: Text(data[i].read.gender ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -172,7 +171,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.dateBirth,
+                              child: Text(data[i].read.dateBirth ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -193,7 +192,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.dateExpire,
+                              child: Text(data[i].read.dateExpire ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -214,7 +213,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.nationality,
+                              child: Text(data[i].read.nationality ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -235,7 +234,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.country,
+                              child: Text(data[i].read.country ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -256,7 +255,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.passportNo,
+                              child: Text(data[i].read.passportNo ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -277,7 +276,7 @@ class PASPORresult extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.passportType,
+                              child: Text(data[i].read.passportType ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(

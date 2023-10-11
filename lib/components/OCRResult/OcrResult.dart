@@ -1,4 +1,3 @@
-import 'package:eendigodemo/components/CopyDataComponent/CopyDataKTP.dart';
 import 'package:eendigodemo/model/KtpOCRModel.dart';
 import 'package:flutter/material.dart';
 

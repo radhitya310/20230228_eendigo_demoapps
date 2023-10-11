@@ -1,4 +1,3 @@
-import 'package:eendigodemo/components/CopyDataComponent/CopyDataNPWP.dart';
 import 'package:eendigodemo/model/NPWPModel.dart';
 import 'package:flutter/material.dart';
 
@@ -86,7 +85,7 @@ class NPWPResults extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.nama,
+                              child: Text(data[i].read.nama ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -107,7 +106,7 @@ class NPWPResults extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.nik,
+                              child: Text(data[i].read.nik ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -127,7 +126,7 @@ class NPWPResults extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.kpp,
+                              child: Text(data[i].read.kpp ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -147,7 +146,7 @@ class NPWPResults extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.noNpwp,
+                              child: Text(data[i].read.noNpwp ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -168,7 +167,7 @@ class NPWPResults extends StatelessWidget {
                             TableCell(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(data[i].read.alamat,
+                              child: Text(data[i].read.alamat ?? "",
                                   style: TextStyle(fontSize: 14)),
                             )),
                             TableCell(
@@ -186,7 +185,6 @@ class NPWPResults extends StatelessWidget {
                 ),
               )
             },
-            CopyColumnDataButtonNPWP(data: data[0].read),
           ],
         )),
       ),
