@@ -1,16 +1,34 @@
-# eendigodemo
+# Eendigo Demo App - Client Showcase
 
-A new Flutter project.
+## Overview
+The Eendigo Demo App has been specially designed for Eendigo members to effectively showcase our innovative solutions to potential clients. This script will guide you through the key features and functionalities of the app, ensuring a smooth and engaging client presentation.
 
 ## Getting Started
+To start using the Eendigo Demo App:
 
-This project is a starting point for a Flutter application.
+1. **Installation:** Download and install the app on your device.
+2. **Dashboard:** Upon an app firing, you will be greeted with the app's dashboard, where you can access various eendigo products.
 
-A few resources to get you started if this is your first Flutter project:
+## eendigo Products included in this app
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### 1. Liveness
+-  Liveness products helps our client identify their customer, ensure the face in front of the camera.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 2. LivenessFace Compare
+-  Liveness Face Compare products helps our client identify their customer, ensure the face in front of the camera, and compare between two photos.
+
+### 3. OCR
+- Various OCR Products, such as KTP, NPWP, etc
+
+## Best Practices
+- Ensure a stable internet connection for a seamless presentation.
+- Prepare relevant data and materials in advance.
+
+## Q&A
+- Encourage questions from the client during the presentation.
+- Be prepared to address technical and functional queries.
+
+## Conclusion
+The Eendigo Demo App is a powerful tool to showcase our capabilities to clients. It's designed with a user-friendly interface and key features that will leave a lasting impression.
+
+Thank you for choosing Eendigo. We look forward to a successful presentation!
