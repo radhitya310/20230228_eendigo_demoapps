@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:eendigodemo/components/Liveness/LivenessResult.dart';
+import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/LivenessModel.dart';
 import 'package:eendigodemo/widget/FancyButton.dart';
 import 'package:flutter/foundation.dart';
@@ -26,7 +27,7 @@ class _LivenessCaptureState extends State<LivenessCapture> {
   bool isInit = false;
   bool isFailed = false;
   String liveScore = "0";
-  int direction = 0;
+  int direction = 1;
   String errMsg = "";
   late Uint8List _imageBytes;
   String base64Image = "";
@@ -49,16 +50,14 @@ class _LivenessCaptureState extends State<LivenessCapture> {
     if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.android) {
       // Some android/ios specific code
-      await initializeCamera(1);
-      if (await Permission.camera.request().isGranted) {
-        final cameras = await availableCameras();
-      }
+      await initializeCamera(direction);      
     } else {
       await initializeCamera(0);
     }
-    // _introKey.currentState?.next();
+    if (await Permission.camera.request().isGranted) {
+      final cameras = await availableCameras();
+    }
     setState(() {
-      isCamera = true;
       cameraController?.resumePreview();
     });
   }
@@ -83,8 +82,8 @@ class _LivenessCaptureState extends State<LivenessCapture> {
 
   Future<List<LivenessModel>> LivenessAPI(File _image) async {
     List<LivenessModel> data = [];
-    const Url = 'https://liveness-go3voyqswq-et.a.run.app/liveness';
-base64Image = base64Encode(_imageBytes);
+    final Url = UrlPath.liveness;
+    base64Image = base64Encode(_imageBytes);
     final file = File(_image.path);
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
@@ -105,7 +104,7 @@ base64Image = base64Encode(_imageBytes);
       });
     }
     //request.files.add(pic);
-    request.fields['key'] = 'CV-ADINS-H1@B5476GTHDAD';
+    request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
     request.fields['tenant_code'] = 'ADINS';
 
     final timeout = Duration(seconds: 30);
@@ -126,53 +125,26 @@ base64Image = base64Encode(_imageBytes);
         LivenessModel livenessDa = LivenessModel.fromJson(responses);
         var status = responses['status'];
         var error = responses['error'];
-        var datetime = responses['datetime'];
+
         if (status.toString().toLowerCase() == 'failed') {
-          data.add(livenessDa);
-          liveScore = data[0].result[0].faceLiveness.score.toString();
-          setState(() {
+          errMsg = error;
+        }
+
+        setState(() {
             isLoading = false;
             isFailed = true;
-          });
-          var error = responses['error'];
-          errMsg = error;
-          base64Image = base64Encode(_imageBytes);
-          Navigator.of(context).push(MaterialPageRoute(
+            initPage();
+            _start = 0;
+            _timer.cancel();
+        });
+
+        data.add(livenessDa);
+        base64Image = base64Encode(_imageBytes);
+        Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => LivenessResult(
                     data: data,
                     imgBase64: base64Image,
                   )));
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return AlertDialog(
-          //       title: Text('Liveness Failed'),
-          //       content: Text(ujson1.toString()),
-          //       actions: <Widget>[
-          //         TextButton(
-          //           child: Text('Try Again'),
-          //           onPressed: () {
-          //             Navigator.of(context).pop();
-          //           },
-          //         ),
-          //       ],
-          //     );
-          //   },
-          // );
-          // _start = 0;
-          // _timer.cancel();
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(content: Text('Request Failed : ' + ujson1.toString())),
-          // );
-        } else if (status == 'Success') {
-          data.add(livenessDa);
-          base64Image = base64Encode(_imageBytes);
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => LivenessResult(
-                    data: data,
-                    imgBase64: base64Image,
-                  )));
-        }
       } else {
         var ujson1 = await utf8.decodeStream(response.stream);
         Map<String, dynamic> responses = json.decode(ujson1);
@@ -216,6 +188,9 @@ base64Image = base64Encode(_imageBytes);
         errMsg = e.toString();
         isLoading = false;
         isFailed = true;
+        initPage();
+        _start = 0;
+        _timer.cancel();
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
@@ -238,6 +213,7 @@ base64Image = base64Encode(_imageBytes);
           return;
         }
         setState(() {
+          isCamera = true;
           isInit = true;
         });
       });
@@ -247,8 +223,8 @@ base64Image = base64Encode(_imageBytes);
   }
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
         if (_start == 100) {
@@ -273,10 +249,10 @@ base64Image = base64Encode(_imageBytes);
                 Center(
                   child: CircularProgressIndicator(),
                 ),
+                Padding(padding: EdgeInsets.all(16)),
                 Center(
-                  child: Text('This may take a while'),
-                ),
-                Text("$_start")
+                  child: Text('This may take a while $_start'),
+                )
               ],
             )
           : Container(
@@ -351,7 +327,7 @@ base64Image = base64Encode(_imageBytes);
                                     });
                                     LivenessAPI(_image!).then((value) {
                                       if (value.isNotEmpty) {
-                                        setState(() {                                          
+                                        setState(() {
                                           isLoading = false;
                                         });
                                       }

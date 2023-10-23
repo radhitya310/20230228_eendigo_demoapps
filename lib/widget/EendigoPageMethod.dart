@@ -2,6 +2,7 @@
 
 import 'package:eendigodemo/components/master/imagePathMaster.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 BoxDecoration EendigoLogoHeader() {
     return const BoxDecoration(
@@ -11,17 +12,29 @@ BoxDecoration EendigoLogoHeader() {
     ));
   }
 
-PreferredSize EendigoLogo(){
+PreferredSize EendigoLogo(BuildContext context){
   return PreferredSize(
             preferredSize: const Size.fromHeight(100),
             child: Container(
-              padding: const EdgeInsets.all(12),
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(6),
               child: SafeArea(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Image.asset(ImagePath.eendigoLogo,
-                        fit: BoxFit.contain),
+                    Navigator.of(context).canPop() == false ? Container() :
+                    TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(CupertinoIcons.arrow_left)),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8,10.0,8,0),
+                        child: Image.asset(ImagePath.eendigoLogo,
+                            fit: BoxFit.contain),
+                      ),
+                    ),
                   ],
                 ),
               ),

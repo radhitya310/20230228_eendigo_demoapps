@@ -1,4 +1,6 @@
+import 'package:eendigodemo/components/Facecompare/FaceCompareV2.dart';
 import 'package:eendigodemo/components/Facecompare/faceCompare.dart';
+import 'package:eendigodemo/components/Liveness/LivenessCapturev2.dart';
 import 'package:eendigodemo/components/ocrChoice.dart';
 import 'package:eendigodemo/liveness.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,13 +29,13 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'label': 'Liveness',
       'icon': CupertinoIcons.person,
-      'screen': const Liveness(),
+      'screen': const LivenessCaptureV2(),
       'color': Color.fromARGB(255, 176, 162, 191),
     },
     {
       'label': 'FaceCompare',
       'icon': CupertinoIcons.person_2,
-      'screen': const FaceCompare(),
+      'screen': const FaceCompareV2(),
       'color': Color.fromARGB(255, 176, 162, 191),
     },
     {
@@ -87,15 +89,18 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.transparent,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(100),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Image.asset('Assets/icons/logo-eendigo-trial.png',
-                        fit: BoxFit.contain),
-                  ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                child: SafeArea(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset('Assets/icons/logo-eendigo-trial.png',
+                          fit: BoxFit.contain),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -108,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text("Welcome, Tenant", style: TextStyle(fontSize: 30)),
-                  Text("v.1.1.15", style: TextStyle(fontSize: 15)),
+                  Text("v.1.1.19", style: TextStyle(fontSize: 15)),
                   const SizedBox(height: 20),
                   Wrap(
                       runSpacing: 8,

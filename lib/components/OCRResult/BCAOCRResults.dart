@@ -153,7 +153,7 @@ class OCRBCAResults extends StatelessWidget {
               for (int i = 0;
                   i < data[0].read.transactionSummary.length;
                   i++) ...{
-                Text('Beggining Balance : ' +
+                Text('Beginning Balance : ' +
                     data[0]
                         .read
                         .transactionSummary[i]
@@ -165,7 +165,7 @@ class OCRBCAResults extends StatelessWidget {
                     data[0].read.transactionSummary[i].creditFreq.toString()),
                 Text('Debit : ' +
                     data[0].read.transactionSummary[i].debit.toString()),
-                Text('Debit Freq: ' +
+                Text('Debit Freq : ' +
                     data[0].read.transactionSummary[i].debitFreq.toString()),
                 Text('Ending Balance : ' +
                     data[0]
@@ -175,7 +175,7 @@ class OCRBCAResults extends StatelessWidget {
                         .toString()),
                 Text('Period : ' +
                     data[0].read.transactionSummary[i].period.toString()),
-                Text('warning Mutasi 2 : ' +
+                Text('Warning Mutasi 2 : ' +
                     data[0]
                         .read
                         .transactionSummary[i]

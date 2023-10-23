@@ -145,89 +145,91 @@ class _OCRchoiceState extends State<OCRchoice> {
             ),
           ),
         ),
-        body: Container(
-          decoration: BoxDecoration(color: Colors.transparent),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    'OCR',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        body: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(color: Colors.transparent),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'OCR',
+                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Wrap(
-                    runSpacing: 8,
-                    alignment: WrapAlignment.spaceBetween,
-                    children: [
-                      for (final OCR in OCRCHOI)
-                        Material(
-                            color: Color.fromARGB(113, 255, 255, 255),
-                            borderRadius: BorderRadius.circular(16),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Container(
-                              width: 125,
-                              height: 130,
-                              child: InkWell(
-                                splashColor: OCR['color'].withOpacity(0.5),
-                                highlightColor: OCR['color'].withOpacity(0.2),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => OCR['screens']));
-                                },
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          height: 60,
-                                          width: 60,
-                                          child: Stack(
-                                            children: [
-                                              Align(
-                                                alignment: Alignment.topLeft,
-                                                child: Container(
-                                                  height: 50,
-                                                  width: 50,
-                                                  decoration: BoxDecoration(
-                                                    color: OCR['color']
-                                                        .withOpacity(0.5),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            16),
+                  Wrap(
+                      runSpacing: 8,
+                      alignment: WrapAlignment.spaceBetween,
+                      children: [
+                        for (final OCR in OCRCHOI)
+                          Material(
+                              color: Color.fromARGB(113, 255, 255, 255),
+                              borderRadius: BorderRadius.circular(16),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: Container(
+                                width: 125,
+                                height: 130,
+                                child: InkWell(
+                                  splashColor: OCR['color'].withOpacity(0.5),
+                                  highlightColor: OCR['color'].withOpacity(0.2),
+                                  onTap: () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => OCR['screens']));
+                                  },
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 60,
+                                            width: 60,
+                                            child: Stack(
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Container(
+                                                    height: 50,
+                                                    width: 50,
+                                                    decoration: BoxDecoration(
+                                                      color: OCR['color']
+                                                          .withOpacity(0.5),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              Align(
-                                                child: Image(
-                                                  image:
-                                                      AssetImage(OCR['icon']),
-                                                  width: OCR['icon-width'],
-                                                  height: OCR['icon-height'],
+                                                Align(
+                                                  child: Image(
+                                                    image:
+                                                        AssetImage(OCR['icon']),
+                                                    width: OCR['icon-width'],
+                                                    height: OCR['icon-height'],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          OCR['label'],
-                                          textAlign: TextAlign.center,
-                                          softWrap: true,
-                                        )
-                                      ],
+                                          Text(
+                                            OCR['label'],
+                                            textAlign: TextAlign.center,
+                                            softWrap: true,
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            )),
-                    ]),
-              ],
+                              )),
+                      ]),
+                ],
+              ),
             ),
           ),
         ),

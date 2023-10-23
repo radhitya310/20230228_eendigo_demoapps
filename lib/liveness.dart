@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:eendigodemo/components/Liveness/LivenessCapture.dart';
+import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/LivenessModel.dart';
 import 'package:eendigodemo/widget/FancyButton.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,7 +52,7 @@ class _LivenessState extends State<Liveness> {
 
   Future<List<LivenessModel>> LivenessAPI(File _image) async {
     List<LivenessModel> data = [];
-    const Url = 'https://liveness-go3voyqswq-et.a.run.app/liveness';
+    String Url = UrlPath.liveness;
 
     final file = File(_image.path);
 

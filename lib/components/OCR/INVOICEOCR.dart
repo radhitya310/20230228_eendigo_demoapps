@@ -173,7 +173,7 @@ class _InvoiceOCRState extends State<InvoiceOCR> {
     return PageBase(
         body: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: EendigoLogo(),
+            appBar: EendigoLogo(context),
             body: (isLoading == false)
                 ? SingleChildScrollView(
                     child: Column(

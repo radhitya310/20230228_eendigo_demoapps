@@ -137,7 +137,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
     return PageBase(
       body: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: EendigoLogo(),
+          appBar: EendigoLogo(context),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {

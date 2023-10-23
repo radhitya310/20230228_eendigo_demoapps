@@ -136,7 +136,7 @@ class _OcrHomepageState extends State<NPWPOCR> {
     return PageBase(
       body: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: EendigoLogo(),
+          appBar: EendigoLogo(context),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:camera/camera.dart';
 import 'package:eendigodemo/components/Facecompare/FaceCompareResult.dart';
@@ -56,8 +57,8 @@ class _FaceCompareDetailState extends State<FaceCompareDetail> {
 
   Future<List<LivenessCompareModel>> FaceCompareAPI() async {
     List<LivenessCompareModel> data = [];
-    const Url =
-        'https://liveness-go3voyqswq-et.a.run.app/liveness-facecompare?';
+    final Url =
+        UrlPath.faceCompare;
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
     List<int> imageBytes1 = base64.decode(img1Base64);
@@ -72,7 +73,7 @@ class _FaceCompareDetailState extends State<FaceCompareDetail> {
     contentType: MediaType('image2', 'jpeg'));
     request.files.add(pic2);
 
-    request.fields['key'] = 'CV-ADINS-H1@B5476GTHDAD';
+    request.fields['key'] = 'CV-ADINS-PROD-H1@DT476WATDADT4WA';
     request.fields['tenant_code'] = 'ADINS';
     String random16Digit = generateRandom16DigitNumber();
     request.fields['nik'] = random16Digit;

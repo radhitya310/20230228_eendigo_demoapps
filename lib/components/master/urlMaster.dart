@@ -8,4 +8,6 @@ class UrlPath {
   static String ocrPASSPOR = 'https://adinsocr-xityk2yyoa-et.a.run.app/ocr_passport';
   static String ocrMANDIRI = 'https://api.eendigo.app/ocr/rkmandiripdf';
   static String ocrSTNK = 'https://api.eendigo.app/ocr/stnk';
+  static String liveness = 'https://liveness-verificoduction-vsocfrlzhq.ap-southeast-5.fcapp.run';
+  static String faceCompare = 'https://api.eendigo.app/biometric/facecompareliveness';
 }

@@ -6,6 +6,7 @@ import 'package:eendigodemo/components/OCRResult/OCRSTNKResults.dart';
 import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/STNKOCRModel.dart';
 import 'package:eendigodemo/pageBase.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -124,21 +125,7 @@ class _OcrHomepageState extends State<STNKOCR> {
     return PageBase(
       body: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('Assets/icons/logo-eendigo-trial.png',
-                        fit: BoxFit.contain),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          appBar: EendigoLogo(context),
           floatingActionButton: (isLoading == false)
               ? FloatingActionButton(
                   onPressed: () {
