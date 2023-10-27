@@ -235,18 +235,18 @@ final tempatLahirValues = EnumValues({
 });
 
 class ReadConfidence {
-  double alamat;
-  double desaKelurahan;
-  double kabupatenKota;
-  double kecamatan;
-  double kodePos;
-  double namaKepalaKeluarga;
-  double nomorBlanko;
-  double nomorKk;
-  double provinsi;
-  double rtRw;
+  double? alamat;
+  double? desaKelurahan;
+  double? kabupatenKota;
+  double? kecamatan;
+  double? kodePos;
+  double? namaKepalaKeluarga;
+  double? nomorBlanko;
+  double? nomorKk;
+  double? provinsi;
+  double? rtRw;
   List<Table2> table2;
-  double tanggalDikeluarkan;
+  double? tanggalDikeluarkan;
 
   ReadConfidence({
     required this.alamat,
@@ -270,7 +270,7 @@ class ReadConfidence {
         kecamatan: json["kecamatan"]?.toDouble(),
         kodePos: json["kode_pos"]?.toDouble(),
         namaKepalaKeluarga: json["nama_kepala_keluarga"]?.toDouble(),
-        nomorBlanko: json["nomor_blanko"],
+        nomorBlanko: json["nomor_blanko"]?.toDouble(),
         nomorKk: json["nomor_kk"]?.toDouble(),
         provinsi: json["provinsi"]?.toDouble(),
         rtRw: json["rt_rw"]?.toDouble(),
@@ -307,23 +307,23 @@ class EnumValues<T> {
 }
 
 class Table2 {
-  double agama_confidence;
-  double jenisKelamin_confidence;
-  double jenisPekerjaan_confidence;
-  double kewarganegaraan_confidence;
-  double namaAyah_confidence;
-  double namaIbu_confidence;
-  double namaLengkap_confidence;
-  double nik_confidence;
-  int no_confidence;
-  double noKitasKitap_confidence;
-  double noPaspor_confidence;
-  double pendidikan_confidence;
-  double statusHubunganDalamKeluarga_confidence;
-  double statusPerkawinan_confidence;
-  double tanggalLahir_confidence;
-  double tanggalPerkawinan_confidence;
-  double tempatLahir_confidence;
+  double? agama_confidence;
+  double? jenisKelamin_confidence;
+  double? jenisPekerjaan_confidence;
+  double? kewarganegaraan_confidence;
+  double? namaAyah_confidence;
+  double? namaIbu_confidence;
+  double? namaLengkap_confidence;
+  double? nik_confidence;
+  double? no_confidence;
+  double? noKitasKitap_confidence;
+  double? noPaspor_confidence;
+  double? pendidikan_confidence;
+  double? statusHubunganDalamKeluarga_confidence;
+  double? statusPerkawinan_confidence;
+  double? tanggalLahir_confidence;
+  double? tanggalPerkawinan_confidence;
+  double? tempatLahir_confidence;
 
   Table2({
     required this.agama_confidence,
@@ -346,24 +346,24 @@ class Table2 {
   });
 
   factory Table2.fromJson(Map<String, dynamic> json) => Table2(
-        agama_confidence: json["agama"],
-        jenisKelamin_confidence: json["jenis_kelamin"],
-        jenisPekerjaan_confidence: json["jenis_pekerjaan"],
-        kewarganegaraan_confidence: json["kewarganegaraan"],
-        namaAyah_confidence: json["nama_ayah"],
-        namaIbu_confidence: json["nama_ibu"],
-        namaLengkap_confidence: json["nama_lengkap"],
-        nik_confidence: json["nik"],
-        no_confidence: json["no"],
-        noKitasKitap_confidence: json["no_kitas_kitap"],
-        noPaspor_confidence: json["no_paspor"],
-        pendidikan_confidence: json["pendidikan"],
+        agama_confidence: json["agama"]?.toDouble(),
+        jenisKelamin_confidence: json["jenis_kelamin"]?.toDouble(),
+        jenisPekerjaan_confidence: json["jenis_pekerjaan"]?.toDouble(),
+        kewarganegaraan_confidence: json["kewarganegaraan"]?.toDouble(),
+        namaAyah_confidence: json["nama_ayah"]?.toDouble(),
+        namaIbu_confidence: json["nama_ibu"]?.toDouble(),
+        namaLengkap_confidence: json["nama_lengkap"]?.toDouble(),
+        nik_confidence: json["nik"]?.toDouble(),
+        no_confidence: json["no"]?.toDouble(),
+        noKitasKitap_confidence: json["no_kitas_kitap"]?.toDouble(),
+        noPaspor_confidence: json["no_paspor"]?.toDouble(),
+        pendidikan_confidence: json["pendidikan"]?.toDouble(),
         statusHubunganDalamKeluarga_confidence:
-            json["status_hubungan_dalam_keluarga"],
-        statusPerkawinan_confidence: json["status_perkawinan"],
-        tanggalLahir_confidence: json["tanggal_lahir"],
-        tanggalPerkawinan_confidence: json["tanggal_perkawinan"],
-        tempatLahir_confidence: json["tempat_lahir"],
+            json["status_hubungan_dalam_keluarga"]?.toDouble(),
+        statusPerkawinan_confidence: json["status_perkawinan"]?.toDouble(),
+        tanggalLahir_confidence: json["tanggal_lahir"]?.toDouble(),
+        tanggalPerkawinan_confidence: json["tanggal_perkawinan"]?.toDouble(),
+        tempatLahir_confidence: json["tempat_lahir"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {

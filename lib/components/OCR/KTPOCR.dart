@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:eendigodemo/components/Liveness/LivenessCatcher.dart';
 import 'package:eendigodemo/components/OCRResult/OcrResult.dart';
 import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/pageBase.dart';
@@ -27,16 +29,28 @@ class _OcrHomepageState extends State<KTPOCR> {
   bool isLoading = false;
   Uint8List? webimage;
   final String title;
+  File? _image;
+  String base64Image = "";
 
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await FilePicker.platform.pickFiles();
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
+      final pickedImageFile = File(image.path);
+        _image = pickedImageFile;         
+        webimage = await image.readAsBytes();
+
       setState(() {
-        webimage = image.files.first.bytes!;
+          base64Image = base64Encode(webimage!);
       });
     }
+    // var image = await FilePicker.platform.pickFiles();
+    // if (image != null) {
+    //   setState(() {
+    //     webimage = image.files.first.bytes!;
+    //   });
+    // }
   }
 
   Future getImagecamera() async {
@@ -256,13 +270,16 @@ class _OcrHomepageState extends State<KTPOCR> {
                     Container(
                       width: 150,
                       child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          getImagecamera();
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => CameraConts()));
+                        onTap: () async {
+                          Navigator.pop(context);                         
+                          final result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => LivenessCatcher("OCR KTP")));
+                          _image = File(result.path);
+                          webimage = await result.readAsBytes();
+                          setState(() {
+                            base64Image = base64Encode(webimage!);
+                          });
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -296,7 +313,7 @@ class _OcrHomepageState extends State<KTPOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      getImage();
+                      imageChooser(context);
                     },
                     child: Container(
                         height: 200,
@@ -320,10 +337,7 @@ class _OcrHomepageState extends State<KTPOCR> {
                           height: MediaQuery.of(context).size.height / 1.5,
                           width: MediaQuery.of(context).size.width - 50,
                           child: Image.memory(
-                            webimage!,
-                            width: 100,
-                            height: 100,
-                          )),
+                                  base64Decode(base64Image)),),
                       Positioned(
                         right: 20,
                         top: 0,

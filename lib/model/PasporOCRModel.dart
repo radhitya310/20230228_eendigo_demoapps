@@ -5,11 +5,11 @@ OcrPaspor ocrPasporFromJson(String str) => OcrPaspor.fromJson(json.decode(str));
 String ocrPasporToJson(OcrPaspor data) => json.encode(data.toJson());
 
 class OcrPaspor {
-  String message;
-  String ocrDate;
+  String? message;
+  String? ocrDate;
   Read read;
   ReadConfidence readConfidence;
-  String status;
+  String? status;
 
   OcrPaspor({
     required this.message,
@@ -37,27 +37,33 @@ class OcrPaspor {
 }
 
 class Read {
-  String country;
-  String dateBirth;
-  String dateExpire;
-  String gender;
-  String idNo;
-  String name;
-  String nationality;
-  String passportNo;
-  String passportType;
-  String surname;
+  String? country;
+  String? dateBirth;
+  String? dateExpire;
+  String? dateOfIssue;
+  String? gender;
+  String? issueOffice;
+  String? mrz;
+  String? name;
+  String? nationality;
+  String? passportNo;
+  String? passportType;
+  String? placeOfBirth;
+  String? surname;
 
   Read({
     required this.country,
     required this.dateBirth,
     required this.dateExpire,
+    required this.dateOfIssue,
     required this.gender,
-    required this.idNo,
+    required this.issueOffice,
+    required this.mrz,
     required this.name,
     required this.nationality,
     required this.passportNo,
     required this.passportType,
+    required this.placeOfBirth,
     required this.surname,
   });
 
@@ -65,12 +71,15 @@ class Read {
         country: json["country"],
         dateBirth: json["date_birth"],
         dateExpire: json["date_expire"],
+        dateOfIssue: json["date_of_issue"],
         gender: json["gender"],
-        idNo: json["id_no"],
+        issueOffice: json["issue_office"],
+        mrz: json["mrz"],
         name: json["name"],
         nationality: json["nationality"],
         passportNo: json["passport_no"],
         passportType: json["passport_type"],
+        placeOfBirth: json["place_of_birth"],
         surname: json["surname"],
       );
 
@@ -78,38 +87,47 @@ class Read {
         "country": country,
         "date_birth": dateBirth,
         "date_expire": dateExpire,
+        "date_of_issue": dateOfIssue,
         "gender": gender,
-        "id_no": idNo,
+        "issue_office": issueOffice,
+        "mrz": mrz,
         "name": name,
         "nationality": nationality,
         "passport_no": passportNo,
         "passport_type": passportType,
+        "place_of_birth": placeOfBirth,
         "surname": surname,
       };
 }
 
 class ReadConfidence {
-  double country;
-  double dateBirth;
-  double dateExpire;
-  double gender;
-  double idNo;
-  double name;
-  double nationality;
-  double passportNo;
-  double passportType;
-  double surname;
+  double? country;
+  double? dateBirth;
+  double? dateExpire;
+  double? dateOfIssue;
+  double? gender;
+  double? issueOffice;
+  double? mrz;
+  double? name;
+  double? nationality;
+  double? passportNo;
+  double? passportType;
+  double? placeOfBirth;
+  double? surname;
 
   ReadConfidence({
     required this.country,
     required this.dateBirth,
     required this.dateExpire,
+    required this.dateOfIssue,
     required this.gender,
-    required this.idNo,
+    required this.issueOffice,
+    required this.mrz,
     required this.name,
     required this.nationality,
     required this.passportNo,
     required this.passportType,
+    required this.placeOfBirth,
     required this.surname,
   });
 
@@ -117,12 +135,15 @@ class ReadConfidence {
         country: json["country"]?.toDouble(),
         dateBirth: json["date_birth"]?.toDouble(),
         dateExpire: json["date_expire"]?.toDouble(),
+        dateOfIssue: json["date_of_issue"]?.toDouble(),
         gender: json["gender"]?.toDouble(),
-        idNo: json["id_no"]?.toDouble(),
+        issueOffice: json["issue_office"]?.toDouble(),
+        mrz: json["mrz"]?.toDouble(),
         name: json["name"]?.toDouble(),
         nationality: json["nationality"]?.toDouble(),
         passportNo: json["passport_no"]?.toDouble(),
         passportType: json["passport_type"]?.toDouble(),
+        placeOfBirth: json["place_of_birth"]?.toDouble(),
         surname: json["surname"]?.toDouble(),
       );
 
@@ -130,12 +151,15 @@ class ReadConfidence {
         "country": country,
         "date_birth": dateBirth,
         "date_expire": dateExpire,
+        "date_of_issue": dateOfIssue,
         "gender": gender,
-        "id_no": idNo,
+        "issue_office": issueOffice,
+        "mrz": mrz,
         "name": name,
         "nationality": nationality,
         "passport_no": passportNo,
         "passport_type": passportType,
+        "place_of_birth": placeOfBirth,
         "surname": surname,
       };
 }

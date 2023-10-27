@@ -1,4 +1,5 @@
 import 'package:eendigodemo/model/REKBCAModel.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:flutter/material.dart';
 
 class OCRBCAResults extends StatelessWidget {
@@ -17,27 +18,7 @@ class OCRBCAResults extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("Assets/img/background-eendigo_(1).png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-            padding: const EdgeInsets.all(12),
-            child: SafeArea(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('Assets/icons/logo-eendigo-trial.png',
-                      fit: BoxFit.contain),
-                ],
-              ),
-            ),
-          ),
-        ),
+        appBar: EendigoLogo(context),
         body: SingleChildScrollView(
           child: Center(
               child: Column(

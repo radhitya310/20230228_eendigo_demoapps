@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:eendigodemo/CameraController/CameraContorller.dart';
+import 'package:eendigodemo/components/Liveness/LivenessCatcher.dart';
 import 'package:eendigodemo/components/OCRResult/PasporResult.dart';
 import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/PasporOCRModel.dart';
@@ -26,34 +27,46 @@ class PASPOROCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<PASPOROCR> {
-  Uint8List? _image;
+  Uint8List? webimage;
   bool isLoading = false;
-
   final String title;
+  File? _image;
+  String base64Image = "";
+
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await FilePicker.platform.pickFiles();
-    if (image != null) {
-      final pickedImageFile = image.files.first.bytes;
-      setState(() {
-        _image = pickedImageFile;
-        // print('Image Path $_image');
-      });
-    }
-  }
-
-  @override
-  Future getImagecamera() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
       final pickedImageFile = File(image.path);
+        _image = pickedImageFile;         
+        webimage = await image.readAsBytes();
+
       setState(() {
-        _image = pickedImageFile.readAsBytesSync();
-        print('Image Path $_image');
+          base64Image = base64Encode(webimage!);
       });
     }
+    // var image = await FilePicker.platform.pickFiles();
+    // if (image != null) {
+    //   final pickedImageFile = image.files.first.bytes;
+    //   setState(() {
+    //     _image = pickedImageFile;
+    //     // print('Image Path $_image');
+    //   });
+    // }
   }
+
+  // @override
+  // Future getImagecamera() async {
+  //   var image = await ImagePicker().pickImage(source: ImageSource.camera);
+  //   if (image != null) {
+  //     final pickedImageFile = File(image.path);
+  //     setState(() {
+  //       _image = pickedImageFile.readAsBytesSync();
+  //       print('Image Path $_image');
+  //     });
+  //   }
+  // }
 
   Future<List<OcrPaspor>> PASPOROcrApi(Uint8List _PasporImage) async {
     List<OcrPaspor> data = [];
@@ -145,7 +158,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
                       isLoading = true;
                     });
                     if (_image != null) {
-                      PASPOROcrApi(_image!).then((value) {
+                      PASPOROcrApi(webimage!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -251,13 +264,16 @@ class _OcrHomepageState extends State<PASPOROCR> {
                     ),
                     Container(
                       child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          // getImagecamera();
-                          Navigator.push(
-                              context,
+                        onTap: () async {
+                          Navigator.pop(context);                         
+                          final result = await Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => CameraConts()));
+                                  builder: (context) => LivenessCatcher("OCR KK")));
+                          _image = File(result.path);
+                          webimage = await result.readAsBytes();
+                          setState(() {
+                            base64Image = base64Encode(webimage!);
+                          });
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -316,7 +332,7 @@ class _OcrHomepageState extends State<PASPOROCR> {
                           height: MediaQuery.of(context).size.height / 1.5,
                           width: MediaQuery.of(context).size.width - 50,
                           child: Image.memory(
-                            _image!,
+                            webimage!,
                           )),
                       Positioned(
                         right: 20,

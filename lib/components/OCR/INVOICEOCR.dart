@@ -11,6 +11,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class InvoiceOCR extends StatefulWidget {
   const InvoiceOCR({Key? key}) : super(key: key);
@@ -53,10 +54,19 @@ class _InvoiceOCRState extends State<InvoiceOCR> {
     final Url = UrlPath.ocrINVOICE;
 
     var request = http.MultipartRequest('POST', Uri.parse(Url));
-    http.MultipartFile file =
+    if(kIsWeb)
+    {
+        http.MultipartFile file =
         http.MultipartFile.fromBytes('file', fileBytes, filename: _fileName);
+        request.files.add(file);
+    }
+    else
+    {
+      final file = await http.MultipartFile.fromPath('file', invoiceFile!.path);
+      request.files.add(file);
+    }
 
-    request.files.add(file);
+    
     request.fields['key'] = '';
     request.fields['tenant_code'] = '';
     request.fields['cust_no'] = '';
@@ -768,12 +778,10 @@ class _InvoiceOCRState extends State<InvoiceOCR> {
       FilePickerResult? result = await FilePicker.platform.pickFiles();
 
       if (result != null) {
-        fileBytes = result.files.first.bytes!;
-        final fileName = result.files.single.name; // Original file name
-        final file = File(fileName);
-        invoiceFile = file;
+        if(kIsWeb) fileBytes = result.files.first.bytes!;
+        if(!kIsWeb) invoiceFile = File(result.files.first.path!);
         setState(() {
-          _fileName = result.files.single.name;
+          _fileName = result.files.first.name;
         });
       } else {
         // User canceled the file picking.

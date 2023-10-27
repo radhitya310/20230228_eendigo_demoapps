@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:eendigodemo/components/Liveness/LivenessCatcher.dart';
 import 'package:eendigodemo/components/OCRResult/BPKBResults.dart';
 import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/BPKBModel.dart';
@@ -29,30 +30,51 @@ class _OcrHomepageState extends State<BPKBOCR> {
   Uint8List? _image2;
   bool isLoading = false;
   final String title;
-
+  String img1Base64 = "";
+  String img2Base64 = "";
+  File? image1;
+  File? image2;
   _OcrHomepageState(this.title);
 
-  Future getImage() async {
-    var image = await FilePicker.platform.pickFiles();
-    if (image != null) {
-      setState(() {
-        _image = image.files.first.bytes;
-        // print('Image Path $_image');
-      });
-    }
-  }
-
-  @override
-  Future getImagecamera() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
+  Future getImage(String imageString) async {
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
       final pickedImageFile = File(image.path);
+      if(imageString == 'image1'){
+          image1 = pickedImageFile;         
+          _image = await image.readAsBytes();
+        }else{
+          image2 = pickedImageFile;         
+          _image2 = await image.readAsBytes();
+        }
       setState(() {
-        _image = pickedImageFile.readAsBytesSync();
-        // print('Image Path $_image');
+        if(imageString == 'image1'){
+          img1Base64 = base64Encode(_image!);
+        }else{
+          img2Base64 = base64Encode(_image2!); 
+        }
       });
     }
+    // var image = await FilePicker.platform.pickFiles();
+    // if (image != null) {
+    //   setState(() {
+    //     _image = image.files.first.bytes;
+    //     // print('Image Path $_image');
+    //   });
+    // }
   }
+
+  // @override
+  // Future getImagecamera() async {
+  //   var image = await ImagePicker().pickImage(source: ImageSource.camera);
+  //   if (image != null) {
+  //     final pickedImageFile = File(image.path);
+  //     setState(() {
+  //       _image = pickedImageFile.readAsBytesSync();
+  //       // print('Image Path $_image');
+  //     });
+  //   }
+  // }
 
   Future getImage2() async {
     var image = await FilePicker.platform.pickFiles();
@@ -258,7 +280,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      getImage();
+                      imageChooser(context, 'image1');
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 1.5,
@@ -318,7 +340,7 @@ class _OcrHomepageState extends State<BPKBOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      getImage2();
+                      imageChooser(context, 'image2');
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 1.5,
@@ -366,5 +388,97 @@ class _OcrHomepageState extends State<BPKBOCR> {
                       )
                     ],
                   )));
+  }
+
+    void imageChooser(BuildContext context,String image) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height / 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Select image from",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Expanded(
+                // flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      width: 150,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          getImage(image);
+                        },
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                CupertinoIcons.archivebox,
+                                size: 50,
+                              ),
+                              Text("From gallery")
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 150,
+                      child: InkWell(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          if(image == 'image1'){                            
+                            final result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => LivenessCatcher("OCR BPKB HAL 2")));
+                            image1 = File(result.path);
+                            _image = await result.readAsBytes();
+                            setState(() {
+                              img1Base64 = base64Encode(_image!);
+                            });
+                          }else{                            
+                            final result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => LivenessCatcher("OCR BPKB HAL 3")));
+                            image2 = File(result.path);
+                            _image2 = await result.readAsBytes();
+                            setState(() {
+                              img2Base64 = base64Encode(_image2!);
+                            });
+                          }
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              CupertinoIcons.camera,
+                              size: 50,
+                            ),
+                            Text("From camera")
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

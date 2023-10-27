@@ -1,5 +1,6 @@
 import 'package:eendigodemo/components/CopyDataComponent/CopyDataSTNK.dart';
 import 'package:eendigodemo/model/STNKOCRModel.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:flutter/material.dart';
 
 class STNKRESULTS extends StatelessWidget {
@@ -18,52 +19,403 @@ class STNKRESULTS extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            child: SafeArea(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        appBar: EendigoLogo(context),
+        body: SingleChildScrollView(
+          child: Center(
+              child: Column(
+            children: [           
+              Text('date : ' + data[0].ocrDate),
+              Text('message : ' + data[0].message),
+              Text('status : ' + data[0].status),
+              Table(
+                border: TableBorder.all(width: 1.0, color: Colors.grey),
                 children: [
-                  Image.asset('Assets/icons/logo-eendigo-trial.png',
-                      fit: BoxFit.contain),
-                ],
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Parameter',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold)),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Hasil OCR',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold)),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Read Confidence',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold)),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Nama Pemilik',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.namaPemilik,),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.namaPemilik.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Alamat',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.alamat,),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.alamat.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Tahun Pembuatan',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.tahunPembuatan,),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.tahunPembuatan.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Tahun Registrasi',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.tahunRegistrasi,),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.tahunRegistrasi.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Berlaku Sampai',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.berlakuSampai,),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.berlakuSampai.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Jenis Bahan Bakar',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.bahanBakar,),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.bahanBakar.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Isi Silinder',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.isiSilinder,),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.isiSilinder.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('No Pajak Aktif',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.isPajakAktif.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('',),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Jenis',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.jenis.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.jenis.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Masa Berlaku Pajak',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.masaBerlakuPajak.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.masaBerlakuPajak.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Kode Lokasi',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.kodeLokasi.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.kodeLokasi.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Merk',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.merk.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.merk.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Model',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.model.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.model.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Nomor BPKB',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.nomorBpkb.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.nomorBpkb.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Nomor Mesin',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.nomorMesin.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.nomorMesin.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Nomor Rangka',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.nomorRangka.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.nomorRangka.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Nomor STNK',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.nomorStnk.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.nomorStnk.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Nomor Urut Pendaftaran',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.nomorUrutPendaftaran.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.nomorUrutPendaftaran.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Nomor Registrasi',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.nomorRegistrasi.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.nomorRegistrasi.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Warna',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.warna.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.warna.toString(),),
+                      )),
+                    ]),
+                    TableRow(children: [
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Warna TNKB',),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].read.warnaTnkb.toString(),),
+                      )),
+                      TableCell(
+                          child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(data[0].readConfidence.warnaTnkb.toString(),),
+                      )),
+                    ]),
+                ]
               ),
-            ),
-          ),
+              CopyColumnDataButton(data: data[0].read),
+            ],
+          )),
         ),
-        body: Center(
-            child: Column(
-          children: [
-            Text('date : ' + data[0].ocrDate),
-            Text('message : ' + data[0].message),
-            Text('status : ' + data[0].status),
-            Text('Nama Pemilik : ' + data[0].read.namaPemilik),
-            Text('Alamat : ' + data[0].read.alamat),
-            Text('Tahun Pembuatan : ' + data[0].read.tahunPembuatan),
-            Text('Tahun Registrasi : ' + data[0].read.tahunRegistrasi),
-            Text('Berlaku Sampai : ' + data[0].read.berlakuSampai),
-            Text('Jenis Bahan Bakar : ' + data[0].read.bahanBakar),
-            Text('Isi Silinder : ' + data[0].read.isiSilinder),
-            Text('No Pajak Aktif : ' + data[0].read.isPajakAktif.toString()),
-            Text('Jenis : ' + data[0].read.jenis),
-            Text('Masa Berlaku Pajak : ' + data[0].read.masaBerlakuPajak),
-            Text('Kode Lokasi : ' + data[0].read.kodeLokasi),
-            Text('Merek : ' + data[0].read.merk),
-            Text('Model : ' + data[0].read.model),
-            Text('Nomor BPKB : ' + data[0].read.nomorBpkb),
-            Text('Nomor Mesin : ' + data[0].read.nomorMesin),
-            Text('Nomor Rangka : ' + data[0].read.nomorRangka),
-            Text('Nomor STNK : ' + data[0].read.nomorStnk),
-            Text('Nomor Urut Pendaftaran : ' +
-                data[0].read.nomorUrutPendaftaran),
-            Text('Nomor Registrasi : ' + data[0].read.nomorRegistrasi),
-            Text('Warna : ' + data[0].read.warna),
-            Text('Warna TNKB : ' + data[0].read.warnaTnkb),
-            CopyColumnDataButton(data: data[0].read),
-          ],
-        )),
       ),
     );
   }

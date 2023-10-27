@@ -6,6 +6,7 @@ import 'package:eendigodemo/liveness.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'components/Settings/APIKey.dart/apiKeyScreen.dart';
 import 'model/APIKeyModel.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
   String? tenantCode = '';
   String? key = '';
+  String? platform;
 
   final List<Map> Products = [
     {
@@ -48,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void initState() {
     isLoading = true;
+    platform = kIsWeb ? "Web" : "Android";
     initializeSetting();
     super.initState();
   }
@@ -113,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text("Welcome, Tenant", style: TextStyle(fontSize: 30)),
-                  Text("v.1.1.19", style: TextStyle(fontSize: 15)),
+                  Text("v.2.0.2 " + platform.toString(), style: TextStyle(fontSize: 15)),
                   const SizedBox(height: 20),
                   Wrap(
                       runSpacing: 8,

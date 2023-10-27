@@ -8,6 +8,7 @@ import 'package:eendigodemo/components/OCR/NPWPOCR.dart';
 import 'package:eendigodemo/components/OCR/PASPOROCR.dart';
 import 'package:eendigodemo/components/OCR/REKMANDIRIOCR.dart';
 import 'package:eendigodemo/components/OCR/STNKOCR.dart';
+import 'package:eendigodemo/widget/EendigoPageMethod.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -93,14 +94,14 @@ class _OCRchoiceState extends State<OCRchoice> {
       'icon-width': 100.0,
       'icon-height': 100.0
     },
-    {
-      'label': 'TEST CAMERA',
-      'icon': 'Assets/icons/npwp.png',
-      'screens': contohKamera(),
-      'color': Color.fromARGB(255, 176, 162, 191),
-      'icon-width': 100.0,
-      'icon-height': 100.0
-    },
+    // {
+    //   'label': 'TEST CAMERA',
+    //   'icon': 'Assets/icons/npwp.png',
+    //   'screens': contohKamera(),
+    //   'color': Color.fromARGB(255, 176, 162, 191),
+    //   'icon-width': 100.0,
+    //   'icon-height': 100.0
+    // },
   ];
 
   @override
@@ -130,21 +131,7 @@ class _OCRchoiceState extends State<OCRchoice> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            child: SafeArea(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('Assets/icons/logo-eendigo-trial.png',
-                      fit: BoxFit.contain),
-                ],
-              ),
-            ),
-          ),
-        ),
+        appBar: EendigoLogo(context),
         body: SingleChildScrollView(
           child: Container(
             decoration: BoxDecoration(color: Colors.transparent),

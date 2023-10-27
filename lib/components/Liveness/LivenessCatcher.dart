@@ -32,9 +32,7 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
   String liveScore = "0";
   int camDirection = 1;
   String errMsg = "";
-  late Uint8List _imageBytes;
   String base64Image = "";
-  late Timer _timer;
   int _start = 0;
 
   @override
@@ -50,21 +48,19 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
   }
 
   void initPage() async {
-    if (!kIsWeb) {
+    if (!kIsWeb  || (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.android)) {
       await initializeCamera(camDirection);
     } else {
       await initializeCamera(0);
     }
-    // setState(() {
-    //   cameraController?.resumePreview();
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Liveness'),
+          title: Text(title),
         ),
         body: Container(
             decoration: const BoxDecoration(
@@ -86,7 +82,7 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
       }
       var cameras = await availableCameras();
       cameraController =
-          CameraController(cameras[direction], ResolutionPreset.high);
+          CameraController(cameras[direction], ResolutionPreset.high, enableAudio: false);
       cameraController!.initialize().then((_) {
         if (!mounted) {
           return;
@@ -94,7 +90,6 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
         setState(() {
           isCamera = true;
           isInit = true;
-          // cameraController?.pausePreview();
         });
       });
     } catch (e) {
@@ -104,20 +99,6 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 100) {
-          setState(() {
-            timer.cancel();
-          });
-        } else {
-          setState(() {
-            _start++;
-          });
-        }
-      },
-    );
   }
 
   Widget ImageCatcher(BuildContext context) {
@@ -131,7 +112,7 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
                 ),
                 Padding(padding: EdgeInsets.all(16)),
                 Center(
-                  child: Text('This may take a while $_start'),
+                  child: Text('This may take a while'),
                 )
               ],
             )
@@ -143,13 +124,13 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const SizedBox(height: 10),
-                    Center(
-                      child: Text(
-                          "Pastikan wajah anda terlihat jelas di kamera",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
+                    // Center(
+                    //   child: Text(
+                    //       "Pastikan wajah anda terlihat jelas di kamera",
+                    //       textAlign: TextAlign.center,
+                    //       style: TextStyle(
+                    //           fontSize: 20, fontWeight: FontWeight.bold)),
+                    // ),
                     Padding(padding: EdgeInsets.all(5)),
                     Stack(
                       children: [
@@ -169,7 +150,8 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: !kIsWeb
+                          child: (!kIsWeb || (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.android))
                               ? Align(
                                   alignment: Alignment.topLeft,
                                   child: InkWell(
@@ -211,7 +193,6 @@ class _LivenessCatcherState extends State<LivenessCatcher> {
 
                                 if (!mounted) return;
                                 _image = File(image.path);
-                                _imageBytes = await image.readAsBytes();
                                 if (_image != null) {
                                   setState(() {
                                     isCamera = false;

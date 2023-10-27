@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:eendigodemo/components/Liveness/LivenessCatcher.dart';
 import 'package:eendigodemo/components/OCRResult/OCRKKResult.dart';
 import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/KKOCRModel.dart';
@@ -11,6 +13,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class KKOCR extends StatefulWidget {
@@ -23,21 +26,33 @@ class KKOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<KKOCR> {
-  Uint8List? _image;
+  Uint8List? webimage;
   bool isLoading = false;
   bool isCamera = false;
   final String title;
+  File? _image;
+  String base64Image = "";
 
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await FilePicker.platform.pickFiles();
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
+      final pickedImageFile = File(image.path);
+        _image = pickedImageFile;         
+        webimage = await image.readAsBytes();
+
       setState(() {
-        _image = image.files.first.bytes;
-        print('Image Path $_image');
+          base64Image = base64Encode(webimage!);
       });
     }
+    // var image = await FilePicker.platform.pickFiles();
+    // if (image != null) {
+    //   setState(() {
+    //     _image = image.files.first.bytes;
+    //     print('Image Path $_image');
+    //   });
+    // }
   }
 
   Future<List<Kkocr>> KKOcrApi(Uint8List _KtpImage) async {
@@ -125,8 +140,8 @@ class _OcrHomepageState extends State<KKOCR> {
                       setState(() {
                         isLoading = true;
                       });
-                      if (_image != null) {
-                        KKOcrApi(_image!).then((value) {
+                      if (webimage != null) {
+                        KKOcrApi(webimage!).then((value) {
                           if (value.isNotEmpty) {
                             setState(() {
                               isLoading = false;
@@ -197,7 +212,7 @@ class _OcrHomepageState extends State<KKOCR> {
                 ? InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
-                      getImage();
+                      imageChooser(context);
                     },
                     child: Container(
                         height: MediaQuery.of(context).size.height / 3.5,
@@ -220,7 +235,7 @@ class _OcrHomepageState extends State<KKOCR> {
                       Container(
                           height: MediaQuery.of(context).size.height / 1.5,
                           width: MediaQuery.of(context).size.width - 50,
-                          child: Image.memory(_image!)),
+                          child: Image.memory(webimage!)),
                       Positioned(
                         right: 20,
                         top: 0,
@@ -244,4 +259,87 @@ class _OcrHomepageState extends State<KKOCR> {
                     ],
                   )));
   }
+
+    void imageChooser(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height / 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Select image from",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Expanded(
+                // flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      width: 150,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          getImage();
+                        },
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                CupertinoIcons.archivebox,
+                                size: 50,
+                              ),
+                              Text("From gallery")
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 150,
+                      child: InkWell(
+                        onTap: () async {
+                          Navigator.pop(context);                         
+                          final result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => LivenessCatcher("OCR KK")));
+                          _image = File(result.path);
+                          webimage = await result.readAsBytes();
+                          setState(() {
+                            base64Image = base64Encode(webimage!);
+                          });
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              CupertinoIcons.camera,
+                              size: 50,
+                            ),
+                            Text("From camera")
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
 }

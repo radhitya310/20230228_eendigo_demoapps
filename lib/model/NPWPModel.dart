@@ -87,11 +87,11 @@ class Read2 {
   double noNpwp;
 
   factory Read2.fromJson(Map<String, dynamic> json) => Read2(
-        alamat: json["alamat"],
-        kpp: json["kpp"],
-        nama: json["nama"],
-        nik: json["nik"],
-        noNpwp: json["noNpwp"],
+        alamat: json["alamat"]?.toDouble(),
+        kpp: json["kpp"]?.toDouble(),
+        nama: json["nama"]?.toDouble(),
+        nik: json["nik"]?.toDouble(),
+        noNpwp: json["noNpwp"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {

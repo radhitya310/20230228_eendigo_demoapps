@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:eendigodemo/components/Liveness/LivenessCatcher.dart';
 import 'package:eendigodemo/components/OCRResult/OCRSTNKResults.dart';
 import 'package:eendigodemo/components/master/urlMaster.dart';
 import 'package:eendigodemo/model/STNKOCRModel.dart';
@@ -25,33 +26,44 @@ class STNKOCR extends StatefulWidget {
 }
 
 class _OcrHomepageState extends State<STNKOCR> {
-  Uint8List? _image;
+  Uint8List? webimage;
   bool isLoading = false;
   final String title;
-
+  File? _image;
+  String base64Image = "";
   _OcrHomepageState(this.title);
 
   Future getImage() async {
-    var image = await FilePicker.platform.pickFiles();
-    if (image != null) {
-      setState(() {
-        _image = image.files.first.bytes;
-        print('Image Path $_image');
-      });
-    }
-  }
-
-  @override
-  Future getImagecamera() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.camera);
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
       final pickedImageFile = File(image.path);
+        _image = pickedImageFile;         
+        webimage = await image.readAsBytes();
+
       setState(() {
-        _image = pickedImageFile.readAsBytesSync();
-        print('Image Path $_image');
+          base64Image = base64Encode(webimage!);
       });
     }
+    // var image = await FilePicker.platform.pickFiles();
+    // if (image != null) {
+    //   setState(() {
+    //     _image = image.files.first.bytes;
+    //     print('Image Path $_image');
+    //   });
+    // }
   }
+
+  // @override
+  // Future getImagecamera() async {
+  //   var image = await ImagePicker().pickImage(source: ImageSource.camera);
+  //   if (image != null) {
+  //     final pickedImageFile = File(image.path);
+  //     setState(() {
+  //       _image = pickedImageFile.readAsBytesSync();
+  //       print('Image Path $_image');
+  //     });
+  //   }
+  // }
 
   Future<List<Stnkocr>> KtpOcrApi(Uint8List _KtpImage) async {
     List<Stnkocr> data = [];
@@ -93,10 +105,11 @@ class _OcrHomepageState extends State<STNKOCR> {
           );
         } else if (status == 'SUCCESS') {
           Map<String, dynamic> read = responses['read'];
+          Map<String, dynamic> readConfidence = responses['read_confidence'];
           Read reads = Read.fromJson(read);
-
+          ReadConfidence readConfidences = ReadConfidence.fromJson(readConfidence);
           data.add(Stnkocr(
-              ocrDate: date, message: message, read: reads, status: status));
+              ocrDate: date, message: message, read: reads, status: status, readConfidence: readConfidences));
         }
       } else {
         setState(() {
@@ -133,7 +146,7 @@ class _OcrHomepageState extends State<STNKOCR> {
                       isLoading = true;
                     });
                     if (_image != null) {
-                      KtpOcrApi(_image!).then((value) {
+                      KtpOcrApi(webimage!).then((value) {
                         if (value.isNotEmpty) {
                           setState(() {
                             isLoading = false;
@@ -238,10 +251,16 @@ class _OcrHomepageState extends State<STNKOCR> {
                     ),
                     Container(
                       child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          getImagecamera();
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CameraConts()));
+                        onTap: () async {
+                          Navigator.pop(context);                         
+                          final result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => LivenessCatcher("OCR STNK")));
+                          _image = File(result.path);
+                          webimage = await result.readAsBytes();
+                          setState(() {
+                            base64Image = base64Encode(webimage!);
+                          });
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -300,7 +319,7 @@ class _OcrHomepageState extends State<STNKOCR> {
                           height: MediaQuery.of(context).size.height / 3.5,
                           width: MediaQuery.of(context).size.width - 50,
                           child: Image.memory(
-                            _image!,
+                            webimage!,
                           )),
                       Positioned(
                         right: 20,
